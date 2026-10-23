@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Build artifacts: `just server` → `dist/skedd`, `just ios` → `dist/Sked.ipa` (release, unsigned; `xtool install` signs). Container: `docker compose up -d --build` (root `compose.yaml`, `server/Dockerfile`, data in `./data`).
+Deploy: `just server` builds the image `localhost/sked-server:latest` (podman, or docker via `ENGINE=docker`), then `podman compose up -d` starts `sked` + `sked-caddy` (root `compose.yaml`, `Caddyfile`, `server/Dockerfile`; data in the `sked-data` named volume — not a bind mount, because rootless podman can't map host UIDs; `/data` is chowned to 65532 in the image so the fresh volume is writable). Caddy terminates TLS for `{$SKED_DOMAIN:lunars.ru}`; `skedd` is only `expose`d. Host prerequisites are in `README.md`. Other artifacts: `just server-bin` → `dist/skedd`, `just ios` → `dist/Sked.ipa` (release, unsigned; `xtool install` signs).
 
 **Sked** — schedule app for students of the VKSIT college: a Go server (`server/`) parses the college's schedule PDFs and serves JSON; an iOS 26 SwiftUI client (`ios/`, built on Linux with xtool) consumes it. The client never touches the PDFs or rasp.vksit.ru. Full design, data model and API contract: `docs/ARCHITECTURE.md` — keep it in sync when the JSON shape or endpoints change.
 

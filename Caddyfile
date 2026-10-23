@@ -1,0 +1,8 @@
+# HTTPS in front of skedd. Caddy obtains and renews the Let's Encrypt
+# certificate itself; the domain's DNS must point here and ports 80/443 must
+# be reachable. Override the domain with SKED_DOMAIN (e.g. "localhost" for a
+# local test with Caddy's internal CA).
+{$SKED_DOMAIN:lunars.ru} {
+	encode zstd gzip
+	reverse_proxy sked:1984
+}

@@ -169,7 +169,8 @@ go run ./cmd/parsepdf testdata/spo.pdf              # отладка парсе�
 ```
 
 ```sh
-just server                    # → dist/skedd
+just server                    # → образ localhost/sked-server:latest
+just server-bin                # → dist/skedd
 just ios                       # → dist/Sked.ipa
 cd ios
 SKED_CORE_ONLY=1 swift test   # логика клиента на Linux
@@ -179,11 +180,11 @@ xtool dev                      # сборка и установка на под�
 
 Env: `SKED_ADDR`, `SKED_DATA`, `SKED_NPO_URL`, `SKED_SPO_URL`, `SKED_DEBUG`.
 
-### Docker
+### Docker / podman
 
 ```sh
-docker compose up -d --build        # сборка server/Dockerfile и запуск на :1984
-docker compose logs -f sked
+just server              # образ localhost/sked-server:latest
+podman compose up -d     # sked + sked-caddy (HTTPS для lunars.ru)
 ```
 
-Снимки и `overrides/` лежат в `./data` на хосте. Контейнер работает от `SKED_UID:SKED_GID` (по умолчанию 1000:1000), чтобы файлы в `./data` оставались твоими. Остальные переменные: `SKED_PORT` (порт на хосте), `SKED_VERSION` (версия в `/health`), `SKED_DEBUG`. Healthcheck вызывает `/skedd -healthcheck`. С rootless podman вместо `user:` используй `--userns=keep-id`.
+`compose.yaml` поднимает `sked` (наружу не публикуется, только `expose: 1984`) и Caddy, который по `Caddyfile` получает сертификат Let's Encrypt для `SKED_DOMAIN` (по умолчанию `lunars.ru`) и проксирует на `sked:1984`. Данные хранятся в именованном томе `sked-data`: bind-mount `./data` не работает с rootless podman из-за UID-маппинга. В образе `/data` принадлежит пользователю 65532, поэтому новый том доступен на запись и в podman, и в docker. Настройка хоста (DNS, порты 80/443, `ip_unprivileged_port_start`, автозапуск) описана в `README.md`.
