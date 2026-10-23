@@ -3,7 +3,19 @@ import VKSITCore
 
 /// User-facing formatting of schedule data.
 enum Format {
-    static var locale: Locale { .autoupdatingCurrent }
+    /// The locale for the language our strings resolved to. `Locale.current`
+    /// can stay English when iOS does not treat the app as localized, so it is
+    /// derived from the module bundle instead; the region is kept.
+    static let locale: Locale = {
+        let language = Bundle.module.preferredLocalizations.first ?? "ru"
+        let region = Locale.current.region?.identifier ?? (language == "ru" ? "RU" : "US")
+        return Locale(identifier: "\(language)_\(region)")
+    }()
+
+    /// "23 окт. 2026 г., 12:29".
+    static func dateTime(_ date: Date) -> String {
+        date.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened, locale: locale))
+    }
 
     /// "08:30 – 10:00".
     static func timeRange(_ lesson: Lesson) -> String {

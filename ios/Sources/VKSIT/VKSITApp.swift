@@ -23,6 +23,7 @@ struct VKSITApp: App {
         WindowGroup {
             RootView()
                 .environment(model)
+                .environment(\.locale, Format.locale)
         }
     }
 }

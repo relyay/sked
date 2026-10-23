@@ -60,13 +60,13 @@ struct ProfileView: View {
         Section(L("profile.data")) {
             LabeledContent(L("profile.dataUpdated")) {
                 if let fetchedAt = model.dataFetchedAt {
-                    Text(fetchedAt, format: .dateTime.day().month().hour().minute())
+                    Text(Format.dateTime(fetchedAt))
                 } else {
                     Text(L("profile.never"))
                 }
             }
             if let parsedAt = model.schedule?.parsedAt {
-                LabeledContent(L("profile.serverParsed"), value: parsedAt.formatted(date: .abbreviated, time: .shortened))
+                LabeledContent(L("profile.serverParsed"), value: Format.dateTime(parsedAt))
             }
             if let reason = model.staleReason {
                 Text(reason.errorDescription ?? "")
@@ -229,7 +229,7 @@ struct ServerSection: View {
                 Label(health.status == "ok" ? L("server.ok") : L("server.degraded"), systemImage: "circle.fill")
                     .foregroundStyle(health.status == "ok" ? .green : .orange)
                 if let lastParse = health.lastParse {
-                    Text(L("server.lastParse \(lastParse.formatted(date: .abbreviated, time: .shortened))"))
+                    Text(L("server.lastParse \(Format.dateTime(lastParse))"))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

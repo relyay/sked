@@ -39,7 +39,7 @@ struct StaleDataBanner: View {
             Label {
                 VStack(alignment: .leading, spacing: 2) {
                     if let fetchedAt {
-                        Text(L("stale.title \(fetchedAt.formatted(date: .abbreviated, time: .shortened))"))
+                        Text(L("stale.title \(Format.dateTime(fetchedAt))"))
                             .font(.subheadline.weight(.semibold))
                     }
                     Text(reason.errorDescription ?? "")
@@ -170,9 +170,6 @@ struct CompactLessonRow: View {
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: 0)
-            if let subgroup = lesson.subgroup {
-                SubgroupBadge(subgroup: subgroup)
-            }
         }
         .padding(.vertical, 4)
         .accessibilityElement(children: .ignore)
