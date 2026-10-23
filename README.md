@@ -10,20 +10,24 @@ rasp.vksit.ru и отдаёт JSON, а iOS-приложение показыва
 ```sh
 git clone https://github.com/relyay/sked.git
 cd sked
-just server              # собирает образ localhost/sked-server:latest
+# в первой строке Caddyfile укажи свой домен (сейчас там lunars.ru)
 podman compose up -d     # или: docker compose up -d
 ```
 
-Поднимаются два контейнера: `sked` (сервер) и `sked-caddy` (HTTPS для
-`lunars.ru` с автоматическим сертификатом Let's Encrypt). Проверка:
+Compose сам соберёт образ сервера и поднимет два контейнера: `sked`
+(сервер) и `sked-caddy` (HTTPS с автоматическим сертификатом Let's Encrypt).
+Проверка:
 
 ```sh
-curl https://lunars.ru/health
+curl https://<домен>/health
 ```
+
+Если домен поменялся, в iOS-приложении нужно поправить `Server.production`
+в `ios/Sources/SkedCore/Profile.swift`.
 
 ### Что нужно один раз настроить на сервере
 
-- **DNS:** A-запись `lunars.ru` указывает на публичный IP сервера.
+- **DNS:** A-запись домена указывает на публичный IP сервера.
 - **Порты 80 и 443** открыты из интернета (файрвол, проброс на роутере).
   Порт 80 нужен Let's Encrypt для выдачи сертификата.
 - **Compose-провайдер для podman:** `sudo pacman -S podman-compose`
@@ -39,24 +43,16 @@ curl https://lunars.ru/health
   sudo loginctl enable-linger $USER
   ```
 
-### Настройки (переменные окружения или файл `.env` рядом с `compose.yaml`)
-
-| Переменная | По умолчанию | Назначение |
-|---|---|---|
-| `SKED_DOMAIN` | `lunars.ru` | домен для Caddy; `localhost` — локальная проверка с внутренним CA |
-| `SKED_HTTP_PORT` / `SKED_HTTPS_PORT` | `80` / `443` | порты на хосте |
-| `SKED_DEBUG` | — | подробные логи сервера |
-
 ### Логи, обновление, данные
 
 ```sh
 podman compose logs -f sked
-git pull && just server && podman compose up -d   # обновление
+git pull && podman compose up -d --build   # обновление
 ```
 
-Снимки расписания лежат в томе `sked_sked-data`, сертификаты — в
-`sked_caddy-data` (этот том не удаляй, иначе сертификат придётся получать
-заново). Ручные исправления расписания (оверрайды) кладутся в том:
+Снимки расписания лежат в томе `sked-data`, сертификаты — в `caddy-data`
+(этот том не удаляй, иначе сертификат придётся получать заново). Ручные
+исправления расписания (оверрайды) кладутся в том:
 
 ```sh
 podman cp spo.json sked:/data/overrides/spo.json   # подхватятся в течение 2 минут
@@ -69,7 +65,6 @@ podman cp spo.json sked:/data/overrides/spo.json   # подхватятся в �
 ```sh
 cd server && go test ./...                    # сервер
 cd ios && SKED_CORE_ONLY=1 swift test         # логика iOS-клиента (на Linux)
-just server-bin                               # бинарник dist/skedd без контейнеров
 just ios                                      # dist/Sked.ipa (xtool)
 ```
 

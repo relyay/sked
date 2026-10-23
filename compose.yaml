@@ -1,12 +1,8 @@
-# Production stack: skedd behind Caddy (HTTPS for lunars.ru).
-#   just server && podman compose up -d   (or docker compose)
+# skedd behind Caddy. Set your domain in Caddyfile, then:
+#   podman compose up -d        (after git pull: podman compose up -d --build)
 services:
   sked:
-    build:
-      context: ./server
-      args:
-        VERSION: ${SKED_VERSION:-dev}
-    image: localhost/sked-server:latest
+    build: ./server
     container_name: sked
     restart: unless-stopped
     # Reachable only through Caddy on the compose network.
@@ -14,8 +10,6 @@ services:
       - "1984"
     volumes:
       - sked-data:/data
-    environment:
-      SKED_DEBUG: ${SKED_DEBUG:-}
     healthcheck:
       test: ["CMD", "/skedd", "-healthcheck"]
       interval: 30s
@@ -30,18 +24,16 @@ services:
     depends_on:
       - sked
     ports:
-      - "${SKED_HTTP_PORT:-80}:80"
-      - "${SKED_HTTPS_PORT:-443}:443"
-      - "${SKED_HTTPS_PORT:-443}:443/udp"
-    environment:
-      SKED_DOMAIN: ${SKED_DOMAIN:-lunars.ru}
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro,Z
       - caddy-data:/data
       - caddy-config:/config
 
 volumes:
-  # Snapshots and overrides/ (see README for editing overrides).
+  # Snapshots and overrides/.
   sked-data:
   # Certificates: keep this volume, or Let's Encrypt rate limits may bite.
   caddy-data:

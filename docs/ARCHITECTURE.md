@@ -169,8 +169,6 @@ go run ./cmd/parsepdf testdata/spo.pdf              # отладка парсе�
 ```
 
 ```sh
-just server                    # → образ localhost/sked-server:latest
-just server-bin                # → dist/skedd
 just ios                       # → dist/Sked.ipa
 cd ios
 SKED_CORE_ONLY=1 swift test   # логика клиента на Linux
@@ -183,8 +181,8 @@ Env: `SKED_ADDR`, `SKED_DATA`, `SKED_NPO_URL`, `SKED_SPO_URL`, `SKED_DEBUG`.
 ### Docker / podman
 
 ```sh
-just server              # образ localhost/sked-server:latest
-podman compose up -d     # sked + sked-caddy (HTTPS для lunars.ru)
+# домен — в первой строке Caddyfile
+podman compose up -d     # compose сам собирает server/Dockerfile; sked + sked-caddy
 ```
 
-`compose.yaml` поднимает `sked` (наружу не публикуется, только `expose: 1984`) и Caddy, который по `Caddyfile` получает сертификат Let's Encrypt для `SKED_DOMAIN` (по умолчанию `lunars.ru`) и проксирует на `sked:1984`. Данные хранятся в именованном томе `sked-data`: bind-mount `./data` не работает с rootless podman из-за UID-маппинга. В образе `/data` принадлежит пользователю 65532, поэтому новый том доступен на запись и в podman, и в docker. Настройка хоста (DNS, порты 80/443, `ip_unprivileged_port_start`, автозапуск) описана в `README.md`.
+`compose.yaml` поднимает `sked` (наружу не публикуется, только `expose: 1984`) и Caddy. Caddy получает сертификат Let's Encrypt для домена из `Caddyfile` и проксирует на `sked:1984`. Данные хранятся в именованном томе `sked-data`: bind-mount `./data` не работает с rootless podman из-за UID-маппинга. В образе `/data` принадлежит пользователю 65532, поэтому новый том доступен на запись и в podman, и в docker. Настройка хоста (DNS, порты 80/443, `ip_unprivileged_port_start`, автозапуск) описана в `README.md`.
