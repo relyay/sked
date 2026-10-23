@@ -1,0 +1,5 @@
+server/data/
+.DS_Store
+.build/
+xtool/
+*.ipa
