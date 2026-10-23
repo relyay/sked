@@ -99,7 +99,7 @@ struct OnboardingView: View {
     }
 }
 
-/// "Группа: ИСП-225а ›" that opens the searchable list, or the load state.
+/// "Group: ИСП-225а ›" that opens the searchable list, or the load state.
 struct GroupRow: View {
     @Environment(AppModel.self) private var model
     @Binding var selection: String?

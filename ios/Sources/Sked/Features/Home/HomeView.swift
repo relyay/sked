@@ -102,7 +102,7 @@ private struct CurrentLessonCard: View {
         .accessibilityIdentifier("home.currentLesson")
     }
 
-    /// "2 пара · ОБиЗР · 14:30 · корпус 2, каб. 15/2".
+    /// "Class 2 · ОБиЗР · 14:30 · building 2, room 15/2".
     private func headline(_ lesson: Lesson, building: Int) -> String {
         var parts = [L("lesson.pairNumber \(lesson.pairLabel)"), lesson.subject, lesson.start]
         if lesson.isRemote {
@@ -153,7 +153,7 @@ private struct NextDayCard: View {
         .accessibilityIdentifier("home.nextDay")
     }
 
-    /// "Завтра (сб) · 4 пары · корпус 1 · первая в 12:10".
+    /// "Tomorrow (Sat) · 4 classes · building 1 · first at 12:10".
     private func summary(_ next: NextSchoolDay) -> String {
         let weekday = Format.chip(next.day).weekday.lowercased()
         let title = next.isTomorrow ? L("home.tomorrowWeekday \(weekday)") : Format.shortDay(next.day)
@@ -171,11 +171,11 @@ private struct HomeSkeleton: View {
         VStack(spacing: 16) {
             ForEach(0..<2, id: \.self) { _ in
                 GlassCard {
-                    Text("Следующая пара")
+                    Text("Next class")
                         .font(.caption)
-                    Text("2 пара · Предмет · 14:30 · корпус 2")
+                    Text("Class 2 · Subject · 14:30 · building 2")
                         .font(.title3)
-                    Text("начнётся через 2 ч 13 мин")
+                    Text("starts in 2 hr 13 min")
                 }
                 .redacted(reason: .placeholder)
             }

@@ -129,7 +129,7 @@ public struct ScheduleQuery: Sendable {
             .sorted { ($0.time ?? "") < ($1.time ?? "") }
     }
 
-    /// "Занятия начинаются с …" for the user's subgroup.
+    /// "Classes start at …" («Занятия начинаются с …») for the user's subgroup.
     public func startsAt(on day: Day) -> String? {
         groupDay(on: day)?.notes?.first { note in
             note.kind == .startsAt && (subgroup == .unspecified || note.subgroup == nil || note.subgroup == subgroup.rawValue)

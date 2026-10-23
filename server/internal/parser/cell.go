@@ -89,7 +89,8 @@ func interpretCell(runs []pdfx.Run) cellContent {
 }
 
 // joinFragments glues annotations that Excel wrapped into several runs, e.g.
-// "Обед 10:55-" + "11:20" or "Занятия начинаются с" + "11:10".
+// "Обед 10:55-" + "11:20" (lunch) or "Занятия начинаются с" + "11:10"
+// (classes start at).
 func joinFragments(runs []pdfx.Run) []string {
 	var out []string
 	annotation := false

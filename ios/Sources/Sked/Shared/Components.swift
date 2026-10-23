@@ -28,7 +28,7 @@ struct ScreenBackground: View {
     }
 }
 
-/// "Показаны данные от …" when the network failed and the cache is shown.
+/// "Showing data from …" when the network failed and the cache is shown.
 struct StaleDataBanner: View {
     let fetchedAt: Date?
     let reason: APIError
@@ -183,7 +183,7 @@ struct CompactLessonRow: View {
     }
 }
 
-/// "Занятия начинаются с …" and lunch breaks shown under a day's header.
+/// "Classes start at …" and lunch breaks shown under a day's header.
 struct DayNotes: View {
     let startsAt: String?
     let lunches: [Note]

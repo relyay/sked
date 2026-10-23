@@ -1,7 +1,7 @@
 // Package parser reconstructs the Sked schedule table from PDF geometry.
 //
 // Every page is one day. The page holds several horizontal blocks; each block
-// starts with a "Группа:" row naming up to eight groups, and every group column
+// starts with a "Группа:" ("Group:") row naming up to eight groups, and every group column
 // is split into two subgroup columns. A lesson for the whole group is a merged
 // cell, i.e. the vertical border between the subgroup columns is missing for
 // that pair's rows. Text alone cannot tell the two cases apart, because Excel
@@ -176,7 +176,7 @@ type band struct {
 	start, end string
 }
 
-// parseBlock parses the rows between a "Группа:" label and the next block.
+// parseBlock parses the rows between a "Группа:" ("Group:") label and the next block.
 func (p *page) parseBlock(label pdfx.Run, bottom float64) []schedule.GroupDay {
 	var names []pdfx.Run
 	for _, r := range p.Runs {

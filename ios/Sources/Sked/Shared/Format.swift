@@ -12,7 +12,7 @@ enum Format {
         return Locale(identifier: "\(language)_\(region)")
     }()
 
-    /// "23 окт. 2026 г., 12:29".
+    /// "Oct 23, 2026 at 12:29".
     static func dateTime(_ date: Date) -> String {
         date.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened, locale: locale))
     }
@@ -22,13 +22,13 @@ enum Format {
         lesson.end.map { "\(lesson.start) – \($0)" } ?? lesson.start
     }
 
-    /// "Обед 10:55–11:20", or "Обед с 10:55" when the PDF gives no end.
+    /// "Lunch 10:55–11:20", or "Lunch from 10:55" when the PDF gives no end.
     static func lunch(_ note: Note) -> String {
         guard let time = note.time else { return note.text }
         return note.endTime.map { L("lunch.range \(time) \($0)") } ?? L("lunch.from \(time)")
     }
 
-    /// "каб. 15/2 · Петров С.И." or "дистант · Петров С.И.".
+    /// "room 15/2 · Петров С.И." or "remote · Петров С.И.".
     static func place(_ lesson: Lesson) -> String {
         var parts: [String] = []
         if lesson.isRemote {
@@ -46,7 +46,7 @@ enum Format {
         return parts.filter { !$0.isEmpty }.joined(separator: ", ")
     }
 
-    /// "через 2 ч 13 мин"; rounds up so it never says "через 0 мин".
+    /// "starts in 2 hr 13 min"; rounds up so it never says "in 0 min".
     static func countdown(from now: Date, to date: Date) -> String {
         let minutes = max(1, Int((date.timeIntervalSince(now) / 60).rounded(.up)))
         let duration = Duration.seconds(minutes * 60)
@@ -58,7 +58,7 @@ enum Format {
         L("building.short \(number)")
     }
 
-    /// "корпус 1" or "корпуса 1, 2" when a day spans both.
+    /// "building 1" or "buildings 1, 2" when a day spans both.
     static func buildings(_ numbers: [Int]) -> String {
         guard numbers.count > 1 else { return building(numbers.first ?? 0) }
         return L("building.many \(numbers.map(String.init).joined(separator: ", "))")
@@ -74,12 +74,12 @@ enum Format {
         return style
     }
 
-    /// "Пятница, 23 октября".
+    /// "Friday, October 23".
     static func longDay(_ day: Day) -> String {
         dayDate(day).formatted(dayStyle).capitalizedFirst
     }
 
-    /// "Пт, 23.10".
+    /// "Fri, 23.10".
     static func shortDay(_ day: Day) -> String {
         let style = Date.FormatStyle(locale: locale, calendar: CollegeClock.calendar, timeZone: CollegeClock.timeZone)
         let weekday = dayDate(day).formatted(style.weekday(.abbreviated)).capitalizedFirst
@@ -93,7 +93,7 @@ enum Format {
         return (dayDate(day).formatted(style.weekday(.abbreviated)).capitalizedFirst, dayDate(day).formatted(style.day()))
     }
 
-    /// "сегодня" / "завтра" relative to now, or nil.
+    /// "today" / "tomorrow" relative to now, or nil.
     static func relativeDay(_ day: Day, now: Date) -> String? {
         let calendar = CollegeClock.calendar
         let today = CollegeClock.dayString(now)

@@ -8,6 +8,8 @@ import XCTest
 final class OnboardingUITests: XCTestCase {
     private var app: XCUIApplication!
 
+    // The app runs in Russian here, so the test types and looks up Russian
+    // values (tab title, name, group) as they appear on screen.
     override func setUp() {
         continueAfterFailure = false
         app = XCUIApplication()

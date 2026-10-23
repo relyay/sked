@@ -39,7 +39,7 @@ const (
 	// TimeFromBells copies the bell schedule of other days in the same PDF.
 	TimeFromBells TimeSource = "bells"
 	// TimeFromStartsAt shifts the bell schedule so the first in-person pair
-	// starts at the "Занятия начинаются с …" time.
+	// starts at the "Занятия начинаются с …" ("classes start at …") time.
 	TimeFromStartsAt TimeSource = "startsAt"
 )
 
@@ -52,7 +52,8 @@ const (
 	NoteOther    NoteKind = "other"
 )
 
-// Note is an annotation such as "Занятия начинаются с 11:10" or a lunch break.
+// Note is an annotation such as "Занятия начинаются с 11:10" ("classes start
+// at 11:10") or a lunch break.
 type Note struct {
 	Kind     NoteKind `json:"kind"`
 	Text     string   `json:"text"`

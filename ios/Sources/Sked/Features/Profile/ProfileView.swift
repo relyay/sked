@@ -86,7 +86,7 @@ private struct ProfileCard: View {
 
     private var initials: String {
         let words = profile.fullName.split(separator: " ")
-        // "Фамилия Имя Отчество" → "ИФ"; a single word → its first letter.
+        // "Surname Name Patronymic" → "NS"; a single word → its first letter.
         let letters = words.count > 1 ? [words[1], words[0]] : Array(words.prefix(1))
         return letters.compactMap(\.first).map(String.init).joined().uppercased()
     }

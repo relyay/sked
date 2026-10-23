@@ -169,7 +169,8 @@ func TestMissingTimesAreDerived(t *testing.T) {
 		t.Errorf("remote saturday lesson = %+v", l)
 	}
 
-	// In-person PE after remote pairs, with "Занятия начинаются с 11:50":
+	// In-person PE after remote pairs, with "Занятия начинаются с 11:50"
+	// ("classes start at 11:50"):
 	// the bell grid (pair 3 = 12:50) is shifted to start at 11:50.
 	npo := parseFile(t, "npo.pdf")
 	g := groupDay(t, npo, "2026-10-24", "ИСП-225ис")
