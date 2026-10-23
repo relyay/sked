@@ -1,4 +1,4 @@
-// Package parser reconstructs the VKSIT schedule table from PDF geometry.
+// Package parser reconstructs the Sked schedule table from PDF geometry.
 //
 // Every page is one day. The page holds several horizontal blocks; each block
 // starts with a "Группа:" row naming up to eight groups, and every group column
@@ -18,8 +18,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/relya/vksit/server/internal/pdfx"
-	"github.com/relya/vksit/server/internal/schedule"
+	"github.com/relya/sked/server/internal/pdfx"
+	"github.com/relya/sked/server/internal/schedule"
 )
 
 // Version identifies the parser's output shape. Bump it whenever parsing
@@ -147,7 +147,7 @@ func parsePage(src pdfx.Page) (schedule.Day, []string, bool) {
 		}
 	}
 	if p.missingTimes > 0 {
-		p.warn("no bell times for %d pairs, start/end left empty", p.missingTimes)
+		p.warn("no bell times for %d pairs, derived from the usual bell schedule", p.missingTimes)
 	}
 	for _, name := range order {
 		gd := byGroup[name]

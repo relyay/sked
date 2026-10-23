@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/relya/vksit/server/internal/schedule"
+	"github.com/relya/sked/server/internal/schedule"
 )
 
 type bell struct{ start, end string }

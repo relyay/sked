@@ -10,11 +10,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/relya/vksit/server/internal/parser"
-	"github.com/relya/vksit/server/internal/pdfx"
-	"github.com/relya/vksit/server/internal/schedule"
-	"github.com/relya/vksit/server/internal/source"
-	"github.com/relya/vksit/server/internal/store"
+	"github.com/relya/sked/server/internal/parser"
+	"github.com/relya/sked/server/internal/pdfx"
+	"github.com/relya/sked/server/internal/schedule"
+	"github.com/relya/sked/server/internal/source"
+	"github.com/relya/sked/server/internal/store"
 )
 
 // Source is one schedule PDF.
@@ -70,7 +70,7 @@ func (u *Updater) Run(ctx context.Context, interval time.Duration) {
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 	for {
-		u.Refresh(ctx, false)
+		u.Refresh(ctx)
 		select {
 		case <-ctx.Done():
 			return
@@ -79,9 +79,8 @@ func (u *Updater) Run(ctx context.Context, interval time.Duration) {
 	}
 }
 
-// Refresh checks every source; force re-downloads and re-parses even if the
-// file is unchanged. It returns the joined per-source errors.
-func (u *Updater) Refresh(ctx context.Context, force bool) error {
+// Refresh checks every source and returns the joined per-source errors.
+func (u *Updater) Refresh(ctx context.Context) error {
 	u.refresh.Lock()
 	defer u.refresh.Unlock()
 
@@ -95,23 +94,20 @@ func (u *Updater) Refresh(ctx context.Context, force bool) error {
 		errs = append(errs, err)
 	}
 	for _, src := range u.Sources {
-		if err := u.refreshSource(ctx, src, force); err != nil {
+		if err := u.refreshSource(ctx, src); err != nil {
 			errs = append(errs, err)
 		}
 	}
 	return errors.Join(errs...)
 }
 
-func (u *Updater) refreshSource(ctx context.Context, src Source, force bool) error {
+func (u *Updater) refreshSource(ctx context.Context, src Source) error {
 	log := u.Log.With("source", src.Name)
 	now := u.Now()
 	st := u.Status(src.Name)
 	st.LastCheck = now
 	defer func() { u.setStatus(st) }()
 
-	if force {
-		src.Fetcher.Forget()
-	}
 	fetchCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 	doc, err := src.Fetcher.Fetch(fetchCtx)

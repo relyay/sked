@@ -170,7 +170,7 @@ public struct APIErrorBody: Codable, Sendable {
 
 extension JSONDecoder {
     /// Decoder for server payloads: Go emits RFC 3339 with nanoseconds.
-    public static let vksit: JSONDecoder = {
+    public static let sked: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .custom { decoder in
             let string = try decoder.singleValueContainer().decode(String.self)
@@ -182,7 +182,7 @@ extension JSONDecoder {
 }
 
 extension JSONEncoder {
-    public static let vksit: JSONEncoder = {
+    public static let sked: JSONEncoder = {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         return encoder

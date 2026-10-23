@@ -1,5 +1,5 @@
 import Foundation
-import VKSITCore
+import SkedCore
 
 /// User-facing formatting of schedule data.
 enum Format {

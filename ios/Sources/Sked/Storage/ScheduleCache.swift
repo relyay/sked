@@ -1,5 +1,5 @@
 import Foundation
-import VKSITCore
+import SkedCore
 
 /// Last successful `/schedule` response per group, kept on disk
 /// for offline use.
@@ -21,8 +21,8 @@ struct ScheduleCache {
 
     func load(group: String) -> (ScheduleResponse, Date)? {
         guard let data = try? Data(contentsOf: url(group: group)),
-              let entry = try? JSONDecoder.vksit.decode(Entry.self, from: data),
-              let response = try? JSONDecoder.vksit.decode(ScheduleResponse.self, from: entry.payload) else {
+              let entry = try? JSONDecoder.sked.decode(Entry.self, from: data),
+              let response = try? JSONDecoder.sked.decode(ScheduleResponse.self, from: entry.payload) else {
             return nil
         }
         return (response, entry.fetchedAt)
@@ -31,7 +31,7 @@ struct ScheduleCache {
     func save(_ payload: Data, group: String, at date: Date) {
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-            let data = try JSONEncoder.vksit.encode(Entry(fetchedAt: date, payload: payload))
+            let data = try JSONEncoder.sked.encode(Entry(fetchedAt: date, payload: payload))
             try data.write(to: url(group: group), options: .atomic)
         } catch {
             // A failed cache write only costs offline availability.

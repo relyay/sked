@@ -4,7 +4,6 @@ package api
 import (
 	"cmp"
 	"crypto/sha256"
-	"crypto/subtle"
 	"encoding/hex"
 	"encoding/json"
 	"log/slog"
@@ -14,18 +13,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/relya/vksit/server/internal/schedule"
-	"github.com/relya/vksit/server/internal/store"
-	"github.com/relya/vksit/server/internal/updater"
+	"github.com/relya/sked/server/internal/schedule"
+	"github.com/relya/sked/server/internal/store"
+	"github.com/relya/sked/server/internal/updater"
 )
 
 // Server holds the HTTP handlers.
 type Server struct {
-	Store       *store.Store
-	Updater     *updater.Updater
-	Version     string
-	AdminSecret string
-	Log         *slog.Logger
+	Store   *store.Store
+	Updater *updater.Updater
+	Version string
+	Log     *slog.Logger
 }
 
 // Handler returns the routed handler.
@@ -35,7 +33,6 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /buildings", s.buildings)
 	mux.HandleFunc("GET /schedule", s.schedule)
 	mux.HandleFunc("GET /groups", s.groups)
-	mux.HandleFunc("POST /admin/refresh", s.refresh)
 	return s.logRequests(mux)
 }
 
@@ -208,22 +205,6 @@ func (s *Server) groups(w http.ResponseWriter, r *http.Request) {
 		resp["building"] = building
 	}
 	s.writeCached(w, r, newest, resp)
-}
-
-func (s *Server) refresh(w http.ResponseWriter, r *http.Request) {
-	got := r.Header.Get("X-Admin-Secret")
-	if s.AdminSecret == "" || subtle.ConstantTimeCompare([]byte(got), []byte(s.AdminSecret)) != 1 {
-		writeError(w, http.StatusForbidden, "invalid admin secret")
-		return
-	}
-	err := s.Updater.Refresh(r.Context(), true)
-	status := http.StatusOK
-	resp := map[string]any{"sources": s.Updater.Statuses()}
-	if err != nil {
-		status = http.StatusBadGateway
-		resp["error"] = err.Error()
-	}
-	writeJSON(w, status, resp)
 }
 
 // snapshots resolves the optional ?building= filter, writing the error

@@ -1,5 +1,5 @@
 import SwiftUI
-import VKSITCore
+import SkedCore
 
 /// A Liquid Glass card.
 struct GlassCard<Content: View>: View {

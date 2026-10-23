@@ -14,17 +14,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/relya/vksit/server/internal/schedule"
-	"github.com/relya/vksit/server/internal/source"
-	"github.com/relya/vksit/server/internal/store"
-	"github.com/relya/vksit/server/internal/updater"
+	"github.com/relya/sked/server/internal/schedule"
+	"github.com/relya/sked/server/internal/source"
+	"github.com/relya/sked/server/internal/store"
+	"github.com/relya/sked/server/internal/updater"
 )
 
 // fakeOrigin serves the real test PDFs like rasp.vksit.ru (nginx ETags) and
 // can be switched to failing.
 type fakeOrigin struct {
 	failing atomic.Bool
-	gets    atomic.Int32
 }
 
 func (o *fakeOrigin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +31,6 @@ func (o *fakeOrigin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "down", http.StatusBadGateway)
 		return
 	}
-	o.gets.Add(1)
 	f, err := os.Open(filepath.Join("../../testdata", filepath.Base(r.URL.Path)))
 	if err != nil {
 		http.NotFound(w, r)
@@ -68,7 +66,7 @@ func newEnv(t *testing.T, dir string) *env {
 	}, st, log)
 	up.Now = func() time.Time { return time.Date(2026, 10, 23, 9, 0, 0, 0, time.UTC) }
 
-	srv := httptest.NewServer((&Server{Store: st, Updater: up, Version: "test", AdminSecret: "s3cret", Log: log}).Handler())
+	srv := httptest.NewServer((&Server{Store: st, Updater: up, Version: "test", Log: log}).Handler())
 	t.Cleanup(srv.Close)
 	return &env{t: t, origin: origin, server: srv, updater: up, dir: dir}
 }
@@ -105,7 +103,7 @@ func TestNotLoadedYet(t *testing.T) {
 
 func TestScheduleEndpoints(t *testing.T) {
 	e := newEnv(t, t.TempDir())
-	if err := e.updater.Refresh(context.Background(), false); err != nil {
+	if err := e.updater.Refresh(context.Background()); err != nil {
 		t.Fatal(err)
 	}
 
@@ -166,7 +164,7 @@ func TestScheduleEndpoints(t *testing.T) {
 // Saturday; asking by group alone must return all three days.
 func TestGroupAcrossBuildings(t *testing.T) {
 	e := newEnv(t, t.TempDir())
-	e.updater.Refresh(context.Background(), false)
+	e.updater.Refresh(context.Background())
 
 	var resp scheduleResponse
 	e.get("/schedule?group=ИСП-225ис", nil, &resp)
@@ -210,7 +208,7 @@ func TestGroupAcrossBuildings(t *testing.T) {
 func TestOldParserSnapshotIsReparsed(t *testing.T) {
 	dir := t.TempDir()
 	e := newEnv(t, dir)
-	e.updater.Refresh(context.Background(), false)
+	e.updater.Refresh(context.Background())
 
 	path := filepath.Join(dir, "spo.json")
 	raw, err := os.ReadFile(path)
@@ -231,7 +229,7 @@ func TestOldParserSnapshotIsReparsed(t *testing.T) {
 	os.WriteFile(path, raw, 0o644)
 
 	e2 := newEnv(t, dir)
-	e2.updater.Refresh(context.Background(), false)
+	e2.updater.Refresh(context.Background())
 	if got, _ := os.ReadFile(path); !strings.Contains(string(got), `"parserVersion": 2`) {
 		t.Error("old snapshot was not re-parsed")
 	}
@@ -249,9 +247,9 @@ func TestOldParserSnapshotIsReparsed(t *testing.T) {
 func TestUnchangedSourceIsNotReparsed(t *testing.T) {
 	e := newEnv(t, t.TempDir())
 	ctx := context.Background()
-	e.updater.Refresh(ctx, false)
+	e.updater.Refresh(ctx)
 	before := e.updater.Status("spo").LastChange
-	e.updater.Refresh(ctx, false)
+	e.updater.Refresh(ctx)
 	if got := e.updater.Status("spo").LastChange; !got.Equal(before) {
 		t.Errorf("unchanged source re-parsed: %v → %v", before, got)
 	}
@@ -260,12 +258,12 @@ func TestUnchangedSourceIsNotReparsed(t *testing.T) {
 func TestOriginDownServesLastSnapshot(t *testing.T) {
 	dir := t.TempDir()
 	e := newEnv(t, dir)
-	e.updater.Refresh(context.Background(), false)
+	e.updater.Refresh(context.Background())
 
 	// Restart with the origin down: the snapshot comes from disk.
 	e2 := newEnv(t, dir)
 	e2.origin.failing.Store(true)
-	if err := e2.updater.Refresh(context.Background(), false); err == nil {
+	if err := e2.updater.Refresh(context.Background()); err == nil {
 		t.Error("expected refresh error with origin down")
 	}
 	var all scheduleResponse
@@ -286,41 +284,11 @@ func TestOverrideWins(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, "overrides", "spo.json"), []byte(override), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	e.updater.Refresh(context.Background(), false)
+	e.updater.Refresh(context.Background())
 	var one scheduleResponse
 	e.get("/schedule?building=1&date=2026-10-23&group=ДО-324", nil, &one)
 	l := one.Days[0].Groups[0].Lessons
 	if len(l) != 1 || l[0].Subject != "Классный час" {
 		t.Errorf("override not applied: %+v", l)
-	}
-}
-
-func TestAdminRefresh(t *testing.T) {
-	e := newEnv(t, t.TempDir())
-	post := func(secret string) int {
-		req, _ := http.NewRequest(http.MethodPost, e.server.URL+"/admin/refresh", nil)
-		if secret != "" {
-			req.Header.Set("X-Admin-Secret", secret)
-		}
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			t.Fatal(err)
-		}
-		resp.Body.Close()
-		return resp.StatusCode
-	}
-	if got := post(""); got != http.StatusForbidden {
-		t.Errorf("no secret = %d", got)
-	}
-	if got := post("wrong"); got != http.StatusForbidden {
-		t.Errorf("wrong secret = %d", got)
-	}
-	e.updater.Refresh(context.Background(), false)
-	gets := e.origin.gets.Load()
-	if got := post("s3cret"); got != http.StatusOK {
-		t.Errorf("refresh = %d", got)
-	}
-	if e.origin.gets.Load() != gets+2 {
-		t.Error("forced refresh should download both PDFs again")
 	}
 }

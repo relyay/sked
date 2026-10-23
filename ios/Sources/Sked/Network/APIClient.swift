@@ -1,5 +1,5 @@
 import Foundation
-import VKSITCore
+import SkedCore
 
 /// Network failures translated into something a student can act on.
 enum APIError: LocalizedError, Equatable {
@@ -51,11 +51,11 @@ enum APIError: LocalizedError, Equatable {
     }
 }
 
-/// Talks to the vksitd server. Conditional requests (ETag → 304) are handled
+/// Talks to the skedd server. Conditional requests (ETag → 304) are handled
 /// by URLCache because the server sends `Cache-Control: no-cache`.
 struct APIClient: Sendable {
     let address: ServerAddress
-    var session: URLSession = .vksit
+    var session: URLSession = .sked
     var maxAttempts = 3
 
     func health() async throws -> Health {
@@ -93,7 +93,7 @@ struct APIClient: Sendable {
             do {
                 let data = try await fetch(url)
                 do {
-                    return (try JSONDecoder.vksit.decode(T.self, from: data), data)
+                    return (try JSONDecoder.sked.decode(T.self, from: data), data)
                 } catch {
                     throw APIError.badResponse
                 }
@@ -119,7 +119,7 @@ struct APIClient: Sendable {
         case 503:
             throw APIError.notLoadedYet
         default:
-            let message = try? JSONDecoder.vksit.decode(APIErrorBody.self, from: data).error
+            let message = try? JSONDecoder.sked.decode(APIErrorBody.self, from: data).error
             throw APIError.server(status: http.statusCode, message: message)
         }
     }
@@ -139,7 +139,7 @@ struct APIClient: Sendable {
 }
 
 extension URLSession {
-    static let vksit: URLSession = {
+    static let sked: URLSession = {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 10
         config.timeoutIntervalForResource = 30

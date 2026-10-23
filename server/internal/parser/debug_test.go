@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/relya/vksit/server/internal/pdfx"
+	"github.com/relya/sked/server/internal/pdfx"
 )
 
 // TestDebugRegion prints runs and borders in a page region; for manual use.

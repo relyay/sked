@@ -7,13 +7,13 @@ dist := justfile_directory() / "dist"
 default:
     @just --list
 
-# Build the server binary: dist/vksitd (static, linux/amd64 unless GOOS/GOARCH are set).
+# Build the server binary: dist/skedd (static, host platform unless GOOS/GOARCH are set).
 server:
-    cd server && CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.version={{version}}" -o {{dist}}/vksitd ./cmd/vksitd
-    @echo "→ {{dist}}/vksitd ({{version}})"
+    cd server && CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.version={{version}}" -o {{dist}}/skedd ./cmd/skedd
+    @echo "→ {{dist}}/skedd ({{version}})"
 
-# Build the iOS app as a release .ipa: dist/VKSIT.ipa.
+# Build the iOS app as a release .ipa: dist/Sked.ipa.
 ios:
     cd ios && xtool dev build --configuration release --ipa
-    cp ios/xtool/VKSIT.ipa {{dist}}/VKSIT.ipa
-    @echo "→ {{dist}}/VKSIT.ipa"
+    cp ios/xtool/Sked.ipa {{dist}}/Sked.ipa
+    @echo "→ {{dist}}/Sked.ipa"

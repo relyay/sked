@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/relya/vksit/server/internal/schedule"
+	"github.com/relya/sked/server/internal/schedule"
 )
 
 func days(dates ...string) []schedule.Day {

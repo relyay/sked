@@ -1,5 +1,5 @@
 import SwiftUI
-import VKSITCore
+import SkedCore
 
 /// The group list from the server, shared by onboarding and the profile.
 @MainActor

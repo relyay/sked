@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/relya/vksit/server/internal/pdfx"
-	"github.com/relya/vksit/server/internal/schedule"
+	"github.com/relya/sked/server/internal/pdfx"
+	"github.com/relya/sked/server/internal/schedule"
 )
 
 func parseFile(t *testing.T, name string) Result {

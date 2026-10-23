@@ -1,6 +1,6 @@
 import Foundation
 import Observation
-import VKSITCore
+import SkedCore
 
 /// App-wide state: the local profile, server address and the schedule.
 @MainActor

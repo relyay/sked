@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/relya/vksit/server/internal/schedule"
+	"github.com/relya/sked/server/internal/schedule"
 )
 
 // historyDays is how long days that dropped out of the PDF stay available.

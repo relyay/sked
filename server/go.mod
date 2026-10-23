@@ -1,4 +1,4 @@
-module github.com/relya/vksit/server
+module github.com/relya/sked/server
 
 go 1.27.3
 

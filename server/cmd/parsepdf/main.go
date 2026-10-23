@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/relya/vksit/server/internal/parser"
-	"github.com/relya/vksit/server/internal/pdfx"
+	"github.com/relya/sked/server/internal/parser"
+	"github.com/relya/sked/server/internal/pdfx"
 )
 
 func main() {

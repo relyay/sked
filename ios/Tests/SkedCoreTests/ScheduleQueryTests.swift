@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import VKSITCore
+@testable import SkedCore
 
 private func moscow(_ day: String, _ time: String) -> Date {
     CollegeClock.date(day: day, time: time)!
@@ -210,7 +210,7 @@ private let days = [monday, saturday, friday]
            "lessons":[{"pair":1,"building":2,"pairTo":6,"start":"08:30","end":"18:50","subject":"Экзамен","isRemote":false,"timeSource":"bells"}],
            "notes":[{"kind":"somethingNew","text":"?"}]}]}]}
         """#
-        let r = try JSONDecoder.vksit.decode(ScheduleResponse.self, from: Data(json.utf8))
+        let r = try JSONDecoder.sked.decode(ScheduleResponse.self, from: Data(json.utf8))
         #expect(r.days[0].groups[0].lessons[0].pairLabel == "1–6")
         #expect(r.days[0].groups[0].notes?[0].kind == .other)
         #expect(r.days[0].groups[0].lessons[0].building == 2)

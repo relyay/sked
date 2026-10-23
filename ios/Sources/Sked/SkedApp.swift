@@ -1,8 +1,8 @@
 import SwiftUI
-import VKSITCore
+import SkedCore
 
 @main
-struct VKSITApp: App {
+struct SkedApp: App {
     @State private var model: AppModel
 
     init() {
@@ -12,7 +12,7 @@ struct VKSITApp: App {
         }
         let model = AppModel()
         let env = ProcessInfo.processInfo.environment
-        if let host = env["VKSIT_SERVER_HOST"], let port = env["VKSIT_SERVER_PORT"],
+        if let host = env["SKED_SERVER_HOST"], let port = env["SKED_SERVER_PORT"],
            case .success(let address) = ServerAddress.validate(host: host, port: port) {
             model.save(server: address)
         }

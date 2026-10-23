@@ -1,5 +1,5 @@
 import SwiftUI
-import VKSITCore
+import SkedCore
 
 struct ProfileView: View {
     @Environment(AppModel.self) private var model

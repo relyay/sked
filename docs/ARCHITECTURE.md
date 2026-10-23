@@ -1,4 +1,4 @@
-# ВКСИТ Расписание — архитектура
+# Sked — архитектура
 
 ## Слои
 
@@ -46,7 +46,8 @@ PDF разбирает только сервер. Клиент к rasp.vksit.ru 
 
 ```
 server/
-  cmd/vksitd/        HTTP-сервер (флаги/env)
+  cmd/skedd/         HTTP-сервер (флаги/env, `-healthcheck`)
+  Dockerfile         многоэтапная сборка → distroless static
   cmd/parsepdf/      отладка: PDF → JSON + предупреждения
   internal/pdfx/     геометрия PDF
   internal/parser/   восстановление таблицы, разбор ячеек (+тесты на testdata/*.pdf)
@@ -57,16 +58,16 @@ server/
   internal/api/      эндпоинты (+интеграционные тесты с фейковым origin)
   testdata/          реальные PDF от 23.10.2026
 ios/                 SwiftPM-пакет + xtool.yml + Info.plist
-  Sources/VKSITCore/ чистая логика без SwiftUI: модели API, Profile/ServerAddress + валидация,
+  Sources/SkedCore/  чистая логика без SwiftUI: модели API, Profile/ServerAddress + валидация,
                      ScheduleQuery (ближайшая пара, следующий учебный день, подгруппы), CollegeClock (Europe/Moscow)
-  Sources/VKSIT/
-    App/             VKSITApp, RootView (онбординг ↔ TabView), AppModel (@Observable)
+  Sources/Sked/
+    App/             SkedApp, RootView (онбординг ↔ TabView), AppModel (@Observable)
     Network/         APIClient: async/await, таймауты, 3 попытки с экспоненциальной задержкой, URLCache (ETag → 304)
     Storage/         ScheduleCache: последний успешный /schedule в Application Support (JSON)
     Features/        Onboarding, Home, Schedule, Profile
     Shared/          GlassCard и строки уроков, Format, L() для строк из Bundle.module
     Resources/       ru.lproj, en.lproj (Localizable.strings + .stringsdict для «N пар»)
-  Tests/VKSITCoreTests/  Swift Testing, запускаются на Linux
+  Tests/SkedCoreTests/   Swift Testing, запускаются на Linux
   UITests/           XCUITest онбординга (нужен Mac с Xcode)
 ```
 
@@ -105,7 +106,6 @@ ios/                 SwiftPM-пакет + xtool.yml + Info.plist
 | GET | `/buildings` | `{buildings: [{building, source, parsedAt, sourceModified}]}` |
 | GET | `/schedule?group=ИСП-225а[&building=1][&date=YYYY-MM-DD]` | `{group?, building?, parsedAt, sourceModified, days: [Day]}`. Без `building` дни обоих корпусов объединяются по дате, корпус указан у каждой пары. Нужен хотя бы один из параметров `group` или `building`. День остаётся в ответе с `groups: []`, если у группы в этот день пар нет |
 | GET | `/groups[?building=1]` | `{groups: [{name, course, buildings: [1, 2]}]}` (сортировка: курс, затем имя) |
-| POST | `/admin/refresh` | заголовок `X-Admin-Secret`; `200`/`502 {sources, error?}`; без секрета или с неверным — `403` |
 
 Коды ответов: `400` — неверный `building`/`date`; `404` — неизвестный корпус; `503` + `Retry-After` — ещё ничего не распарсено.
 
@@ -124,7 +124,8 @@ ios/                 SwiftPM-пакет + xtool.yml + Info.plist
 - [x] `go test ./...` проходит, нераспознанных ячеек в `testdata/*.pdf` нет.
 - [x] Повторная проверка неизменённого PDF не запускает разбор заново (304 / тот же sha256).
 - [x] Если источник недоступен, отдаётся последний снимок, а `/health` показывает `degraded` с текстом ошибки.
-- [x] `If-None-Match` → 304; без `X-Admin-Secret` `/admin/refresh` отвечает 403.
+- [x] `If-None-Match` → 304.
+- [x] Ручного обновления (`/admin/refresh`) нет: расписание обновляется только тикером раз в 2 минуты.
 
 **Онбординг**
 - [ ] Первый запуск открывает один экран: ФИО → группа (список с поиском по курсам) → подгруппа. Корпус и курс не спрашиваются.
@@ -163,19 +164,28 @@ ios/                 SwiftPM-пакет + xtool.yml + Info.plist
 
 ```sh
 cd server
-VKSIT_ADMIN_SECRET=… go run ./cmd/vksitd            # слушает 0.0.0.0:1984, данные в ./data
-go run ./cmd/vksitd -addr 192.168.1.246:1984 -interval 2m -data /var/lib/vksit
+go run ./cmd/skedd                                  # слушает 0.0.0.0:1984, данные в ./data
+go run ./cmd/skedd -addr 192.168.1.246:1984 -interval 2m -data /var/lib/sked
 go test ./...                                       # парсер на реальных PDF + интеграционные
 go run ./cmd/parsepdf testdata/spo.pdf              # отладка парсера
 ```
 
 ```sh
-just server                    # → dist/vksitd
-just ios                       # → dist/VKSIT.ipa
+just server                    # → dist/skedd
+just ios                       # → dist/Sked.ipa
 cd ios
-VKSIT_CORE_ONLY=1 swift test   # логика клиента на Linux
+SKED_CORE_ONLY=1 swift test   # логика клиента на Linux
 xtool dev build                # сборка .app
 xtool dev                      # сборка и установка на подключённый iPhone
 ```
 
-Env: `VKSIT_ADDR`, `VKSIT_DATA`, `VKSIT_NPO_URL`, `VKSIT_SPO_URL`, `VKSIT_ADMIN_SECRET`, `VKSIT_DEBUG`.
+Env: `SKED_ADDR`, `SKED_DATA`, `SKED_NPO_URL`, `SKED_SPO_URL`, `SKED_DEBUG`.
+
+### Docker
+
+```sh
+docker compose up -d --build        # сборка server/Dockerfile и запуск на :1984
+docker compose logs -f sked
+```
+
+Снимки и `overrides/` лежат в `./data` на хосте. Контейнер работает от `SKED_UID:SKED_GID` (по умолчанию 1000:1000), чтобы файлы в `./data` оставались твоими. Остальные переменные: `SKED_PORT` (порт на хосте), `SKED_VERSION` (версия в `/health`), `SKED_DEBUG`. Healthcheck вызывает `/skedd -healthcheck`. С rootless podman вместо `user:` используй `--userns=keep-id`.

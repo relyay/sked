@@ -1,5 +1,5 @@
 version: 1
-bundleID: ru.vksit.schedule
+bundleID: ru.sked.app
 infoPath: Info.plist
 # Main-bundle localizations; without them iOS treats the app as English-only.
 resources:

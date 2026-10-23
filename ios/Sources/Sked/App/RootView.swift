@@ -1,5 +1,5 @@
 import SwiftUI
-import VKSITCore
+import SkedCore
 
 struct RootView: View {
     @Environment(AppModel.self) private var model

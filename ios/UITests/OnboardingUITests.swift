@@ -2,9 +2,9 @@ import XCTest
 
 /// UI test of the first-run flow. XCUITest needs Xcode on a Mac: generate a
 /// project with `xtool dev generate-xcode-project`, add a UI Testing target
-/// containing this file, and run it against a vksitd instance:
+/// containing this file, and run it against a skedd instance:
 ///
-///     VKSIT_ADMIN_SECRET=x go run ./cmd/vksitd -addr 127.0.0.1:1984
+///     SKED_ADMIN_SECRET=x go run ./cmd/skedd -addr 127.0.0.1:1984
 final class OnboardingUITests: XCTestCase {
     private var app: XCUIApplication!
 
@@ -13,8 +13,8 @@ final class OnboardingUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-uitest-reset", "-AppleLanguages", "(ru)", "-AppleLocale", "ru_RU"]
         app.launchEnvironment = [
-            "VKSIT_SERVER_HOST": ProcessInfo.processInfo.environment["VKSIT_SERVER_HOST"] ?? "127.0.0.1",
-            "VKSIT_SERVER_PORT": ProcessInfo.processInfo.environment["VKSIT_SERVER_PORT"] ?? "1984",
+            "SKED_SERVER_HOST": ProcessInfo.processInfo.environment["SKED_SERVER_HOST"] ?? "127.0.0.1",
+            "SKED_SERVER_PORT": ProcessInfo.processInfo.environment["SKED_SERVER_PORT"] ?? "1984",
         ]
         app.launch()
     }
@@ -56,8 +56,8 @@ final class OnboardingUITests: XCTestCase {
 
     func testUnreachableServerShowsRetry() {
         app.terminate()
-        app.launchEnvironment["VKSIT_SERVER_HOST"] = "127.0.0.1"
-        app.launchEnvironment["VKSIT_SERVER_PORT"] = "9"
+        app.launchEnvironment["SKED_SERVER_HOST"] = "127.0.0.1"
+        app.launchEnvironment["SKED_SERVER_PORT"] = "9"
         app.launch()
         XCTAssertTrue(app.buttons["retry"].waitForExistence(timeout: 30))
     }

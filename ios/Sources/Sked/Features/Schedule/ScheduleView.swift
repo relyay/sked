@@ -1,5 +1,5 @@
 import SwiftUI
-import VKSITCore
+import SkedCore
 
 struct ScheduleView: View {
     enum Mode: Hashable {
