@@ -1,6 +1,8 @@
 version: 1
 bundleID: ru.sked.app
 infoPath: Info.plist
+# 1024x1024 without alpha, generated from icon.png at the repo root.
+iconPath: AppResources/AppIcon.png
 # Main-bundle localizations; without them iOS treats the app as English-only.
 resources:
   - AppResources/ru.lproj
