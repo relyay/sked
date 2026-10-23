@@ -129,6 +129,7 @@ func (s *Server) schedule(w http.ResponseWriter, r *http.Request) {
 				// Keep the day even without the group: an empty day is meaningful.
 				d.Groups = filterGroup(d.Groups, group)
 			}
+			d.Groups = withBuilding(d.Groups, d.Building)
 			i, seen := byDate[d.Date]
 			if !seen {
 				byDate[d.Date] = len(resp.Days)
@@ -140,6 +141,22 @@ func (s *Server) schedule(w http.ResponseWriter, r *http.Request) {
 	}
 	slices.SortFunc(resp.Days, func(a, b schedule.Day) int { return cmp.Compare(a.Date, b.Date) })
 	s.writeCached(w, r, resp.ParsedAt, resp)
+}
+
+// withBuilding fills lessons that lack a building (overrides written by
+// hand) with the building of their day.
+func withBuilding(groups []schedule.GroupDay, building int) []schedule.GroupDay {
+	out := slices.Clone(groups)
+	for i := range out {
+		lessons := slices.Clone(out[i].Lessons)
+		for j := range lessons {
+			if lessons[j].Building == 0 {
+				lessons[j].Building = building
+			}
+		}
+		out[i].Lessons = lessons
+	}
+	return out
 }
 
 func filterGroup(groups []schedule.GroupDay, name string) []schedule.GroupDay {

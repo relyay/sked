@@ -1,3 +1,7 @@
 version: 1
 bundleID: ru.vksit.schedule
 infoPath: Info.plist
+# Main-bundle localizations; without them iOS treats the app as English-only.
+resources:
+  - AppResources/ru.lproj
+  - AppResources/en.lproj

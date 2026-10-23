@@ -53,7 +53,10 @@ func New(sources []Source, st *store.Store, log *slog.Logger) *Updater {
 	for _, src := range sources {
 		s := Status{Source: src.Name}
 		if snap, ok := st.Snapshot(src.Name); ok {
-			src.Fetcher.Remember(snap.SourceSHA256)
+			// A snapshot from an older parser is re-parsed from the same PDF.
+			if snap.ParserVersion == parser.Version {
+				src.Fetcher.Remember(snap.SourceSHA256)
+			}
 			s.Building, s.LastSuccess, s.LastChange = snap.Building, snap.ParsedAt, snap.ParsedAt
 			s.Days, s.Warnings = len(snap.Days), len(snap.Warnings)
 		}
@@ -152,6 +155,7 @@ func (u *Updater) refreshSource(ctx context.Context, src Source, force bool) err
 		ParsedAt:       now,
 		SourceModified: doc.LastModified,
 		SourceSHA256:   doc.SHA256,
+		ParserVersion:  parser.Version,
 		Days:           res.Days,
 		Warnings:       res.Warnings,
 	}

@@ -130,7 +130,40 @@ private let days = [monday, saturday, friday]
     }
 }
 
+@Suite struct FirstStartTests {
+    @Test func mixedDayUsesFirstInPersonPair() {
+        // Saturday of ИСП-225ис: remote pairs 1–2, PE in person from 11:50.
+        let lessons = [
+            Lesson(pair: 1, start: "09:00", subject: "ПОПД", isRemote: true, timeSource: "bells"),
+            Lesson(pair: 2, start: "10:40", subject: "ПОПД", isRemote: true, timeSource: "bells"),
+            Lesson(pair: 3, start: "11:50", subject: "Физ. культура", room: "СЗ/2", timeSource: "startsAt"),
+        ]
+        let first = ScheduleQuery.firstStart(of: lessons)
+        #expect(first?.lesson.start == "11:50")
+        #expect(first?.inPerson == true)
+    }
+
+    @Test func allRemoteUsesFirstPair() {
+        let lessons = [
+            Lesson(pair: 2, start: "10:10", subject: "ОСиС", isRemote: true),
+            Lesson(pair: 1, start: "08:30", subject: "ОСиС", isRemote: true),
+        ]
+        #expect(ScheduleQuery.firstStart(of: lessons)?.lesson.pair == 1)
+        #expect(ScheduleQuery.firstStart(of: lessons)?.inPerson == false)
+    }
+
+    @Test func allInPersonUsesFirstPair() {
+        let lessons = [Lesson(pair: 2, start: "10:10", subject: "ПОПД", room: "24/1")]
+        #expect(ScheduleQuery.firstStart(of: lessons)?.inPerson == false)
+    }
+}
+
 @Suite struct BuildingTests {
+    @Test func zeroBuildingFallsBackToDay() {
+        #expect(Lesson(pair: 1, building: 0, start: "08:30", subject: "X").building(or: 2) == 2)
+        #expect(Lesson(pair: 1, building: 1, start: "08:30", subject: "X").building(or: 2) == 1)
+    }
+
     @Test func buildingComesFromLessons() {
         let day = Day(date: "2026-10-24", building: 1, groups: [
             GroupDay(group: "ИСП-225ис", lessons: [
@@ -154,7 +187,6 @@ private let days = [monday, saturday, friday]
         """#
         let r = try JSONDecoder.vksit.decode(ScheduleResponse.self, from: Data(json.utf8))
         #expect(r.days[0].groups[0].lessons[0].pairLabel == "1–6")
-        #expect(r.days[0].groups[0].lessons[0].isTimeApproximate)
         #expect(r.days[0].groups[0].notes?[0].kind == .other)
         #expect(r.days[0].groups[0].lessons[0].building == 2)
         #expect(abs(r.parsedAt.timeIntervalSince1970 - 1_792_746_649.316) < 0.01)

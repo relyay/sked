@@ -1,0 +1,5 @@
+/* The main bundle must contain an .lproj for every language, otherwise iOS
+   runs the app in English: Locale.current, dates, durations and system
+   controls (Search, Cancel, Back) ignore the Russian device language. */
+"CFBundleDisplayName" = "ВКСИТ";
+"NSLocalNetworkUsageDescription" = "Приложение загружает расписание с сервера колледжа в локальной сети.";

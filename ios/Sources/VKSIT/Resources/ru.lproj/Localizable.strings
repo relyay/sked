@@ -32,10 +32,8 @@
 "day.tomorrow" = "завтра";
 "countdown.in %@" = "начнётся через %@";
 "lesson.pairNumber %@" = "%@ пара";
-"lesson.pairShort" = "пара";
 "lesson.remote" = "дистант";
 "lesson.room %@" = "каб. %@";
-"a11y.approximateTime %@" = "примерно %@, время в расписании не указано";
 "a11y.loading" = "Загрузка расписания";
 
 /* Onboarding */
@@ -59,6 +57,7 @@
 "home.nextDay" = "Следующий учебный день";
 "home.tomorrowFree" = "Завтра пар нет";
 "home.tomorrowWeekday %@" = "Завтра (%@)";
+"home.firstInPersonAt %@" = "очная в %@";
 "home.firstAt %@" = "первая в %@";
 "home.noNextDay" = "Следующих дней в расписании пока нет";
 "home.startsAt %@" = "Занятия начинаются с %@";
@@ -73,7 +72,10 @@
 "schedule.noDaysHint" = "Колледж ещё не опубликовал следующие дни.";
 
 /* Profile */
-"profile.user" = "Пользователь";
+"profile.study" = "Учёба";
+"profile.data" = "Данные";
+"profile.about" = "О приложении";
+"profile.editNameHint" = "Изменить ФИО";
 "profile.fullName" = "ФИО";
 "profile.group" = "Группа";
 "profile.subgroup" = "Подгруппа";
@@ -98,5 +100,5 @@
 "server.emptyHost" = "Введите адрес сервера";
 "server.invalidHost" = "Адрес не должен содержать пробелов и пути";
 "server.invalidPort" = "Порт — число от 1 до 65535";
-"server.resetDefault" = "Вернуть адрес по умолчанию";
+"server.resetDefault" = "Сбросить адрес";
 "server.footer" = "Новый адрес сразу используется для всех запросов.";

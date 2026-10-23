@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Build artifacts: `just server` → `dist/vksitd`, `just ios` → `dist/VKSIT.ipa` (release, unsigned; `xtool install` signs).
+
 Schedule app for VKSIT college students: a Go server (`server/`) parses the college's schedule PDFs and serves JSON; an iOS 26 SwiftUI client (`ios/`, built on Linux with xtool) consumes it. The client never touches the PDFs or rasp.vksit.ru. Full design, data model and API contract: `docs/ARCHITECTURE.md` — keep it in sync when the JSON shape or endpoints change.
 
 ## iOS commands (run in `ios/`)
@@ -30,7 +32,7 @@ Server listens on `0.0.0.0:1984` by default; the iOS client defaults to `http://
 
 ## Server architecture
 
-Pipeline: `updater` (2-min ticker) → `source.Fetcher` (conditional GET, then sha256 of body decides "changed") → `pdfx.Read` → `parser.Parse` → `store.Update` → `api` serves `store.View` (snapshot + overrides). On fetch/parse failure the last snapshot keeps being served; a failed parse calls `Fetcher.Forget()` so the same bytes are retried.
+Pipeline: `updater` (2-min ticker) → `source.Fetcher` (conditional GET, then sha256 of body decides "changed") → `pdfx.Read` → `parser.Parse` → `store.Update` → `api` serves `store.Views` (snapshots + overrides). On fetch/parse failure the last snapshot keeps being served; a failed parse calls `Fetcher.Forget()` so the same bytes are retried. Bump `parser.Version` whenever parser output changes: stored snapshots with another version are re-parsed on start even if the PDF is unchanged.
 
 Facts about the source PDFs that drive the parser design (verified on `testdata/*.pdf`, 23.10.2026):
 - Building number comes from the page header «N КОРПУС», not the file name: `npo.pdf` is building **2**, `spo.pdf` is building **1**.
@@ -39,7 +41,7 @@ Facts about the source PDFs that drive the parser design (verified on `testdata/
 - Excel lets text overflow into empty neighbouring cells, so text alone can't distinguish a whole-group lesson (merged cell) from a subgroup-1-only lesson. `pdfx` is a custom content-stream interpreter (on top of `ledongthuc/pdf` for object/ToUnicode decoding only) that yields text runs with their **origin point** plus ruling-line segments; `parser` rebuilds the grid (pair rows × subgroup columns) and union-finds cells across missing borders — horizontally (merged subgroups/groups) and vertically (multi-pair cells → `Lesson.PairTo`).
 - Content-stream order is not visual order (pair numbers appear 6→1); always sort by coordinates.
 - Cell text is classified by shape in `parser/cell.go` (room, «Д» = remote, teacher «Фамилия И.О.», lunch / «Занятия начинаются с» notes, rest = subject). Annotations split across runs are re-joined there.
-- Some pages (remote Saturdays) have no bell times. `parser/times.go` fills them from the most common times of the same PDF (`timeSource: "bells"`) and, for in-person pairs with a «Занятия начинаются с» note, shifts them to that start (`timeSource: "startsAt"`). The client must show these as approximate (≈). Never invent data beyond this.
+- Some pages (remote Saturdays) have no bell times. `parser/times.go` fills them from the most common times of the same PDF (`timeSource: "bells"`) and, for in-person pairs with a «Занятия начинаются с» note, shifts them to that start (`timeSource: "startsAt"`). The client shows them like any other time (no "≈", per product decision); on mixed days the home screen's "first at" uses the first in-person pair (`ScheduleQuery.firstStart`). Never invent data beyond this.
 - Anything unrecognised goes into `Result.Warnings` (logged, persisted in the snapshot, counted in `/health`). `TestNoUnrecognisedCells` fails on any warning other than missing bell times — when a new PDF breaks it, add the new real PDF to `testdata/` and extend the classifier.
 
 Manual overrides: `<data>/overrides/<npo|spo>.json` (`{"days":[{date, group, lessons, notes}]}`) replace a group's day wholesale, win over the parser, and are reread on every tick.
@@ -52,5 +54,5 @@ Manual overrides: `<data>/overrides/<npo|spo>.json` (`{"days":[{date, group, les
 - SwiftData's `@Model` macro is unavailable with xtool on Linux (the SDK's macro server lacks `SwiftDataMacros`), so the offline cache is JSON files (`Storage/ScheduleCache.swift`). `@Observable` works.
 - Strings live in `Bundle.module`, not the main bundle: always localize via `L("key \(arg)")` (`Shared/Localization.swift`) and add the key to both `Resources/ru.lproj` and `en.lproj`. Interpolated `Int` → `%lld`, `String` → `%@` in the key; plurals go in `.stringsdict`.
 - Liquid Glass via iOS 26 APIs (`glassEffect`, `GlassEffectContainer`, `.buttonStyle(.glass/.glassProminent)`, `tabBarMinimizeBehavior`); deployment target is iOS 26, iPhone only (`Info.plist`).
-- Lessons with `timeSource` set must render with "≈" (`Format.timeRange`).
+- The main bundle needs `AppResources/<lang>.lproj` (listed under `resources` in `xtool.yml`); without them iOS runs the app as English-only and `Locale.current`, dates and system controls ignore the Russian device language.
 - `UITests/` is XCUITest for a Mac/Xcode run; it is not part of the SwiftPM package. Accessibility identifiers it relies on: `onboarding.*`, `retry`, `home.currentLesson`. The app honours `-uitest-reset` and `VKSIT_SERVER_HOST`/`VKSIT_SERVER_PORT`.

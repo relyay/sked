@@ -5,14 +5,9 @@ import VKSITCore
 enum Format {
     static var locale: Locale { .autoupdatingCurrent }
 
-    static func startTime(_ lesson: Lesson) -> String {
-        (lesson.isTimeApproximate ? "≈ " : "") + lesson.start
-    }
-
-    /// "08:30 – 10:00", prefixed with "≈" when the PDF had no time.
+    /// "08:30 – 10:00".
     static func timeRange(_ lesson: Lesson) -> String {
-        let range = lesson.end.map { "\(lesson.start) – \($0)" } ?? lesson.start
-        return lesson.isTimeApproximate ? "≈ " + range : range
+        lesson.end.map { "\(lesson.start) – \($0)" } ?? lesson.start
     }
 
     /// "каб. 15/2 · Петров С.И." or "дистант · Петров С.И.".
@@ -28,13 +23,7 @@ enum Format {
     }
 
     static func accessibilityLabel(_ lesson: Lesson) -> String {
-        var parts = [L("lesson.pairNumber \(lesson.pairLabel)"), lesson.subject]
-        if lesson.isTimeApproximate {
-            parts.append(L("a11y.approximateTime \(timeRange(lesson).replacingOccurrences(of: "≈ ", with: ""))"))
-        } else {
-            parts.append(timeRange(lesson))
-        }
-        parts.append(place(lesson))
+        var parts = [L("lesson.pairNumber \(lesson.pairLabel)"), lesson.subject, timeRange(lesson), place(lesson)]
         if let subgroup = lesson.subgroup { parts.append(L("subgroup.badge \(subgroup)")) }
         return parts.filter { !$0.isEmpty }.joined(separator: ", ")
     }

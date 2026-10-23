@@ -41,8 +41,11 @@ public struct Lesson: Codable, Hashable, Sendable, Identifiable {
 
     public var id: String { "\(pair)-\(subgroup ?? 0)-\(subject)" }
 
-    /// The time is not printed in the PDF and is shown with "≈".
-    public var isTimeApproximate: Bool { timeSource != nil }
+    /// The lesson's building, or `fallback` when the server sent none (or 0).
+    public func building(or fallback: Int) -> Int {
+        if let building, building > 0 { return building }
+        return fallback
+    }
 
     /// "2" or "1–6" for merged cells.
     public var pairLabel: String {

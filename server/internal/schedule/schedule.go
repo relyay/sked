@@ -103,6 +103,7 @@ type Snapshot struct {
 	// SourceModified is the Last-Modified of the PDF the newest days came from.
 	SourceModified time.Time `json:"sourceModified"`
 	SourceSHA256   string    `json:"sourceSha256"`
+	ParserVersion  int       `json:"parserVersion"`
 	Days           []Day     `json:"days"`
 	Warnings       []string  `json:"warnings,omitempty"`
 }

@@ -9,12 +9,25 @@ struct ProfileView: View {
         NavigationStack {
             Form {
                 if let profile = model.profile {
-                    userSection(profile)
+                    Section {
+                        NavigationLink {
+                            NameEditor(profile: profile)
+                        } label: {
+                            ProfileCard(profile: profile)
+                        }
+                    }
+                    studySection(profile)
                 }
                 ServerSection()
                 dataSection
-                Section {
+                Section(L("profile.about")) {
                     LabeledContent(L("profile.version"), value: appVersion)
+                }
+                if model.profile != nil {
+                    Section {
+                        Button(L("profile.reset"), role: .destructive) { confirmsReset = true }
+                            .frame(maxWidth: .infinity)
+                    }
                 }
             }
             .scrollContentBackground(.hidden)
@@ -28,29 +41,23 @@ struct ProfileView: View {
         }
     }
 
-    private func userSection(_ profile: Profile) -> some View {
-        Section(L("profile.user")) {
-            NavigationLink {
-                NameEditor(profile: profile)
-            } label: {
-                LabeledContent(L("profile.fullName"), value: profile.fullName)
-            }
+    private func studySection(_ profile: Profile) -> some View {
+        Section(L("profile.study")) {
             NavigationLink {
                 GroupEditor(profile: profile)
             } label: {
-                LabeledContent(L("profile.group"), value: "\(profile.group) · \(L("course.label \(profile.course)"))")
+                LabeledContent(L("profile.group"), value: profile.group)
             }
             NavigationLink {
                 SubgroupEditor(profile: profile)
             } label: {
                 LabeledContent(L("profile.subgroup"), value: subgroupName(profile.subgroup))
             }
-            Button(L("profile.reset"), role: .destructive) { confirmsReset = true }
         }
     }
 
     private var dataSection: some View {
-        Section {
+        Section(L("profile.data")) {
             LabeledContent(L("profile.dataUpdated")) {
                 if let fetchedAt = model.dataFetchedAt {
                     Text(fetchedAt, format: .dateTime.day().month().hour().minute())
@@ -86,6 +93,44 @@ struct ProfileView: View {
         let version = info?["CFBundleShortVersionString"] as? String ?? "—"
         let build = info?["CFBundleVersion"] as? String
         return build.map { "\(version) (\($0))" } ?? version
+    }
+}
+
+/// The user card at the top of the profile: initials, name, group and subgroup.
+private struct ProfileCard: View {
+    let profile: Profile
+    @ScaledMetric(relativeTo: .title) private var avatarSize = 64
+
+    private var initials: String {
+        let words = profile.fullName.split(separator: " ")
+        // "Фамилия Имя Отчество" → "ИФ"; a single word → its first letter.
+        let letters = words.count > 1 ? [words[1], words[0]] : Array(words.prefix(1))
+        return letters.compactMap(\.first).map(String.init).joined().uppercased()
+    }
+
+    var body: some View {
+        HStack(spacing: 16) {
+            Text(initials)
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(width: avatarSize, height: avatarSize)
+                .background(Circle().fill(Color.accentColor.gradient))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(profile.fullName)
+                    .font(.title3.weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("\(profile.group) · \(L("course.label \(profile.course)"))")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                if profile.subgroup != .unspecified {
+                    SubgroupBadge(subgroup: profile.subgroup.rawValue)
+                }
+            }
+        }
+        .padding(.vertical, 8)
+        .accessibilityElement(children: .combine)
+        .accessibilityHint(L("profile.editNameHint"))
     }
 }
 
@@ -134,7 +179,6 @@ struct ServerSection: View {
                 host = ServerAddress.default.host
                 port = String(ServerAddress.default.port)
             }
-            .font(.footnote)
         } header: {
             Text(L("profile.server"))
         } footer: {

@@ -84,7 +84,7 @@ private struct CurrentLessonCard: View {
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)
-            Text(headline(s.lesson, building: s.lesson.building ?? s.day.building))
+            Text(headline(s.lesson, building: s.lesson.building(or: s.day.building)))
                 .font(.title3.weight(.semibold))
                 .fixedSize(horizontal: false, vertical: true)
             if let teacher = s.lesson.teacher {
@@ -107,7 +107,7 @@ private struct CurrentLessonCard: View {
 
     /// "2 пара · ОБиЗР · 14:30 · корпус 2, каб. 15/2".
     private func headline(_ lesson: Lesson, building: Int) -> String {
-        var parts = [L("lesson.pairNumber \(lesson.pairLabel)"), lesson.subject, Format.startTime(lesson)]
+        var parts = [L("lesson.pairNumber \(lesson.pairLabel)"), lesson.subject, lesson.start]
         if lesson.isRemote {
             parts.append(L("lesson.remote"))
         } else if let room = lesson.room {
@@ -162,8 +162,8 @@ private struct NextDayCard: View {
         let title = next.isTomorrow ? L("home.tomorrowWeekday \(weekday)") : Format.shortDay(next.day)
         let buildings = ScheduleQuery.buildings(of: next.lessons, fallback: next.day.building)
         var parts = [title, Format.lessonCount(next.lessons.count), Format.buildings(buildings)]
-        if let first = next.lessons.min(by: { $0.start < $1.start }), !first.start.isEmpty {
-            parts.append(L("home.firstAt \(Format.startTime(first))"))
+        if let first = ScheduleQuery.firstStart(of: next.lessons) {
+            parts.append(first.inPerson ? L("home.firstInPersonAt \(first.lesson.start)") : L("home.firstAt \(first.lesson.start)"))
         }
         return parts.joined(separator: " · ")
     }

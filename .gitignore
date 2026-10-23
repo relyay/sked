@@ -3,3 +3,5 @@ server/data/
 .build/
 xtool/
 *.ipa
+dist/*
+!dist/.gitkeep

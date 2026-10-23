@@ -100,15 +100,8 @@ struct LessonRow: View {
     var isHighlighted = false
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            VStack(spacing: 2) {
-                Text(lesson.pairLabel)
-                    .font(.title3.weight(.bold).monospacedDigit())
-                Text(L("lesson.pairShort"))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
-            .frame(minWidth: 36)
+        HStack(alignment: .center, spacing: 14) {
+            PairNumber(label: lesson.pairLabel)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(Format.timeRange(lesson))
@@ -139,19 +132,41 @@ struct LessonRow: View {
     }
 }
 
-/// Compact row for the week view.
+/// The pair number in a glass circle, centred against the row.
+struct PairNumber: View {
+    let label: String
+    @ScaledMetric(relativeTo: .title3) private var size = 44
+
+    var body: some View {
+        Text(label)
+            .font(.title3.weight(.bold).monospacedDigit())
+            .minimumScaleFactor(0.6)
+            .lineLimit(1)
+            .frame(minWidth: size, minHeight: size)
+            .padding(.horizontal, label.count > 2 ? 6 : 0)
+            .glassEffect(.regular.tint(Color.accentColor.opacity(0.2)), in: .capsule)
+            .accessibilityHidden(true)
+    }
+}
+
+/// Compact row for the week view: number and start time form a column
+/// centred against the subject and place lines.
 struct CompactLessonRow: View {
     let lesson: Lesson
     var isDimmed = false
+    @ScaledMetric(relativeTo: .subheadline) private var columnWidth = 48
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(lesson.pairLabel)
-                .font(.subheadline.weight(.bold).monospacedDigit())
-                .frame(minWidth: 28, alignment: .leading)
-            Text(Format.startTime(lesson))
-                .font(.subheadline.monospacedDigit())
-                .foregroundStyle(.secondary)
+        HStack(alignment: .center, spacing: 12) {
+            VStack(spacing: 2) {
+                Text(lesson.pairLabel)
+                    .font(.subheadline.weight(.bold).monospacedDigit())
+                Text(lesson.start)
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+            .frame(width: columnWidth)
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(lesson.subject)
                     .font(.subheadline.weight(.semibold))
@@ -164,6 +179,7 @@ struct CompactLessonRow: View {
                 SubgroupBadge(subgroup: subgroup)
             }
         }
+        .padding(.vertical, 4)
         .opacity(isDimmed ? 0.5 : 1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Format.accessibilityLabel(lesson))

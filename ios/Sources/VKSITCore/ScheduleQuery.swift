@@ -110,8 +110,19 @@ public struct ScheduleQuery: Sendable {
     }
 
     public static func buildings(of lessons: [Lesson], fallback: Int) -> [Int] {
-        let set = Set(lessons.map { $0.building ?? fallback })
+        let set = Set(lessons.map { $0.building(or: fallback) })
         return set.isEmpty ? [fallback] : set.sorted()
+    }
+
+    /// When the user has to be at college: the first in-person pair if the day
+    /// has one (remote pairs on mixed days carry no printed time), otherwise
+    /// the first pair.
+    public static func firstStart(of lessons: [Lesson]) -> (lesson: Lesson, inPerson: Bool)? {
+        let timed = lessons.filter { !$0.start.isEmpty }.sorted { ($0.start, $0.pair) < ($1.start, $1.pair) }
+        if timed.contains(where: \.isRemote), let inPerson = timed.first(where: { !$0.isRemote }) {
+            return (inPerson, true)
+        }
+        return timed.first.map { ($0, false) }
     }
 
     /// "Занятия начинаются с …" for the user's subgroup.

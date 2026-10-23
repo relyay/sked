@@ -22,6 +22,11 @@ import (
 	"github.com/relya/vksit/server/internal/schedule"
 )
 
+// Version identifies the parser's output shape. Bump it whenever parsing
+// changes what a snapshot contains: stored snapshots with another version
+// are re-parsed even if the PDF is unchanged.
+const Version = 2
+
 // Result is the parse outcome for one PDF.
 type Result struct {
 	Building int

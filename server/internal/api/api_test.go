@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -201,6 +202,47 @@ func TestGroupAcrossBuildings(t *testing.T) {
 	}
 	if !found || len(groups.Groups) != 36 {
 		t.Errorf("all groups: %d, found=%v", len(groups.Groups), found)
+	}
+}
+
+// A snapshot written by an older parser must be re-parsed on start even
+// though the PDF did not change.
+func TestOldParserSnapshotIsReparsed(t *testing.T) {
+	dir := t.TempDir()
+	e := newEnv(t, dir)
+	e.updater.Refresh(context.Background(), false)
+
+	path := filepath.Join(dir, "spo.json")
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var snap schedule.Snapshot
+	json.Unmarshal(raw, &snap)
+	snap.ParserVersion = 1
+	for di := range snap.Days {
+		for gi := range snap.Days[di].Groups {
+			for li := range snap.Days[di].Groups[gi].Lessons {
+				snap.Days[di].Groups[gi].Lessons[li].Building = 0
+			}
+		}
+	}
+	raw, _ = json.Marshal(snap)
+	os.WriteFile(path, raw, 0o644)
+
+	e2 := newEnv(t, dir)
+	e2.updater.Refresh(context.Background(), false)
+	if got, _ := os.ReadFile(path); !strings.Contains(string(got), `"parserVersion": 2`) {
+		t.Error("old snapshot was not re-parsed")
+	}
+	var resp scheduleResponse
+	e2.get("/schedule?group=ДО-324", nil, &resp)
+	for _, d := range resp.Days {
+		for _, l := range d.Groups[0].Lessons {
+			if l.Building != 1 {
+				t.Fatalf("%s: building = %d", d.Date, l.Building)
+			}
+		}
 	}
 }
 
