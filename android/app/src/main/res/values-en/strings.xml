@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_home">Home</string>
+    <string name="tab_schedule">Schedule</string>
+    <string name="tab_profile">Profile</string>
+
+    <string name="action_retry">Retry</string>
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+
+    <string name="error_cannot_connect">Can\'t connect to server %1$s</string>
+    <string name="error_timed_out">The server is taking too long to respond</string>
+    <string name="error_offline">No internet connection</string>
+    <string name="error_not_loaded_yet">The server hasn\'t loaded the schedule yet</string>
+    <string name="error_server">The server returned an error (%1$d)</string>
+    <string name="error_server_message">Server error (%1$d): %2$s</string>
+    <string name="error_bad_response">The server sent an unexpected response</string>
+    <string name="error_recovery_check_server">Check your internet connection. If it works, the server is temporarily unavailable — try again later.</string>
+    <string name="error_recovery_offline">Turn on Wi‑Fi or mobile data and try again.</string>
+    <string name="error_recovery_retry_later">Try again in a minute.</string>
+    <string name="stale_title">Showing data from %1$s</string>
+
+    <string name="building_short">building %1$d</string>
+    <string name="building_many">buildings %1$s</string>
+    <string name="course_label">Course %1$d</string>
+    <string name="course_other">Other groups</string>
+    <string name="subgroup_badge">Subgroup %1$d</string>
+    <string name="subgroup_unspecified">Not set</string>
+    <string name="subgroup_footer">If your group is split in half (left/right column in the schedule). The other subgroup\'s classes are hidden.</string>
+    <string name="day_today">today</string>
+    <string name="day_tomorrow">tomorrow</string>
+    <string name="countdown_in">starts in %1$s</string>
+    <string name="duration_minutes">%1$d min</string>
+    <string name="duration_hours_minutes">%1$d hr %2$d min</string>
+    <string name="duration_days_hours">%1$d d %2$d hr</string>
+    <string name="lesson_pair_number">Class %1$s</string>
+    <string name="lesson_remote">remote</string>
+    <string name="lesson_room">room %1$s</string>
+    <string name="lunch_range">Lunch %1$s–%2$s</string>
+    <string name="lunch_from">Lunch from %1$s</string>
+    <string name="a11y_loading">Loading schedule</string>
+
+    <string name="onboarding_title">Welcome</string>
+    <string name="onboarding_name_placeholder">e.g. Ivanov Ivan Ivanovich</string>
+    <string name="onboarding_name_footer">Your name stays on this phone and is never sent anywhere.</string>
+    <string name="onboarding_name_required">Enter your name</string>
+    <string name="onboarding_choose">Choose</string>
+    <string name="onboarding_save">Save and start</string>
+    <string name="group_search">Search groups</string>
+    <string name="group_not_found">Nothing found</string>
+
+    <string name="home_greeting">Hi, %1$s</string>
+    <string name="home_next_lesson">Next class</string>
+    <string name="home_ongoing">in progress</string>
+    <string name="home_finished">No more classes today — take a rest 🎉</string>
+    <string name="home_no_lessons_today">No classes today</string>
+    <string name="home_building_room">building %1$d, room %2$s</string>
+    <string name="home_next_day">Next school day</string>
+    <string name="home_tomorrow_free">No classes tomorrow</string>
+    <string name="home_tomorrow_weekday">Tomorrow (%1$s)</string>
+    <string name="home_first_at">first at %1$s</string>
+    <string name="home_no_next_day">No upcoming days in the schedule yet</string>
+    <string name="home_starts_at">Classes start at %1$s</string>
+
+    <string name="schedule_day">Day</string>
+    <string name="schedule_week">Week</string>
+    <string name="schedule_next">Next</string>
+    <string name="schedule_empty">No classes</string>
+    <string name="schedule_no_days">Schedule has ended</string>
+    <string name="schedule_no_days_hint">The college hasn\'t published the next days yet.</string>
+
+    <string name="profile_full_name">Full name</string>
+    <string name="profile_group">Group</string>
+    <string name="profile_subgroup">Subgroup</string>
+    <string name="profile_edit">Student profile</string>
+    <string name="profile_edit_hint">Edit name, group and subgroup</string>
+    <string name="profile_data">Data</string>
+    <string name="profile_data_updated">Data updated</string>
+    <string name="profile_server_parsed">Server read the PDF</string>
+    <string name="profile_never">not yet</string>
+    <string name="profile_refresh_now">Refresh now</string>
+    <string name="profile_about">About</string>
+    <string name="profile_version">App version</string>
+    <string name="profile_reset">Reset profile</string>
+    <string name="profile_reset_confirm">Reset profile?</string>
+    <string name="profile_reset_message">Your name, group and saved schedule will be removed from this phone.</string>
+
+    <plurals name="lessons_count">
+        <item quantity="one">%1$d class</item>
+        <item quantity="other">%1$d classes</item>
+    </plurals>
+</resources>

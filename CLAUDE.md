@@ -2,9 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Deploy: `git clone`, set the domain on the first line of `Caddyfile`, `podman compose up -d` (compose builds `server/Dockerfile` itself; no just target for the server). Stack: `sked` (only `expose`d) + `sked-caddy` (TLS via Let's Encrypt, proxies to `sked:1984`). Data lives in the `sked-data` named volume, not a bind mount, because rootless podman can't map host UIDs; `/data` is chowned to 65532 in the image so a fresh volume is writable. Deployment steps and host prerequisites are in `docs/ARCHITECTURE.md` (Deployment). Keep `compose.yaml` compatible with podman-compose 1.0.x (Ubuntu's): no compose `healthcheck` (it is wrapped in `/bin/sh -c`, absent in distroless), and updates need `down` before `up` because it won't recreate existing containers. `just ios` → `dist/Sked.ipa` (release, unsigned; `xtool install` signs).
+Deploy: `git clone`, set the domain on the first line of `Caddyfile`, `podman compose up -d` (compose builds `server/Dockerfile` itself; no just target for the server). Stack: `sked` (only `expose`d) + `sked-caddy` (TLS via Let's Encrypt, proxies to `sked:1984`). Data lives in the `sked-data` named volume, not a bind mount, because rootless podman can't map host UIDs; `/data` is chowned to 65532 in the image so a fresh volume is writable. Deployment steps and host prerequisites are in `docs/ARCHITECTURE.md` (Deployment). Keep `compose.yaml` compatible with podman-compose 1.0.x (Ubuntu's): no compose `healthcheck` (it is wrapped in `/bin/sh -c`, absent in distroless), and updates need `down` before `up` because it won't recreate existing containers. `just ios` → `dist/Sked.ipa` (release, unsigned; `xtool install` signs). `just android` → runs the Android unit tests and builds `dist/Sked.apk` (release, signed with the debug key).
 
-**Sked** — schedule app for students of the VKSIT college: a Go server (`server/`) parses the college's schedule PDFs and serves JSON; an iOS 26 SwiftUI client (`ios/`, built on Linux with xtool) consumes it. The client never touches the PDFs or rasp.vksit.ru. Full design, data model and API contract: `docs/ARCHITECTURE.md` — keep it in sync when the JSON shape or endpoints change.
+**Sked** — schedule app for students of the VKSIT college: a Go server (`server/`) parses the college's schedule PDFs and serves JSON; an iOS 26 SwiftUI client (`ios/`, built on Linux with xtool) and an Android Jetpack Compose client (`android/`) consume it. The two clients mirror each other: same screens, rules, strings and tests — change both together. The client never touches the PDFs or rasp.vksit.ru. Full design, data model and API contract: `docs/ARCHITECTURE.md` — keep it in sync when the JSON shape or endpoints change.
 
 ## iOS commands (run in `ios/`)
 
@@ -57,3 +57,19 @@ Manual overrides: `<data>/overrides/<npo|spo>.json` (`{"days":[{date, group, les
 - Format dates only through `Format` (`Format.locale` is derived from `Bundle.module.preferredLocalizations`, not `Locale.current`, so dates always match the UI language); the root view also sets `.environment(\.locale, Format.locale)`.
 - The main bundle needs `AppResources/<lang>.lproj` (listed under `resources` in `xtool.yml`); without them iOS runs the app as English-only and `Locale.current`, dates and system controls ignore the Russian device language.
 - `UITests/` is XCUITest for a Mac/Xcode run; it is not part of the SwiftPM package. Accessibility identifiers it relies on: `onboarding.*`, `retry`, `home.currentLesson`. The app honours `-uitest-reset` and the `SKED_SERVER_URL` launch environment (test-only override of the server URL).
+
+## Android commands (run in `android/`, `ANDROID_HOME` defaults to `~/Android/Sdk` in the Justfile)
+
+```sh
+./gradlew :app:testDebugUnitTest                                   # core + JSON tests (JVM)
+./gradlew :app:testDebugUnitTest --tests 'ru.sked.app.core.NextSchoolDayTest'
+./gradlew :app:assembleDebug -PskedServerUrl=http://10.0.2.2:1984  # debug build against a local skedd from the emulator
+```
+
+## Android architecture
+
+- Versions follow `gradle/libs.versions.toml` (AGP 9 with built-in Kotlin, Compose BOM, Material 3); no third-party libraries — networking is `HttpURLConnection` + `HttpResponseCache` (ETag/304), JSON is `org.json`, the profile is `SharedPreferences`, the offline cache is a JSON file.
+- `ru.sked.app.core` is the Kotlin twin of `SkedCore` (pure Kotlin + `java.time`, no Android APIs) and `app/src/test` mirrors `ios/Tests/SkedCoreTests`; keep rules identical across the two.
+- `BuildConfig.SERVER_URL` is `https://rasp.relya.ru`; only debug builds may override it (`-PskedServerUrl`), and only debug's `network_security_config` allows cleartext, for `10.0.2.2`/`localhost`.
+- UI is Material 3 only: `NavigationBar` tabs, `TopAppBar`s, cards, `SegmentedButton`, `FilterChip`, `PullToRefreshBox`, dynamic color. Sub-screens (profile editor, group picker) are state-driven with `BackHandler`, no navigation library.
+- Russian strings are the default `values/`, English is `values-en/` (per-app language via `locales_config`); format dates with the helpers in `ui/Format.kt`, which use the resources' locale.

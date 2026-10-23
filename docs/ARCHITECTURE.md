@@ -4,7 +4,7 @@
 
 ```
 ┌──────────────────────┐   HTTP/JSON (ETag, 304)   ┌──────────────────────────┐   conditional GET   ┌────────────────────┐
-│ iOS client (SwiftUI) │ ────────────────────────▶ │ skedd (Go)               │ ──────────────────▶ │ rasp.vksit.ru      │
+│ iOS / Android client │ ────────────────────────▶ │ skedd (Go)               │ ──────────────────▶ │ rasp.vksit.ru      │
 │  • profile (local)   │                           │  updater: 2-min tick     │   ETag / IMS /      │  npo.pdf, spo.pdf  │
 │  • snapshot cache    │ ◀──────────────────────── │  pdfx → parser → store   │   body sha256       └────────────────────┘
 │  • "next class"      │                           │  api: /health /schedule… │
@@ -69,6 +69,12 @@ ios/                 SwiftPM package + xtool.yml + Info.plist
     Resources/       ru.lproj, en.lproj (Localizable.strings + .stringsdict for "N classes")
   Tests/SkedCoreTests/   Swift Testing, runs on Linux
   UITests/           onboarding XCUITest (needs a Mac with Xcode)
+android/             Gradle project (AGP 9, Compose, Material 3)
+  app/src/main/kotlin/ru/sked/app/
+    core/            Kotlin twin of SkedCore: models, ScheduleQuery, CollegeClock, Profile validation
+    data/            ApiClient (HttpURLConnection, retries, HttpResponseCache), Json (org.json), Storage
+    ui/              AppViewModel, SkedApp (onboarding ↔ NavigationBar), Format, theme, components, screens
+  app/src/test/      JUnit tests mirroring ios/Tests/SkedCoreTests
 Caddyfile, compose.yaml  deployment (see below)
 ```
 
@@ -120,6 +126,14 @@ Status codes: `400` — invalid `building`/`date`; `404` — unknown building; `
 - The main bundle contains `AppResources/ru.lproj` and `en.lproj` (`resources` in `xtool.yml`). Without them iOS treats the app as English-only, and dates and system controls come out in English.
 - Data refreshes on launch, on return to the foreground, every 5 minutes, on pull-to-refresh and with the "Refresh now" button. On a network error the cache is shown with a "Showing data from …" banner. Without a cache, an error screen with "Retry" is shown.
 - The server address is hard-coded: `https://rasp.relya.ru` (`Server.production`). There is no server setting in the app and no ATS exceptions. Only UI tests override the address through the `SKED_SERVER_URL` environment variable. In production the server sits behind a TLS reverse proxy (Caddy → `skedd` on :1984).
+
+## Android client: decisions
+
+- Same screens, rules and strings as iOS, built only from Material 3 Compose components: `NavigationBar` (Home, Schedule, Profile), `LargeTopAppBar`/`TopAppBar`, `ElevatedCard`/`Card`, `SegmentedButton` (Day/Week, subgroup), `FilterChip` date chips, `ListItem`, `PullToRefreshBox`, `AlertDialog`. Dynamic color on Android 12+, light and dark themes, edge-to-edge.
+- No third-party libraries: `HttpURLConnection` with an installed `HttpResponseCache` (ETag → 304), `org.json`, `SharedPreferences`, a JSON file for the offline snapshot.
+- Russian is the default resource language, English is `values-en`; Android 13+ offers per-app language.
+- `BuildConfig.SERVER_URL` is `https://rasp.relya.ru`. Debug builds can point at a local server (`-PskedServerUrl=http://10.0.2.2:1984` from the emulator); cleartext HTTP is allowed only in debug and only for `10.0.2.2`/`localhost`.
+- `just android` runs the unit tests and writes `dist/Sked.apk` (release with R8, signed with the debug key so it installs; use your own key to publish).
 
 ## Acceptance checklist
 

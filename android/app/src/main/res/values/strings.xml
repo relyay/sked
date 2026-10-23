@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian is the default: the app is for a Russian college. English is in values-en. -->
+<resources>
+    <string name="app_name" translatable="false">Sked</string>
+
+    <string name="tab_home">Главная</string>
+    <string name="tab_schedule">Расписание</string>
+    <string name="tab_profile">Профиль</string>
+
+    <string name="action_retry">Повторить</string>
+    <string name="action_back">Назад</string>
+    <string name="action_cancel">Отмена</string>
+
+    <string name="error_cannot_connect">Не удалось подключиться к серверу %1$s</string>
+    <string name="error_timed_out">Сервер слишком долго не отвечает</string>
+    <string name="error_offline">Нет подключения к интернету</string>
+    <string name="error_not_loaded_yet">Сервер ещё не загрузил расписание</string>
+    <string name="error_server">Сервер ответил ошибкой (%1$d)</string>
+    <string name="error_server_message">Ошибка сервера (%1$d): %2$s</string>
+    <string name="error_bad_response">Сервер прислал непонятный ответ</string>
+    <string name="error_recovery_check_server">Проверьте подключение к интернету. Если оно есть, сервер временно недоступен — попробуйте позже.</string>
+    <string name="error_recovery_offline">Включите Wi‑Fi или мобильные данные и попробуйте снова.</string>
+    <string name="error_recovery_retry_later">Попробуйте ещё раз через минуту.</string>
+    <string name="stale_title">Показаны данные от %1$s</string>
+
+    <string name="building_short">корпус %1$d</string>
+    <string name="building_many">корпуса %1$s</string>
+    <string name="course_label">%1$d курс</string>
+    <string name="course_other">Другие группы</string>
+    <string name="subgroup_badge">%1$d подгруппа</string>
+    <string name="subgroup_unspecified">Не указана</string>
+    <string name="subgroup_footer">Если группа делится пополам (левая/правая колонка в расписании). Пары другой подгруппы не показываются.</string>
+    <string name="day_today">сегодня</string>
+    <string name="day_tomorrow">завтра</string>
+    <string name="countdown_in">начнётся через %1$s</string>
+    <string name="duration_minutes">%1$d мин</string>
+    <string name="duration_hours_minutes">%1$d ч %2$d мин</string>
+    <string name="duration_days_hours">%1$d д %2$d ч</string>
+    <string name="lesson_pair_number">%1$s пара</string>
+    <string name="lesson_remote">дистант</string>
+    <string name="lesson_room">каб. %1$s</string>
+    <string name="lunch_range">Обед %1$s–%2$s</string>
+    <string name="lunch_from">Обед с %1$s</string>
+    <string name="a11y_loading">Загрузка расписания</string>
+
+    <string name="onboarding_title">Знакомство</string>
+    <string name="onboarding_name_placeholder">Фамилия Имя Отчество</string>
+    <string name="onboarding_name_footer">ФИО хранится только на этом телефоне и никуда не отправляется.</string>
+    <string name="onboarding_name_required">Введите ФИО</string>
+    <string name="onboarding_choose">Выберите</string>
+    <string name="onboarding_save">Сохранить и начать</string>
+    <string name="group_search">Поиск группы</string>
+    <string name="group_not_found">Ничего не найдено</string>
+
+    <string name="home_greeting">Привет, %1$s</string>
+    <string name="home_next_lesson">Следующая пара</string>
+    <string name="home_ongoing">сейчас идёт</string>
+    <string name="home_finished">На сегодня пар больше нет — отдыхай 🎉</string>
+    <string name="home_no_lessons_today">Сегодня пар нет</string>
+    <string name="home_building_room">корпус %1$d, каб. %2$s</string>
+    <string name="home_next_day">Следующий учебный день</string>
+    <string name="home_tomorrow_free">Завтра пар нет</string>
+    <string name="home_tomorrow_weekday">Завтра (%1$s)</string>
+    <string name="home_first_at">первая в %1$s</string>
+    <string name="home_no_next_day">Следующих дней в расписании пока нет</string>
+    <string name="home_starts_at">Занятия начинаются с %1$s</string>
+
+    <string name="schedule_day">День</string>
+    <string name="schedule_week">Неделя</string>
+    <string name="schedule_next">Следующая</string>
+    <string name="schedule_empty">Пар нет</string>
+    <string name="schedule_no_days">Расписание закончилось</string>
+    <string name="schedule_no_days_hint">Колледж ещё не опубликовал следующие дни.</string>
+
+    <string name="profile_full_name">ФИО</string>
+    <string name="profile_group">Группа</string>
+    <string name="profile_subgroup">Подгруппа</string>
+    <string name="profile_edit">Профиль студента</string>
+    <string name="profile_edit_hint">Изменить ФИО, группу и подгруппу</string>
+    <string name="profile_data">Данные</string>
+    <string name="profile_data_updated">Данные обновлены</string>
+    <string name="profile_server_parsed">Сервер прочитал PDF</string>
+    <string name="profile_never">ещё нет</string>
+    <string name="profile_refresh_now">Обновить сейчас</string>
+    <string name="profile_about">О приложении</string>
+    <string name="profile_version">Версия приложения</string>
+    <string name="profile_reset">Сбросить профиль</string>
+    <string name="profile_reset_confirm">Сбросить профиль?</string>
+    <string name="profile_reset_message">ФИО, группа и сохранённое расписание будут удалены с телефона.</string>
+
+    <plurals name="lessons_count">
+        <item quantity="one">%1$d пара</item>
+        <item quantity="few">%1$d пары</item>
+        <item quantity="many">%1$d пар</item>
+        <item quantity="other">%1$d пары</item>
+    </plurals>
+</resources>
