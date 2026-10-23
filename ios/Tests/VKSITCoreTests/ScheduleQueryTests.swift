@@ -134,6 +134,27 @@ private let days = [monday, saturday, friday]
     }
 }
 
+@Suite struct LunchTests {
+    let day = Day(date: "2026-10-23", building: 1, groups: [
+        GroupDay(group: "ДО-324", lessons: [], notes: [
+            Note(kind: .lunch, text: "Обед 10:55-11:20", time: "10:55", endTime: "11:20", pair: 3, subgroup: 1),
+            Note(kind: .lunch, text: "Обед 10:55-11:20", time: "10:55", endTime: "11:20", pair: 5, subgroup: 2),
+            Note(kind: .lunch, text: "Обед 11:40-12:10", time: "11:40", endTime: "12:10", pair: 4, subgroup: 2),
+            Note(kind: .startsAt, text: "Занятия начинаются с 11:10", time: "11:10"),
+        ]),
+    ])
+
+    @Test func filtersBySubgroup() {
+        let q = ScheduleQuery(days: [day], group: "ДО-324", subgroup: .first)
+        #expect(q.lunches(on: day).map(\.time) == ["10:55"])
+    }
+
+    @Test func deduplicatesAcrossSubgroups() {
+        let q = ScheduleQuery(days: [day], group: "ДО-324", subgroup: .unspecified)
+        #expect(q.lunches(on: day).map(\.time) == ["10:55", "11:40"])
+    }
+}
+
 @Suite struct FirstStartTests {
     @Test func mixedDayUsesFirstInPersonPair() {
         // Saturday of ИСП-225ис: remote pairs 1–2, PE in person from 11:50.

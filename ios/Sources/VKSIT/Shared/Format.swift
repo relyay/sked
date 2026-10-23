@@ -22,6 +22,12 @@ enum Format {
         lesson.end.map { "\(lesson.start) – \($0)" } ?? lesson.start
     }
 
+    /// "Обед 10:55–11:20", or "Обед с 10:55" when the PDF gives no end.
+    static func lunch(_ note: Note) -> String {
+        guard let time = note.time else { return note.text }
+        return note.endTime.map { L("lunch.range \(time) \($0)") } ?? L("lunch.from \(time)")
+    }
+
     /// "каб. 15/2 · Петров С.И." or "дистант · Петров С.И.".
     static func place(_ lesson: Lesson) -> String {
         var parts: [String] = []

@@ -36,25 +36,28 @@ struct StaleDataBanner: View {
 
     var body: some View {
         GlassCard(tint: .orange) {
-            Label {
-                VStack(alignment: .leading, spacing: 2) {
-                    if let fetchedAt {
-                        Text(L("stale.title \(Format.dateTime(fetchedAt))"))
-                            .font(.subheadline.weight(.semibold))
-                    }
-                    Text(reason.errorDescription ?? "")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-            } icon: {
+            // The button sits in the text column so it lines up with the
+            // text, not with the icon.
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Image(systemName: "wifi.exclamationmark")
                     .foregroundStyle(.orange)
+                VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        if let fetchedAt {
+                            Text(L("stale.title \(Format.dateTime(fetchedAt))"))
+                                .font(.subheadline.weight(.semibold))
+                        }
+                        Text(reason.errorDescription ?? "")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    Button(L("action.retry")) {
+                        Task { await retry() }
+                    }
+                    .buttonStyle(.glass)
+                    .font(.footnote)
+                }
             }
-            Button(L("action.retry")) {
-                Task { await retry() }
-            }
-            .buttonStyle(.glass)
-            .font(.footnote)
         }
         .accessibilityElement(children: .combine)
     }
@@ -101,12 +104,12 @@ struct LessonRow: View {
             PairNumber(label: lesson.pairLabel)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(Format.timeRange(lesson))
-                    .font(.subheadline.monospacedDigit())
-                    .foregroundStyle(.secondary)
                 Text(lesson.subject)
                     .font(.headline)
                     .fixedSize(horizontal: false, vertical: true)
+                Text(Format.timeRange(lesson))
+                    .font(.subheadline.monospacedDigit())
+                    .foregroundStyle(.secondary)
                 Text(Format.place(lesson))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -128,11 +131,22 @@ struct LessonRow: View {
 /// The pair number in a glass circle, centred against the row.
 struct PairNumber: View {
     let label: String
-    @ScaledMetric(relativeTo: .title3) private var size = 44
+    var font: Font = .title3.weight(.bold).monospacedDigit()
+    @ScaledMetric private var size: CGFloat
+
+    init(label: String, compact: Bool = false) {
+        self.label = label
+        if compact {
+            font = .subheadline.weight(.bold).monospacedDigit()
+            _size = ScaledMetric(wrappedValue: 32, relativeTo: .subheadline)
+        } else {
+            _size = ScaledMetric(wrappedValue: 44, relativeTo: .title3)
+        }
+    }
 
     var body: some View {
         Text(label)
-            .font(.title3.weight(.bold).monospacedDigit())
+            .font(font)
             .minimumScaleFactor(0.6)
             .lineLimit(1)
             .frame(minWidth: size, minHeight: size)
@@ -142,26 +156,21 @@ struct PairNumber: View {
     }
 }
 
-/// Compact row for the week view: number and start time form a column
-/// centred against the subject and place lines.
+/// Compact row for the week view: numbered circle, then subject, time
+/// range and place.
 struct CompactLessonRow: View {
     let lesson: Lesson
-    @ScaledMetric(relativeTo: .subheadline) private var columnWidth = 48
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
-            VStack(spacing: 2) {
-                Text(lesson.pairLabel)
-                    .font(.subheadline.weight(.bold).monospacedDigit())
-                Text(lesson.start)
-                    .font(.caption.monospacedDigit())
-                    .foregroundStyle(.secondary)
-            }
-            .frame(width: columnWidth)
+            PairNumber(label: lesson.pairLabel, compact: true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(lesson.subject)
                     .font(.subheadline.weight(.semibold))
+                Text(Format.timeRange(lesson))
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
                 Text(Format.place(lesson))
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -171,5 +180,27 @@ struct CompactLessonRow: View {
         .padding(.vertical, 4)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Format.accessibilityLabel(lesson))
+    }
+}
+
+/// "Занятия начинаются с …" and lunch breaks shown under a day's header.
+struct DayNotes: View {
+    let startsAt: String?
+    let lunches: [Note]
+    var font: Font = .subheadline
+
+    var body: some View {
+        if startsAt != nil || !lunches.isEmpty {
+            VStack(alignment: .leading, spacing: 4) {
+                if let startsAt {
+                    Label(L("home.startsAt \(startsAt)"), systemImage: "alarm")
+                }
+                ForEach(lunches, id: \.text) { lunch in
+                    Label(Format.lunch(lunch), systemImage: "fork.knife")
+                }
+            }
+            .font(font)
+            .foregroundStyle(.secondary)
+        }
     }
 }

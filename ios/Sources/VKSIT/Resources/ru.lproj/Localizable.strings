@@ -60,6 +60,8 @@
 "home.firstInPersonAt %@" = "очная в %@";
 "home.firstAt %@" = "первая в %@";
 "home.noNextDay" = "Следующих дней в расписании пока нет";
+"lunch.range %@ %@" = "Обед %@–%@";
+"lunch.from %@" = "Обед с %@";
 "home.startsAt %@" = "Занятия начинаются с %@";
 
 /* Schedule */
@@ -74,7 +76,8 @@
 /* Profile */
 "profile.data" = "Данные";
 "profile.about" = "О приложении";
-"profile.editNameHint" = "Изменить ФИО";
+"profile.editNameHint" = "Изменить ФИО, группу и подгруппу";
+"profile.edit" = "Профиль студента";
 "profile.fullName" = "ФИО";
 "profile.group" = "Группа";
 "profile.subgroup" = "Подгруппа";

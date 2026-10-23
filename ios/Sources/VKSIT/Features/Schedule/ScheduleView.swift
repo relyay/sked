@@ -98,11 +98,7 @@ private struct DayScheduleView: View {
                 .accessibilityElement(children: .combine)
             }
 
-            if let time = query.startsAt(on: day) {
-                Label(L("home.startsAt \(time)"), systemImage: "alarm")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
+            DayNotes(startsAt: query.startsAt(on: day), lunches: query.lunches(on: day))
 
             let lessons = query.lessons(on: day)
             if lessons.isEmpty {
@@ -178,11 +174,7 @@ private struct WeekScheduleView: View {
                     Text(header(day))
                         .font(.headline)
                         .accessibilityAddTraits(.isHeader)
-                    if let time = query.startsAt(on: day) {
-                        Text(L("home.startsAt \(time)"))
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
+                    DayNotes(startsAt: query.startsAt(on: day), lunches: query.lunches(on: day), font: .footnote)
                     let lessons = query.lessons(on: day)
                     if lessons.isEmpty {
                         Label(L("schedule.empty"), systemImage: "cup.and.saucer")

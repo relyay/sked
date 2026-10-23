@@ -53,9 +53,6 @@ private struct HomeCards: View {
                 }
                 CurrentLessonCard(state: query.current(at: now), now: now)
                 NextDayCard(next: query.nextSchoolDay(after: now), now: now)
-                if let day = query.nearestDay(at: now), let time = query.startsAt(on: day) {
-                    StartsAtBanner(day: day, time: time, now: now)
-                }
             }
         }
     }
@@ -166,29 +163,6 @@ private struct NextDayCard: View {
             parts.append(first.inPerson ? L("home.firstInPersonAt \(first.lesson.start)") : L("home.firstAt \(first.lesson.start)"))
         }
         return parts.joined(separator: " · ")
-    }
-}
-
-private struct StartsAtBanner: View {
-    let day: Day
-    let time: String
-    let now: Date
-
-    var body: some View {
-        GlassCard(tint: .yellow) {
-            Label {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(L("home.startsAt \(time)"))
-                        .font(.headline)
-                    Text(Format.relativeDay(day, now: now) ?? Format.longDay(day))
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-            } icon: {
-                Image(systemName: "alarm")
-            }
-        }
-        .accessibilityElement(children: .combine)
     }
 }
 

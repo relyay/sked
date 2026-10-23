@@ -11,11 +11,10 @@ struct ProfileView: View {
                 if let profile = model.profile {
                     Section {
                         NavigationLink {
-                            NameEditor(profile: profile)
+                            ProfileEditor()
                         } label: {
                             ProfileCard(profile: profile)
                         }
-                        studyRows(profile)
                     }
                 }
                 ServerSection()
@@ -38,20 +37,6 @@ struct ProfileView: View {
             } message: {
                 Text(L("profile.resetMessage"))
             }
-        }
-    }
-
-    @ViewBuilder
-    private func studyRows(_ profile: Profile) -> some View {
-        NavigationLink {
-            GroupEditor(profile: profile)
-        } label: {
-            LabeledContent(L("profile.group"), value: profile.group)
-        }
-        NavigationLink {
-            SubgroupEditor(profile: profile)
-        } label: {
-            LabeledContent(L("profile.subgroup"), value: subgroupName(profile.subgroup))
         }
     }
 
@@ -123,7 +108,9 @@ private struct ProfileCard: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 if profile.subgroup != .unspecified {
-                    SubgroupBadge(subgroup: profile.subgroup.rawValue)
+                    Text(subgroupName(profile.subgroup))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
             }
         }
@@ -250,34 +237,63 @@ struct ServerSection: View {
     }
 }
 
-private struct NameEditor: View {
+/// Everything about the student behind the profile card: name, group and
+/// subgroup.
+private struct ProfileEditor: View {
     @Environment(AppModel.self) private var model
-    @Environment(\.dismiss) private var dismiss
-    let profile: Profile
     @State private var name = ""
+    @State private var subgroup = Subgroup.unspecified
 
     var body: some View {
         Form {
-            Section {
-                TextField(L("onboarding.namePlaceholder"), text: $name)
-                    .textContentType(.name)
-            } footer: {
-                Text(L("onboarding.nameFooter"))
-            }
-        }
-        .navigationTitle(L("profile.fullName"))
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button(L("action.save")) {
-                    var updated = profile
-                    updated.fullName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-                    model.save(profile: updated)
-                    dismiss()
+            if let profile = model.profile {
+                Section {
+                    TextField(L("onboarding.namePlaceholder"), text: $name)
+                        .textContentType(.name)
+                        .textInputAutocapitalization(.words)
+                        .onSubmit(saveName)
+                } header: {
+                    Text(L("profile.fullName"))
+                } footer: {
+                    Text(L("onboarding.nameFooter"))
                 }
-                .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+
+                Section(L("profile.group")) {
+                    NavigationLink {
+                        GroupEditor(profile: profile)
+                    } label: {
+                        LabeledContent(profile.group, value: L("course.label \(profile.course)"))
+                    }
+                }
+
+                Section {
+                    SubgroupPicker(selection: $subgroup)
+                } header: {
+                    Text(L("profile.subgroup"))
+                } footer: {
+                    Text(L("subgroup.footer"))
+                }
             }
         }
-        .onAppear { name = profile.fullName }
+        .navigationTitle(L("profile.edit"))
+        .onAppear {
+            name = model.profile?.fullName ?? ""
+            subgroup = model.profile?.subgroup ?? .unspecified
+        }
+        .onChange(of: subgroup) {
+            guard var updated = model.profile, updated.subgroup != subgroup else { return }
+            updated.subgroup = subgroup
+            model.save(profile: updated)
+        }
+        .onDisappear(perform: saveName)
+    }
+
+    /// An empty name is not saved; the previous one stays.
+    private func saveName() {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard var updated = model.profile, !trimmed.isEmpty, trimmed != updated.fullName else { return }
+        updated.fullName = trimmed
+        model.save(profile: updated)
     }
 }
 
@@ -311,29 +327,6 @@ private struct GroupEditor: View {
             updated.course = info.course
             model.save(profile: updated)
             dismiss()
-        }
-    }
-}
-
-private struct SubgroupEditor: View {
-    @Environment(AppModel.self) private var model
-    let profile: Profile
-    @State private var subgroup = Subgroup.unspecified
-
-    var body: some View {
-        Form {
-            Section {
-                SubgroupPicker(selection: $subgroup)
-            } footer: {
-                Text(L("subgroup.footer"))
-            }
-        }
-        .navigationTitle(L("profile.subgroup"))
-        .onAppear { subgroup = profile.subgroup }
-        .onChange(of: subgroup) {
-            var updated = profile
-            updated.subgroup = subgroup
-            model.save(profile: updated)
         }
     }
 }

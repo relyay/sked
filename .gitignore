@@ -5,3 +5,4 @@ xtool/
 *.ipa
 dist/*
 !dist/.gitkeep
+/data/

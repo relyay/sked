@@ -60,6 +60,8 @@
 "home.firstInPersonAt %@" = "in person at %@";
 "home.firstAt %@" = "first at %@";
 "home.noNextDay" = "No upcoming days in the schedule yet";
+"lunch.range %@ %@" = "Lunch %@–%@";
+"lunch.from %@" = "Lunch from %@";
 "home.startsAt %@" = "Classes start at %@";
 
 /* Schedule */
@@ -74,7 +76,8 @@
 /* Profile */
 "profile.data" = "Data";
 "profile.about" = "About";
-"profile.editNameHint" = "Edit name";
+"profile.editNameHint" = "Edit name, group and subgroup";
+"profile.edit" = "Student profile";
 "profile.fullName" = "Full name";
 "profile.group" = "Group";
 "profile.subgroup" = "Subgroup";

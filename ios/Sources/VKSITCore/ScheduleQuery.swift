@@ -116,6 +116,19 @@ public struct ScheduleQuery: Sendable {
         return timed.first.map { ($0, false) }
     }
 
+    /// Lunch breaks for the user's subgroup, without duplicates (the PDF often
+    /// repeats the same lunch in both subgroup columns), earliest first.
+    public func lunches(on day: Day) -> [Note] {
+        var seen = Set<String>()
+        return (groupDay(on: day)?.notes ?? [])
+            .filter { note in
+                note.kind == .lunch && note.time != nil
+                    && (subgroup == .unspecified || note.subgroup == nil || note.subgroup == subgroup.rawValue)
+            }
+            .filter { seen.insert("\($0.time ?? "")-\($0.endTime ?? "")").inserted }
+            .sorted { ($0.time ?? "") < ($1.time ?? "") }
+    }
+
     /// "Занятия начинаются с …" for the user's subgroup.
     public func startsAt(on day: Day) -> String? {
         groupDay(on: day)?.notes?.first { note in
