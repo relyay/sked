@@ -72,7 +72,6 @@
 "schedule.noDaysHint" = "The college hasn't published the next days yet.";
 
 /* Profile */
-"profile.study" = "Studies";
 "profile.data" = "Data";
 "profile.about" = "About";
 "profile.editNameHint" = "Edit name";

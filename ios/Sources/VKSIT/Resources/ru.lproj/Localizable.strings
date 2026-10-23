@@ -72,7 +72,6 @@
 "schedule.noDaysHint" = "Колледж ещё не опубликовал следующие дни.";
 
 /* Profile */
-"profile.study" = "Учёба";
 "profile.data" = "Данные";
 "profile.about" = "О приложении";
 "profile.editNameHint" = "Изменить ФИО";

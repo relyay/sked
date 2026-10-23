@@ -115,9 +115,6 @@ struct LessonRow: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-                if let subgroup = lesson.subgroup {
-                    SubgroupBadge(subgroup: subgroup)
-                }
             }
             Spacer(minLength: 0)
         }

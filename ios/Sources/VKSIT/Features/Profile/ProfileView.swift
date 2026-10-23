@@ -15,8 +15,8 @@ struct ProfileView: View {
                         } label: {
                             ProfileCard(profile: profile)
                         }
+                        studyRows(profile)
                     }
-                    studySection(profile)
                 }
                 ServerSection()
                 dataSection
@@ -41,18 +41,17 @@ struct ProfileView: View {
         }
     }
 
-    private func studySection(_ profile: Profile) -> some View {
-        Section(L("profile.study")) {
-            NavigationLink {
-                GroupEditor(profile: profile)
-            } label: {
-                LabeledContent(L("profile.group"), value: profile.group)
-            }
-            NavigationLink {
-                SubgroupEditor(profile: profile)
-            } label: {
-                LabeledContent(L("profile.subgroup"), value: subgroupName(profile.subgroup))
-            }
+    @ViewBuilder
+    private func studyRows(_ profile: Profile) -> some View {
+        NavigationLink {
+            GroupEditor(profile: profile)
+        } label: {
+            LabeledContent(L("profile.group"), value: profile.group)
+        }
+        NavigationLink {
+            SubgroupEditor(profile: profile)
+        } label: {
+            LabeledContent(L("profile.subgroup"), value: subgroupName(profile.subgroup))
         }
     }
 
