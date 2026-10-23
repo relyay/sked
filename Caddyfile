@@ -1,7 +1,7 @@
 # Your domain on the first line. Its DNS must point to this server and ports
 # 80/443 must be reachable: Caddy then obtains and renews the HTTPS
 # certificate by itself.
-lunars.ru {
+rasp.relya.ru {
 	encode zstd gzip
 	reverse_proxy sked:1984
 }

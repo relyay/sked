@@ -58,7 +58,7 @@ server/
   internal/api/      endpoints (+integration tests with a fake origin)
   testdata/          real PDFs from 23.10.2026
 ios/                 SwiftPM package + xtool.yml + Info.plist
-  Sources/SkedCore/  pure logic without SwiftUI: API models, Profile + validation, Server (https://lunars.ru),
+  Sources/SkedCore/  pure logic without SwiftUI: API models, Profile + validation, Server (https://rasp.relya.ru),
                      ScheduleQuery (next class, next school day, subgroups), CollegeClock (Europe/Moscow)
   Sources/Sked/
     App/             SkedApp, RootView (onboarding ↔ TabView), AppModel (@Observable)
@@ -119,7 +119,7 @@ Status codes: `400` — invalid `building`/`date`; `404` — unknown building; `
 - Times with `timeSource` are shown like any other time. On days mixing remote and in-person classes, the Home "first at …" shows the first in-person class ("in person at 11:50").
 - The main bundle contains `AppResources/ru.lproj` and `en.lproj` (`resources` in `xtool.yml`). Without them iOS treats the app as English-only, and dates and system controls come out in English.
 - Data refreshes on launch, on return to the foreground, every 5 minutes, on pull-to-refresh and with the "Refresh now" button. On a network error the cache is shown with a "Showing data from …" banner. Without a cache, an error screen with "Retry" is shown.
-- The server address is hard-coded: `https://lunars.ru` (`Server.production`). There is no server setting in the app and no ATS exceptions. Only UI tests override the address through the `SKED_SERVER_URL` environment variable. In production the server sits behind a TLS reverse proxy (Caddy → `skedd` on :1984).
+- The server address is hard-coded: `https://rasp.relya.ru` (`Server.production`). There is no server setting in the app and no ATS exceptions. Only UI tests override the address through the `SKED_SERVER_URL` environment variable. In production the server sits behind a TLS reverse proxy (Caddy → `skedd` on :1984).
 
 ## Acceptance checklist
 
@@ -186,7 +186,7 @@ Env: `SKED_ADDR`, `SKED_DATA`, `SKED_NPO_URL`, `SKED_SPO_URL`, `SKED_DEBUG`.
 ```sh
 git clone https://github.com/relyay/sked.git
 cd sked
-# put your domain on the first line of Caddyfile (currently lunars.ru)
+# put your domain on the first line of Caddyfile (currently rasp.relya.ru)
 podman compose up -d     # or: docker compose up -d
 curl https://<domain>/health
 ```

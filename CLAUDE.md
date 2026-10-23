@@ -28,7 +28,7 @@ go run ./cmd/parsepdf testdata/spo.pdf         # PDF → JSON on stdout, parser 
 go run ./cmd/skedd -addr 127.0.0.1:1984 -data /tmp/sked-data
 ```
 
-Server listens on `0.0.0.0:1984` by default; the iOS client talks only to `https://lunars.ru` (hard-coded `Server.production` in `SkedCore`; no user-facing server setting, no ATS exceptions), so production must sit behind a TLS reverse proxy. Env vars: `SKED_ADDR`, `SKED_DATA`, `SKED_NPO_URL`, `SKED_SPO_URL`, `SKED_DEBUG`. There is no admin/manual-refresh endpoint by design (it would let anyone make the server hammer rasp.vksit.ru); the 2-minute ticker is the only refresh. `skedd -healthcheck` probes `/health` and is the container health check (the distroless image has no shell or curl).
+Server listens on `0.0.0.0:1984` by default; the iOS client talks only to `https://rasp.relya.ru` (hard-coded `Server.production` in `SkedCore`; no user-facing server setting, no ATS exceptions), so production must sit behind a TLS reverse proxy. Env vars: `SKED_ADDR`, `SKED_DATA`, `SKED_NPO_URL`, `SKED_SPO_URL`, `SKED_DEBUG`. There is no admin/manual-refresh endpoint by design (it would let anyone make the server hammer rasp.vksit.ru); the 2-minute ticker is the only refresh. `skedd -healthcheck` probes `/health` and is the container health check (the distroless image has no shell or curl).
 
 ## Server architecture
 

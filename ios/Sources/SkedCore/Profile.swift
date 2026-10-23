@@ -50,7 +50,7 @@ public struct ProfileDraft: Equatable, Sendable {
 /// Where the schedule server lives. Fixed for users; UI tests point the app
 /// at a local server through the `SKED_SERVER_URL` launch environment.
 public enum Server {
-    public static let production = URL(string: "https://lunars.ru")!
+    public static let production = URL(string: "https://rasp.relya.ru")!
 
     public static func baseURL(environment: [String: String] = ProcessInfo.processInfo.environment) -> URL {
         guard let raw = environment["SKED_SERVER_URL"], let url = URL(string: raw),

@@ -239,7 +239,7 @@ private let days = [monday, saturday, friday]
     }
 
     @Test func serverURL() {
-        #expect(Server.baseURL(environment: [:]).absoluteString == "https://lunars.ru")
+        #expect(Server.baseURL(environment: [:]).absoluteString == "https://rasp.relya.ru")
         #expect(Server.baseURL(environment: ["SKED_SERVER_URL": "http://127.0.0.1:1984"]).absoluteString == "http://127.0.0.1:1984")
         #expect(Server.baseURL(environment: ["SKED_SERVER_URL": "not a url"]) == Server.production)
         #expect(Server.baseURL(environment: ["SKED_SERVER_URL": "ftp://example.org"]) == Server.production)
