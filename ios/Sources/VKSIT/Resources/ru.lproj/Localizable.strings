@@ -5,7 +5,6 @@
 
 /* Actions */
 "action.retry" = "Повторить";
-"action.save" = "Сохранить";
 "action.done" = "Готово";
 
 /* Errors */

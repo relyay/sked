@@ -5,7 +5,6 @@
 
 /* Actions */
 "action.retry" = "Retry";
-"action.save" = "Save";
 "action.done" = "Done";
 
 /* Errors */
