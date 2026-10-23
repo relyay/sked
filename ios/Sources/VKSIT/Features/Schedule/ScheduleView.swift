@@ -125,7 +125,7 @@ private struct DayScheduleView: View {
 
     /// "Пятница, 23 октября · сегодня · корпус 2".
     private var title: String {
-        [Format.longDay(day), Format.relativeDay(day, now: now), Format.building(day.building)]
+        [Format.longDay(day), Format.relativeDay(day, now: now), Format.buildings(query.buildings(on: day))]
             .compactMap { $0 }
             .joined(separator: " · ")
     }
@@ -204,7 +204,7 @@ private struct WeekScheduleView: View {
 
     /// "Пт, 23.10 · сегодня · 2 корпус".
     private func header(_ day: Day) -> String {
-        [Format.shortDay(day), Format.relativeDay(day, now: now), Format.building(day.building)]
+        [Format.shortDay(day), Format.relativeDay(day, now: now), Format.buildings(query.buildings(on: day))]
             .compactMap { $0 }
             .joined(separator: " · ")
     }

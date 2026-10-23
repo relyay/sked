@@ -33,7 +33,8 @@ Server listens on `0.0.0.0:1984` by default; the iOS client defaults to `http://
 Pipeline: `updater` (2-min ticker) → `source.Fetcher` (conditional GET, then sha256 of body decides "changed") → `pdfx.Read` → `parser.Parse` → `store.Update` → `api` serves `store.View` (snapshot + overrides). On fetch/parse failure the last snapshot keeps being served; a failed parse calls `Fetcher.Forget()` so the same bytes are retried.
 
 Facts about the source PDFs that drive the parser design (verified on `testdata/*.pdf`, 23.10.2026):
-- Building number comes from the page header «N КОРПУС», not the file name: `npo.pdf` is building **2**, `spo.pdf` is building **1**. The API's `building=` uses that number.
+- Building number comes from the page header «N КОРПУС», not the file name: `npo.pdf` is building **2**, `spo.pdf` is building **1**.
+- Groups move between buildings day to day (11 of 36 in the test PDFs), so building is per lesson (`Lesson.building`), never part of the student's profile. Clients query `/schedule?group=…` without `building`; the API merges both sources by date.
 - One page = one day; the PDF is a rolling window of upcoming days, so `store` keeps days that dropped out for 14 days.
 - Excel lets text overflow into empty neighbouring cells, so text alone can't distinguish a whole-group lesson (merged cell) from a subgroup-1-only lesson. `pdfx` is a custom content-stream interpreter (on top of `ledongthuc/pdf` for object/ToUnicode decoding only) that yields text runs with their **origin point** plus ruling-line segments; `parser` rebuilds the grid (pair rows × subgroup columns) and union-finds cells across missing borders — horizontally (merged subgroups/groups) and vertically (multi-pair cells → `Lesson.PairTo`).
 - Content-stream order is not visual order (pair numbers appear 6→1); always sort by coordinates.

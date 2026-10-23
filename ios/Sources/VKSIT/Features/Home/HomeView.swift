@@ -84,7 +84,7 @@ private struct CurrentLessonCard: View {
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)
-            Text(headline(s.lesson, building: s.day.building))
+            Text(headline(s.lesson, building: s.lesson.building ?? s.day.building))
                 .font(.title3.weight(.semibold))
                 .fixedSize(horizontal: false, vertical: true)
             if let teacher = s.lesson.teacher {
@@ -160,7 +160,8 @@ private struct NextDayCard: View {
     private func summary(_ next: NextSchoolDay) -> String {
         let weekday = Format.chip(next.day).weekday.lowercased()
         let title = next.isTomorrow ? L("home.tomorrowWeekday \(weekday)") : Format.shortDay(next.day)
-        var parts = [title, Format.lessonCount(next.lessons.count), Format.building(next.day.building)]
+        let buildings = ScheduleQuery.buildings(of: next.lessons, fallback: next.day.building)
+        var parts = [title, Format.lessonCount(next.lessons.count), Format.buildings(buildings)]
         if let first = next.lessons.min(by: { $0.start < $1.start }), !first.start.isEmpty {
             parts.append(L("home.firstAt \(Format.startTime(first))"))
         }

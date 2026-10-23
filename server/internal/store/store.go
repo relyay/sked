@@ -72,17 +72,16 @@ func (s *Store) Snapshot(source string) (schedule.Snapshot, bool) {
 	return snap, ok
 }
 
-// View returns the snapshot of the source serving the given building, with
-// overrides applied.
-func (s *Store) View(building int) (schedule.Snapshot, bool) {
+// Views returns every snapshot with overrides applied, ordered by building.
+func (s *Store) Views() []schedule.Snapshot {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
+	var out []schedule.Snapshot
 	for _, snap := range s.snapshots {
-		if snap.Building == building {
-			return applyOverrides(snap, s.overrides[snap.Source]), true
-		}
+		out = append(out, applyOverrides(snap, s.overrides[snap.Source]))
 	}
-	return schedule.Snapshot{}, false
+	slices.SortFunc(out, func(a, b schedule.Snapshot) int { return cmp.Compare(a.Building, b.Building) })
+	return out
 }
 
 // Buildings lists the known building numbers in ascending order.
@@ -153,9 +152,14 @@ func applyOverrides(snap schedule.Snapshot, o Overrides) schedule.Snapshot {
 	}
 	days := slices.Clone(snap.Days)
 	for _, od := range o.Days {
-		lessons := od.Lessons
+		lessons := slices.Clone(od.Lessons)
 		if lessons == nil {
 			lessons = []schedule.Lesson{}
+		}
+		for i := range lessons {
+			if lessons[i].Building == 0 {
+				lessons[i].Building = snap.Building
+			}
 		}
 		gd := schedule.GroupDay{Group: od.Group, Lessons: lessons, Notes: od.Notes}
 		i := slices.IndexFunc(days, func(d schedule.Day) bool { return d.Date == od.Date })

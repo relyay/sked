@@ -152,6 +152,9 @@ func parsePage(src pdfx.Page) (schedule.Day, []string, bool) {
 		if gd.Lessons == nil {
 			gd.Lessons = []schedule.Lesson{}
 		}
+		for i := range gd.Lessons {
+			gd.Lessons[i].Building = day.Building
+		}
 		day.Groups = append(day.Groups, *gd)
 	}
 	return day, p.warnings, true

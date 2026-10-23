@@ -116,8 +116,8 @@ func TestScheduleEndpoints(t *testing.T) {
 
 	var all scheduleResponse
 	resp := e.get("/schedule?building=1", nil, &all)
-	if resp.StatusCode != http.StatusOK || all.Source != "spo" || len(all.Days) != 3 {
-		t.Fatalf("schedule = %d source=%s days=%d", resp.StatusCode, all.Source, len(all.Days))
+	if resp.StatusCode != http.StatusOK || all.Building != 1 || len(all.Days) != 3 {
+		t.Fatalf("schedule = %d building=%d days=%d", resp.StatusCode, all.Building, len(all.Days))
 	}
 	etag := resp.Header.Get("ETag")
 	if etag == "" || resp.Header.Get("Last-Modified") == "" {
@@ -129,7 +129,7 @@ func TestScheduleEndpoints(t *testing.T) {
 
 	var one scheduleResponse
 	e.get("/schedule?building=2&date=2026-10-24&group=ИСП-324а", nil, &one)
-	if one.Source != "npo" || len(one.Days) != 1 || one.Days[0].Date != "2026-10-24" || len(one.Days[0].Groups) > 1 {
+	if one.Building != 2 || len(one.Days) != 1 || one.Days[0].Date != "2026-10-24" || len(one.Days[0].Groups) > 1 {
 		t.Errorf("filtered = %+v", one)
 	}
 
@@ -149,6 +149,7 @@ func TestScheduleEndpoints(t *testing.T) {
 
 	for path, want := range map[string]int{
 		"/schedule":                       http.StatusBadRequest,
+		"/schedule?date=2026-10-23":       http.StatusBadRequest,
 		"/schedule?building=x":            http.StatusBadRequest,
 		"/schedule?building=1&date=23.10": http.StatusBadRequest,
 		"/schedule?building=9":            http.StatusNotFound,
@@ -157,6 +158,49 @@ func TestScheduleEndpoints(t *testing.T) {
 		if resp := e.get(path, nil, nil); resp.StatusCode != want {
 			t.Errorf("%s = %d, want %d", path, resp.StatusCode, want)
 		}
+	}
+}
+
+// ИСП-225ис studies in building 1 on Friday and Monday and in building 2 on
+// Saturday; asking by group alone must return all three days.
+func TestGroupAcrossBuildings(t *testing.T) {
+	e := newEnv(t, t.TempDir())
+	e.updater.Refresh(context.Background(), false)
+
+	var resp scheduleResponse
+	e.get("/schedule?group=ИСП-225ис", nil, &resp)
+	got := map[string]int{}
+	for _, d := range resp.Days {
+		if len(d.Groups) != 1 || len(d.Groups[0].Lessons) == 0 {
+			t.Fatalf("%s: groups = %+v", d.Date, d.Groups)
+		}
+		got[d.Date] = d.Groups[0].Lessons[0].Building
+	}
+	want := map[string]int{"2026-10-23": 1, "2026-10-24": 2, "2026-10-26": 1}
+	if len(got) != len(want) {
+		t.Fatalf("days = %v, want %v", got, want)
+	}
+	for date, b := range want {
+		if got[date] != b {
+			t.Errorf("%s building = %d, want %d", date, got[date], b)
+		}
+	}
+
+	var groups struct {
+		Groups []schedule.Group `json:"groups"`
+	}
+	e.get("/groups", nil, &groups)
+	var found bool
+	for _, g := range groups.Groups {
+		if g.Name == "ИСП-225ис" {
+			found = true
+			if g.Course != 2 || len(g.Buildings) != 2 {
+				t.Errorf("group = %+v", g)
+			}
+		}
+	}
+	if !found || len(groups.Groups) != 36 {
+		t.Errorf("all groups: %d, found=%v", len(groups.Groups), found)
 	}
 }
 

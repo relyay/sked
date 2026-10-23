@@ -130,30 +130,43 @@ private let days = [monday, saturday, friday]
     }
 }
 
+@Suite struct BuildingTests {
+    @Test func buildingComesFromLessons() {
+        let day = Day(date: "2026-10-24", building: 1, groups: [
+            GroupDay(group: "ИСП-225ис", lessons: [
+                Lesson(pair: 1, building: 2, start: "09:00", subject: "ПОПД", isRemote: true),
+                Lesson(pair: 3, building: 2, start: "11:50", subject: "Физ. культура", room: "СЗ/2"),
+            ]),
+        ])
+        let q = ScheduleQuery(days: [day], group: "ИСП-225ис", subgroup: .unspecified)
+        #expect(q.buildings(on: day) == [2])
+    }
+}
+
 @Suite struct DecodingTests {
     @Test func decodesServerPayload() throws {
         let json = #"""
-        {"building":1,"source":"spo","parsedAt":"2026-10-23T12:10:49.316279998+03:00",
+        {"group":"ЭСС-225","parsedAt":"2026-10-23T12:10:49.316279998+03:00",
          "sourceModified":"2026-10-23T08:52:17Z",
          "days":[{"date":"2026-10-24","weekday":"суббота","building":1,"groups":[{"group":"ЭСС-225",
-           "lessons":[{"pair":1,"pairTo":6,"start":"08:30","end":"18:50","subject":"Экзамен","isRemote":false,"timeSource":"bells"}],
+           "lessons":[{"pair":1,"building":2,"pairTo":6,"start":"08:30","end":"18:50","subject":"Экзамен","isRemote":false,"timeSource":"bells"}],
            "notes":[{"kind":"somethingNew","text":"?"}]}]}]}
         """#
         let r = try JSONDecoder.vksit.decode(ScheduleResponse.self, from: Data(json.utf8))
         #expect(r.days[0].groups[0].lessons[0].pairLabel == "1–6")
         #expect(r.days[0].groups[0].lessons[0].isTimeApproximate)
         #expect(r.days[0].groups[0].notes?[0].kind == .other)
+        #expect(r.days[0].groups[0].lessons[0].building == 2)
         #expect(abs(r.parsedAt.timeIntervalSince1970 - 1_792_746_649.316) < 0.01)
     }
 }
 
 @Suite struct ValidationTests {
-    let groups = [GroupInfo(name: "ИСП-225а", course: 2, building: 1)]
+    let groups = [GroupInfo(name: "ИСП-225а", course: 2, buildings: [1, 2])]
 
     @Test func requiresName() {
         var d = ProfileDraft()
         d.fullName = "   "
-        d.building = 1
         d.group = "ИСП-225а"
         #expect(d.validate(availableGroups: groups) == .failure(.emptyName))
     }
@@ -161,12 +174,11 @@ private let days = [monday, saturday, friday]
     @Test func groupMustComeFromServerList() {
         var d = ProfileDraft()
         d.fullName = "Иванов Иван"
-        d.building = 1
         d.group = "ИСП-999"
         #expect(d.validate(availableGroups: groups) == .failure(.unknownGroup))
         d.group = "ИСП-225а"
         d.subgroup = .second
-        #expect(d.validate(availableGroups: groups) == .success(Profile(fullName: "Иванов Иван", building: 1, course: 2, group: "ИСП-225а", subgroup: .second)))
+        #expect(d.validate(availableGroups: groups) == .success(Profile(fullName: "Иванов Иван", group: "ИСП-225а", course: 2, subgroup: .second)))
     }
 
     @Test func serverAddress() {

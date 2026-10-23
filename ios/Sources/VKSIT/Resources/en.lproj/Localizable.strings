@@ -24,12 +24,10 @@
 
 /* Common */
 "building.short %lld" = "building %lld";
-"course.label %lld" = "Year %lld";
+"course.label %lld" = "Course %lld";
 "subgroup.badge %lld" = "Subgroup %lld";
 "subgroup.unspecified" = "Not set";
-"subgroup.footer" = "The other subgroup's classes stay in the schedule but are dimmed.";
-"source.npo" = "NPO";
-"source.spo" = "SPO";
+"subgroup.footer" = "If your group is split in half (left/right column in the schedule). The other subgroup's classes are dimmed.";
 "day.today" = "today";
 "day.tomorrow" = "tomorrow";
 "countdown.in %@" = "starts in %@";
@@ -41,12 +39,14 @@
 "a11y.loading" = "Loading schedule";
 
 /* Onboarding */
+"building.many %@" = "buildings %@";
+"course.other" = "Other groups";
+"group.search" = "Search groups";
 "onboarding.title" = "Welcome";
 "onboarding.namePlaceholder" = "Full name";
 "onboarding.nameFooter" = "Your name stays on this phone and is never sent anywhere.";
 "onboarding.nameRequired" = "Enter your name";
 "onboarding.choose" = "Choose";
-"onboarding.allCourses" = "All years";
 "onboarding.save" = "Save and start";
 
 /* Home */
@@ -75,9 +75,6 @@
 /* Profile */
 "profile.user" = "User";
 "profile.fullName" = "Full name";
-"profile.study" = "Studies";
-"profile.building" = "Building";
-"profile.course" = "Year";
 "profile.group" = "Group";
 "profile.subgroup" = "Subgroup";
 "profile.reset" = "Reset profile";

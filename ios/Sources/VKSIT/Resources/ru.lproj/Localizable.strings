@@ -27,9 +27,7 @@
 "course.label %lld" = "%lld курс";
 "subgroup.badge %lld" = "%lld подгруппа";
 "subgroup.unspecified" = "Не указана";
-"subgroup.footer" = "Пары другой подгруппы останутся в расписании, но будут приглушены.";
-"source.npo" = "НПО";
-"source.spo" = "СПО";
+"subgroup.footer" = "Если группа делится пополам (левая/правая колонка в расписании). Пары другой подгруппы будут приглушены.";
 "day.today" = "сегодня";
 "day.tomorrow" = "завтра";
 "countdown.in %@" = "начнётся через %@";
@@ -41,12 +39,14 @@
 "a11y.loading" = "Загрузка расписания";
 
 /* Onboarding */
+"building.many %@" = "корпуса %@";
+"course.other" = "Другие группы";
+"group.search" = "Поиск группы";
 "onboarding.title" = "Знакомство";
 "onboarding.namePlaceholder" = "Фамилия Имя Отчество";
 "onboarding.nameFooter" = "ФИО хранится только на этом телефоне и никуда не отправляется.";
 "onboarding.nameRequired" = "Введите ФИО";
 "onboarding.choose" = "Выберите";
-"onboarding.allCourses" = "Все курсы";
 "onboarding.save" = "Сохранить и начать";
 
 /* Home */
@@ -75,9 +75,6 @@
 /* Profile */
 "profile.user" = "Пользователь";
 "profile.fullName" = "ФИО";
-"profile.study" = "Учёба";
-"profile.building" = "Корпус";
-"profile.course" = "Курс";
 "profile.group" = "Группа";
 "profile.subgroup" = "Подгруппа";
 "profile.reset" = "Сбросить профиль";

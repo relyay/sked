@@ -2,12 +2,14 @@
 package api
 
 import (
+	"cmp"
 	"crypto/sha256"
 	"crypto/subtle"
 	"encoding/hex"
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -81,19 +83,27 @@ func (s *Server) buildings(w http.ResponseWriter, r *http.Request) {
 }
 
 type scheduleResponse struct {
-	Building       int            `json:"building"`
-	Source         string         `json:"source"`
+	Building       int            `json:"building,omitempty"` // set when filtered by building
+	Group          string         `json:"group,omitempty"`
 	ParsedAt       time.Time      `json:"parsedAt"`
 	SourceModified time.Time      `json:"sourceModified,omitzero"`
 	Days           []schedule.Day `json:"days"`
 }
 
+// schedule serves one building, one group across all buildings, or both
+// filters combined. Groups move between buildings from day to day, so the
+// client asks by group and reads the building from each lesson.
 func (s *Server) schedule(w http.ResponseWriter, r *http.Request) {
-	snap, ok := s.view(w, r)
+	q := r.URL.Query()
+	group := strings.TrimSpace(q.Get("group"))
+	if q.Get("building") == "" && group == "" {
+		writeError(w, http.StatusBadRequest, "pass group=… and/or building=…")
+		return
+	}
+	snaps, building, ok := s.snapshots(w, r)
 	if !ok {
 		return
 	}
-	q := r.URL.Query()
 	date := q.Get("date")
 	if date != "" {
 		if _, err := time.Parse(time.DateOnly, date); err != nil {
@@ -101,41 +111,86 @@ func (s *Server) schedule(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	group := strings.TrimSpace(q.Get("group"))
 
-	days := []schedule.Day{}
-	for _, d := range snap.Days {
-		if date != "" && d.Date != date {
+	resp := scheduleResponse{Building: building, Group: group, Days: []schedule.Day{}}
+	byDate := map[string]int{}
+	for _, snap := range snaps {
+		if snap.ParsedAt.After(resp.ParsedAt) {
+			resp.ParsedAt = snap.ParsedAt
+		}
+		if snap.SourceModified.After(resp.SourceModified) {
+			resp.SourceModified = snap.SourceModified
+		}
+		for _, d := range snap.Days {
+			if date != "" && d.Date != date {
+				continue
+			}
+			if group != "" {
+				// Keep the day even without the group: an empty day is meaningful.
+				d.Groups = filterGroup(d.Groups, group)
+			}
+			i, seen := byDate[d.Date]
+			if !seen {
+				byDate[d.Date] = len(resp.Days)
+				resp.Days = append(resp.Days, d)
+				continue
+			}
+			resp.Days[i].Groups = mergeGroups(resp.Days[i].Groups, d.Groups)
+		}
+	}
+	slices.SortFunc(resp.Days, func(a, b schedule.Day) int { return cmp.Compare(a.Date, b.Date) })
+	s.writeCached(w, r, resp.ParsedAt, resp)
+}
+
+func filterGroup(groups []schedule.GroupDay, name string) []schedule.GroupDay {
+	out := []schedule.GroupDay{}
+	for _, g := range groups {
+		if g.Group == name {
+			out = append(out, g)
+		}
+	}
+	return out
+}
+
+// mergeGroups joins the same date from two buildings; lessons keep their
+// own building.
+func mergeGroups(into, from []schedule.GroupDay) []schedule.GroupDay {
+	into = slices.Clone(into)
+	for _, g := range from {
+		i := slices.IndexFunc(into, func(x schedule.GroupDay) bool { return x.Group == g.Group })
+		if i < 0 {
+			into = append(into, g)
 			continue
 		}
-		if group != "" {
-			// Keep the day even without the group: an empty day is meaningful.
-			var groups []schedule.GroupDay
-			for _, g := range d.Groups {
-				if g.Group == group {
-					groups = append(groups, g)
-				}
-			}
-			if groups == nil {
-				groups = []schedule.GroupDay{}
-			}
-			d.Groups = groups
-		}
-		days = append(days, d)
+		into[i].Lessons = append(slices.Clone(into[i].Lessons), g.Lessons...)
+		slices.SortStableFunc(into[i].Lessons, func(a, b schedule.Lesson) int {
+			return cmp.Or(cmp.Compare(a.Pair, b.Pair), cmp.Compare(a.Subgroup, b.Subgroup))
+		})
+		into[i].Notes = append(slices.Clone(into[i].Notes), g.Notes...)
 	}
-	s.writeCached(w, r, snap.ParsedAt, scheduleResponse{snap.Building, snap.Source, snap.ParsedAt, snap.SourceModified, days})
+	return into
 }
 
 func (s *Server) groups(w http.ResponseWriter, r *http.Request) {
-	snap, ok := s.view(w, r)
+	snaps, building, ok := s.snapshots(w, r)
 	if !ok {
 		return
 	}
-	groups := snap.Groups()
+	var newest time.Time
+	for _, snap := range snaps {
+		if snap.ParsedAt.After(newest) {
+			newest = snap.ParsedAt
+		}
+	}
+	groups := schedule.Groups(snaps...)
 	if groups == nil {
 		groups = []schedule.Group{}
 	}
-	s.writeCached(w, r, snap.ParsedAt, map[string]any{"building": snap.Building, "groups": groups})
+	resp := map[string]any{"groups": groups}
+	if building != 0 {
+		resp["building"] = building
+	}
+	s.writeCached(w, r, newest, resp)
 }
 
 func (s *Server) refresh(w http.ResponseWriter, r *http.Request) {
@@ -154,24 +209,31 @@ func (s *Server) refresh(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, status, resp)
 }
 
-// view resolves ?building= to a snapshot, writing the error response itself.
-func (s *Server) view(w http.ResponseWriter, r *http.Request) (schedule.Snapshot, bool) {
-	b, err := strconv.Atoi(r.URL.Query().Get("building"))
+// snapshots resolves the optional ?building= filter, writing the error
+// response itself. Without the filter all buildings are returned.
+func (s *Server) snapshots(w http.ResponseWriter, r *http.Request) ([]schedule.Snapshot, int, bool) {
+	all := s.Store.Views()
+	if len(all) == 0 {
+		w.Header().Set("Retry-After", "30")
+		writeError(w, http.StatusServiceUnavailable, "schedule has not been loaded yet")
+		return nil, 0, false
+	}
+	raw := r.URL.Query().Get("building")
+	if raw == "" {
+		return all, 0, true
+	}
+	b, err := strconv.Atoi(raw)
 	if err != nil || b < 1 {
 		writeError(w, http.StatusBadRequest, "building must be a positive number, e.g. building=1")
-		return schedule.Snapshot{}, false
+		return nil, 0, false
 	}
-	snap, ok := s.Store.View(b)
-	if !ok {
-		if len(s.Store.Buildings()) == 0 {
-			w.Header().Set("Retry-After", "30")
-			writeError(w, http.StatusServiceUnavailable, "schedule has not been loaded yet")
-		} else {
-			writeError(w, http.StatusNotFound, "unknown building")
+	for _, snap := range all {
+		if snap.Building == b {
+			return []schedule.Snapshot{snap}, b, true
 		}
-		return schedule.Snapshot{}, false
 	}
-	return snap, true
+	writeError(w, http.StatusNotFound, "unknown building")
+	return nil, 0, false
 }
 
 // writeCached writes v with a content-hash ETag and answers conditional

@@ -104,6 +104,16 @@ public struct ScheduleQuery: Sendable {
         subgroup != .unspecified && isVisible(lesson)
     }
 
+    /// Buildings the user goes to on a day, from the lessons themselves.
+    public func buildings(on day: Day) -> [Int] {
+        Self.buildings(of: lessons(on: day), fallback: day.building)
+    }
+
+    public static func buildings(of lessons: [Lesson], fallback: Int) -> [Int] {
+        let set = Set(lessons.map { $0.building ?? fallback })
+        return set.isEmpty ? [fallback] : set.sorted()
+    }
+
     /// "Занятия начинаются с …" for the user's subgroup.
     public func startsAt(on day: Day) -> String? {
         groupDay(on: day)?.notes?.first { note in

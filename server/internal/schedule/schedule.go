@@ -2,6 +2,7 @@
 package schedule
 
 import (
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -13,7 +14,10 @@ type Subgroup int
 // Lesson is one pair (two academic hours) for a group or one of its
 // subgroups, or a run of pairs when the PDF merges them into one cell.
 type Lesson struct {
-	Pair     int      `json:"pair"`
+	Pair int `json:"pair"`
+	// Building where the pair takes place. A group can study in different
+	// buildings on different days, so this is per lesson, not per student.
+	Building int      `json:"building"`
 	PairTo   int      `json:"pairTo,omitempty"` // last pair of a merged multi-pair cell
 	Start    string   `json:"start"`            // "08:30", Europe/Moscow wall clock
 	End      string   `json:"end,omitempty"`
@@ -85,9 +89,10 @@ type Day struct {
 
 // Group describes a group for onboarding.
 type Group struct {
-	Name     string `json:"name"`
-	Course   int    `json:"course"`
-	Building int    `json:"building"`
+	Name   string `json:"name"`
+	Course int    `json:"course"`
+	// Buildings the group has classes in within the known days.
+	Buildings []int `json:"buildings"`
 }
 
 // Snapshot is the parsed state of one source.
@@ -102,17 +107,25 @@ type Snapshot struct {
 	Warnings       []string  `json:"warnings,omitempty"`
 }
 
-// Groups lists every group present in the snapshot, sorted by course then name.
-func (s Snapshot) Groups() []Group {
-	seen := map[string]bool{}
+// Groups lists every group present in the snapshots, sorted by course then
+// name, with all buildings each group appears in.
+func Groups(snapshots ...Snapshot) []Group {
+	index := map[string]int{}
 	var out []Group
-	for _, d := range s.Days {
-		for _, g := range d.Groups {
-			if seen[g.Group] {
-				continue
+	for _, snap := range snapshots {
+		for _, d := range snap.Days {
+			for _, g := range d.Groups {
+				i, ok := index[g.Group]
+				if !ok {
+					i = len(out)
+					index[g.Group] = i
+					out = append(out, Group{Name: g.Group, Course: CourseOf(g.Group)})
+				}
+				if !slices.Contains(out[i].Buildings, d.Building) {
+					out[i].Buildings = append(out[i].Buildings, d.Building)
+					slices.Sort(out[i].Buildings)
+				}
 			}
-			seen[g.Group] = true
-			out = append(out, Group{Name: g.Group, Course: CourseOf(g.Group), Building: s.Building})
 		}
 	}
 	sortGroups(out)

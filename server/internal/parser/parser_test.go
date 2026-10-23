@@ -68,7 +68,7 @@ func TestParseSPO(t *testing.T) {
 	}
 
 	do := groupDay(t, res, "2026-10-23", "ДО-324")
-	want := schedule.Lesson{Pair: 1, Start: "08:30", End: "10:00", Subject: "ВРпПСМ", Teacher: "Манькова Е.А.", Room: "23/1", Subgroup: 1}
+	want := schedule.Lesson{Pair: 1, Building: 1, Start: "08:30", End: "10:00", Subject: "ВРпПСМ", Teacher: "Манькова Е.А.", Room: "23/1", Subgroup: 1}
 	if got := lesson(t, do, 1, 1); got != want {
 		t.Errorf("ДО-324 pair 1 = %+v, want %+v", got, want)
 	}

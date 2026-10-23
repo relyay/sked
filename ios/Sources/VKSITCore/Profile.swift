@@ -6,19 +6,19 @@ public enum Subgroup: Int, Codable, CaseIterable, Sendable {
     case second = 2
 }
 
-/// The student's profile. Stored only on the device.
+/// The student's profile. Stored only on the device. There is no building:
+/// groups move between buildings from day to day, so it comes with each pair.
 public struct Profile: Codable, Equatable, Sendable {
     public var fullName: String
-    public var building: Int
-    public var course: Int
     public var group: String
+    /// Derived from the group number, e.g. "ИСП-324а" → 3.
+    public var course: Int
     public var subgroup: Subgroup
 
-    public init(fullName: String, building: Int, course: Int, group: String, subgroup: Subgroup) {
+    public init(fullName: String, group: String, course: Int, subgroup: Subgroup) {
         self.fullName = fullName
-        self.building = building
-        self.course = course
         self.group = group
+        self.course = course
         self.subgroup = subgroup
     }
 }
@@ -26,27 +26,24 @@ public struct Profile: Codable, Equatable, Sendable {
 /// Onboarding input before it becomes a `Profile`.
 public struct ProfileDraft: Equatable, Sendable {
     public var fullName = ""
-    public var building: Int?
-    public var course: Int?
     public var group: String?
     public var subgroup: Subgroup = .unspecified
 
     public init() {}
 
     public enum Problem: Error, Equatable, Sendable {
-        case emptyName, noBuilding, noGroup, unknownGroup
+        case emptyName, noGroup, unknownGroup
     }
 
-    /// Validates against the group list the server returned for `building`.
+    /// Validates against the group list the server returned.
     public func validate(availableGroups: [GroupInfo]) -> Result<Profile, Problem> {
         let name = fullName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty else { return .failure(.emptyName) }
-        guard let building else { return .failure(.noBuilding) }
         guard let group else { return .failure(.noGroup) }
-        guard let info = availableGroups.first(where: { $0.name == group && $0.building == building }) else {
+        guard let info = availableGroups.first(where: { $0.name == group }) else {
             return .failure(.unknownGroup)
         }
-        return .success(Profile(fullName: name, building: building, course: info.course, group: group, subgroup: subgroup))
+        return .success(Profile(fullName: name, group: group, course: info.course, subgroup: subgroup))
     }
 }
 

@@ -62,19 +62,16 @@ struct APIClient: Sendable {
         try await get("/health")
     }
 
-    func buildings() async throws -> [BuildingInfo] {
-        let response: BuildingsResponse = try await get("/buildings")
-        return response.buildings
-    }
-
-    func groups(building: Int) async throws -> [GroupInfo] {
-        let response: GroupsResponse = try await get("/groups", query: ["building": "\(building)"])
+    /// All groups of both buildings.
+    func groups() async throws -> [GroupInfo] {
+        let response: GroupsResponse = try await get("/groups")
         return response.groups
     }
 
-    /// The whole known schedule of one group, as raw bytes for the offline cache.
-    func schedule(building: Int, group: String) async throws -> (ScheduleResponse, Data) {
-        try await getWithData("/schedule", query: ["building": "\(building)", "group": group])
+    /// The whole known schedule of one group across buildings, as raw bytes
+    /// too for the offline cache.
+    func schedule(group: String) async throws -> (ScheduleResponse, Data) {
+        try await getWithData("/schedule", query: ["group": group])
     }
 
     private func get<T: Decodable>(_ path: String, query: [String: String] = [:]) async throws -> T {

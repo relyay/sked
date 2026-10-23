@@ -36,19 +36,9 @@ struct ProfileView: View {
                 LabeledContent(L("profile.fullName"), value: profile.fullName)
             }
             NavigationLink {
-                StudyEditor(profile: profile)
+                GroupEditor(profile: profile)
             } label: {
-                LabeledContent(L("profile.building"), value: Format.building(profile.building))
-            }
-            NavigationLink {
-                StudyEditor(profile: profile)
-            } label: {
-                LabeledContent(L("profile.course"), value: L("course.label \(profile.course)"))
-            }
-            NavigationLink {
-                StudyEditor(profile: profile)
-            } label: {
-                LabeledContent(L("profile.group"), value: profile.group)
+                LabeledContent(L("profile.group"), value: "\(profile.group) · \(L("course.label \(profile.course)"))")
             }
             NavigationLink {
                 SubgroupEditor(profile: profile)
@@ -248,44 +238,37 @@ private struct NameEditor: View {
     }
 }
 
-/// Building, course and group are edited together because a group only
-/// exists within its building and course.
-private struct StudyEditor: View {
+/// Picks another group from the server list.
+private struct GroupEditor: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     let profile: Profile
-    @State private var draft = ProfileDraft()
-    @State private var options = StudyOptions()
+    @State private var list = GroupList()
+    @State private var selection: String?
 
     var body: some View {
-        Form {
-            StudySection(draft: $draft, options: options)
-        }
-        .navigationTitle(L("profile.study"))
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button(L("action.save")) {
-                    if case .success(let updated) = draft.validate(availableGroups: options.groups) {
-                        model.save(profile: updated)
-                        dismiss()
-                    }
-                }
-                .disabled(!isValid)
+        Group {
+            switch list.state {
+            case .loading:
+                ProgressView()
+            case .failed(let error):
+                ErrorStateView(error: error) { await list.load(client: model.client) }
+            case .loaded:
+                GroupPickerView(groups: list.groups, selection: $selection)
             }
         }
-        .onAppear {
-            draft.fullName = profile.fullName
-            draft.building = profile.building
-            draft.course = profile.course
-            draft.group = profile.group
-            draft.subgroup = profile.subgroup
+        .navigationTitle(L("profile.group"))
+        .task { await list.load(client: model.client) }
+        .onAppear { selection = profile.group }
+        .onChange(of: selection) {
+            guard let selection, selection != profile.group,
+                  let info = list.groups.first(where: { $0.name == selection }) else { return }
+            var updated = profile
+            updated.group = info.name
+            updated.course = info.course
+            model.save(profile: updated)
+            dismiss()
         }
-        .task { await options.loadBuildings(client: model.client) }
-    }
-
-    private var isValid: Bool {
-        if case .success = draft.validate(availableGroups: options.groups) { return true }
-        return false
     }
 }
 

@@ -1,10 +1,10 @@
 import SwiftUI
 import VKSITCore
 
-/// Loads buildings and groups for the study pickers (onboarding and profile).
+/// The group list from the server, shared by onboarding and the profile.
 @MainActor
 @Observable
-final class StudyOptions {
+final class GroupList {
     enum State {
         case loading
         case loaded
@@ -12,46 +12,23 @@ final class StudyOptions {
     }
 
     private(set) var state: State = .loading
-    private(set) var buildings: [BuildingInfo] = []
     private(set) var groups: [GroupInfo] = []
-    private(set) var groupsBuilding: Int?
 
-    func loadBuildings(client: APIClient) async {
+    func load(client: APIClient) async {
         state = .loading
         do {
-            buildings = try await client.buildings()
+            groups = try await client.groups()
             state = .loaded
         } catch {
             state = .failed(error as? APIError ?? .badResponse)
         }
-    }
-
-    func loadGroups(building: Int, client: APIClient) async {
-        guard groupsBuilding != building else { return }
-        state = .loading
-        groups = []
-        do {
-            groups = try await client.groups(building: building)
-            groupsBuilding = building
-            state = .loaded
-        } catch {
-            state = .failed(error as? APIError ?? .badResponse)
-        }
-    }
-
-    var courses: [Int] {
-        Array(Set(groups.map(\.course))).sorted()
-    }
-
-    func groups(course: Int?) -> [GroupInfo] {
-        groups.filter { course == nil || $0.course == course }
     }
 }
 
 struct OnboardingView: View {
     @Environment(AppModel.self) private var model
     @State private var draft = ProfileDraft()
-    @State private var options = StudyOptions()
+    @State private var groupList = GroupList()
     @State private var showsServerSettings = false
     @State private var attemptedSave = false
     @FocusState private var nameFocused: Bool
@@ -76,10 +53,16 @@ struct OnboardingView: View {
                     Text(L("onboarding.nameFooter"))
                 }
 
-                StudySection(draft: $draft, options: options)
+                Section(L("profile.group")) {
+                    GroupRow(selection: $draft.group, list: groupList)
+                }
 
-                Section(L("profile.subgroup")) {
+                Section {
                     SubgroupPicker(selection: $draft.subgroup)
+                } header: {
+                    Text(L("profile.subgroup"))
+                } footer: {
+                    Text(L("subgroup.footer"))
                 }
 
                 Section {
@@ -102,7 +85,7 @@ struct OnboardingView: View {
                         .padding(.vertical, 6)
                 }
                 .buttonStyle(.glassProminent)
-                .disabled(!canSave)
+                .disabled(draft.group == nil)
                 .padding()
                 .accessibilityIdentifier("onboarding.save")
             }
@@ -119,114 +102,103 @@ struct OnboardingView: View {
                 .presentationDetents([.medium, .large])
             }
             .task(id: model.server) {
-                draft.building = nil
-                draft.group = nil
-                await options.loadBuildings(client: model.client)
-                if options.buildings.count == 1 { draft.building = options.buildings[0].building }
+                await groupList.load(client: model.client)
             }
         }
     }
 
-    private var canSave: Bool {
-        if case .success = draft.validate(availableGroups: options.groups) { return true }
-        // Keep the button tappable for an empty name so the hint can appear.
-        return draft.group != nil && draft.fullName.trimmingCharacters(in: .whitespaces).isEmpty
-    }
-
     private func save() {
         attemptedSave = true
-        switch draft.validate(availableGroups: options.groups) {
+        switch draft.validate(availableGroups: groupList.groups) {
         case .success(let profile):
             model.save(profile: profile)
         case .failure(.emptyName):
             nameFocused = true
         case .failure:
-            break
+            draft.group = nil
         }
     }
 }
 
-/// Building → course → group, filled from the server.
-struct StudySection: View {
+/// "Группа: ИСП-225а ›" that opens the searchable list, or the load state.
+struct GroupRow: View {
     @Environment(AppModel.self) private var model
-    @Binding var draft: ProfileDraft
-    var options: StudyOptions
+    @Binding var selection: String?
+    var list: GroupList
 
     var body: some View {
-        Section(L("profile.study")) {
-            switch options.state {
-            case .failed(let error):
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(error.errorDescription ?? "")
-                        .font(.subheadline.weight(.semibold))
-                    Text(error.recoverySuggestion ?? "")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                    Button(L("action.retry")) {
-                        Task {
-                            if let building = draft.building, !options.buildings.isEmpty {
-                                await options.loadGroups(building: building, client: model.client)
-                            } else {
-                                await options.loadBuildings(client: model.client)
-                            }
-                        }
-                    }
-                    .buttonStyle(.glass)
-                    .accessibilityIdentifier("retry")
+        switch list.state {
+        case .loading:
+            ProgressView()
+        case .failed(let error):
+            VStack(alignment: .leading, spacing: 6) {
+                Text(error.errorDescription ?? "")
+                    .font(.subheadline.weight(.semibold))
+                Text(error.recoverySuggestion ?? "")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                Button(L("action.retry")) {
+                    Task { await list.load(client: model.client) }
                 }
-            case .loading where options.buildings.isEmpty:
-                ProgressView()
-            default:
-                Picker(L("profile.building"), selection: $draft.building) {
-                    Text(L("onboarding.choose")).tag(Int?.none)
-                    ForEach(options.buildings) { b in
-                        Text("\(Format.building(b.building)) · \(Format.sourceName(b.source))").tag(Int?.some(b.building))
-                    }
-                }
-                .accessibilityIdentifier("onboarding.building")
+                .buttonStyle(.glass)
+                .accessibilityIdentifier("retry")
+            }
+        case .loaded:
+            NavigationLink {
+                GroupPickerView(groups: list.groups, selection: $selection)
+            } label: {
+                LabeledContent(L("profile.group"), value: selection ?? L("onboarding.choose"))
+            }
+            .accessibilityIdentifier("onboarding.group")
+        }
+    }
+}
 
-                if draft.building != nil {
-                    if case .loading = options.state {
-                        ProgressView()
-                    } else {
-                        Picker(L("profile.course"), selection: $draft.course) {
-                            Text(L("onboarding.allCourses")).tag(Int?.none)
-                            ForEach(options.courses, id: \.self) { course in
-                                Text(L("course.label \(course)")).tag(Int?.some(course))
-                            }
-                        }
-                        .accessibilityIdentifier("onboarding.course")
+/// Searchable list of all groups, sectioned by course.
+struct GroupPickerView: View {
+    @Environment(\.dismiss) private var dismiss
+    let groups: [GroupInfo]
+    @Binding var selection: String?
+    @State private var search = ""
 
-                        Picker(L("profile.group"), selection: $draft.group) {
-                            Text(L("onboarding.choose")).tag(String?.none)
-                            ForEach(options.groups(course: draft.course)) { group in
-                                Text(group.name).tag(String?.some(group.name))
+    private var filtered: [GroupInfo] {
+        let query = search.trimmingCharacters(in: .whitespaces)
+        guard !query.isEmpty else { return groups }
+        return groups.filter { $0.name.localizedStandardContains(query) }
+    }
+
+    var body: some View {
+        let sections = Dictionary(grouping: filtered, by: \.course).sorted { $0.key < $1.key }
+        List {
+            ForEach(sections, id: \.key) { course, groups in
+                Section(course > 0 ? L("course.label \(course)") : L("course.other")) {
+                    ForEach(groups) { group in
+                        Button {
+                            selection = group.name
+                            dismiss()
+                        } label: {
+                            HStack {
+                                Text(group.name)
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                if group.name == selection {
+                                    Image(systemName: "checkmark")
+                                        .foregroundStyle(.tint)
+                                }
                             }
                         }
-                        .pickerStyle(.navigationLink)
-                        .accessibilityIdentifier("onboarding.group")
+                        .accessibilityAddTraits(group.name == selection ? .isSelected : [])
                     }
                 }
             }
         }
-        .task(id: draft.building) {
-            guard let building = draft.building else { return }
-            await options.loadGroups(building: building, client: model.client)
-            if let group = draft.group, !options.groups.contains(where: { $0.name == group }) {
-                draft.group = nil
+        .overlay {
+            if filtered.isEmpty {
+                ContentUnavailableView.search(text: search)
             }
         }
-        .onChange(of: draft.course) {
-            if let group = draft.group, let course = draft.course,
-               options.groups.first(where: { $0.name == group })?.course != course {
-                draft.group = nil
-            }
-        }
-        .onChange(of: draft.group) {
-            if let group = draft.group, let info = options.groups.first(where: { $0.name == group }) {
-                draft.course = info.course
-            }
-        }
+        .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: L("group.search"))
+        .navigationTitle(L("profile.group"))
     }
 }
 

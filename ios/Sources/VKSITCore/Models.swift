@@ -3,6 +3,8 @@ import Foundation
 /// A pair (or a run of pairs merged into one cell) as served by `GET /schedule`.
 public struct Lesson: Codable, Hashable, Sendable, Identifiable {
     public var pair: Int
+    /// Building of this pair; a group may change buildings between days.
+    public var building: Int?
     /// Last pair of a cell that spans several pairs, e.g. an exam.
     public var pairTo: Int?
     /// "HH:mm", Europe/Moscow.
@@ -19,11 +21,12 @@ public struct Lesson: Codable, Hashable, Sendable, Identifiable {
     public var timeSource: String?
 
     public init(
-        pair: Int, pairTo: Int? = nil, start: String, end: String? = nil, subject: String,
+        pair: Int, building: Int? = nil, pairTo: Int? = nil, start: String, end: String? = nil, subject: String,
         teacher: String? = nil, room: String? = nil, isRemote: Bool = false, subgroup: Int? = nil,
         note: String? = nil, timeSource: String? = nil
     ) {
         self.pair = pair
+        self.building = building
         self.pairTo = pairTo
         self.start = start
         self.end = end
@@ -111,15 +114,13 @@ public struct Day: Codable, Hashable, Sendable, Identifiable {
 }
 
 public struct ScheduleResponse: Codable, Hashable, Sendable {
-    public var building: Int
-    public var source: String
+    public var group: String?
     public var parsedAt: Date
     public var sourceModified: Date?
     public var days: [Day]
 
-    public init(building: Int, source: String, parsedAt: Date, sourceModified: Date? = nil, days: [Day]) {
-        self.building = building
-        self.source = source
+    public init(group: String? = nil, parsedAt: Date, sourceModified: Date? = nil, days: [Day]) {
+        self.group = group
         self.parsedAt = parsedAt
         self.sourceModified = sourceModified
         self.days = days
@@ -129,41 +130,20 @@ public struct ScheduleResponse: Codable, Hashable, Sendable {
 public struct GroupInfo: Codable, Hashable, Sendable, Identifiable {
     public var name: String
     public var course: Int
-    public var building: Int
+    /// Buildings the group has classes in.
+    public var buildings: [Int]
 
-    public init(name: String, course: Int, building: Int) {
+    public init(name: String, course: Int, buildings: [Int] = []) {
         self.name = name
         self.course = course
-        self.building = building
+        self.buildings = buildings
     }
 
     public var id: String { name }
 }
 
 public struct GroupsResponse: Codable, Sendable {
-    public var building: Int
     public var groups: [GroupInfo]
-}
-
-public struct BuildingInfo: Codable, Hashable, Sendable, Identifiable {
-    public var building: Int
-    /// "npo" | "spo".
-    public var source: String
-    public var parsedAt: Date
-    public var sourceModified: Date?
-
-    public init(building: Int, source: String, parsedAt: Date, sourceModified: Date? = nil) {
-        self.building = building
-        self.source = source
-        self.parsedAt = parsedAt
-        self.sourceModified = sourceModified
-    }
-
-    public var id: Int { building }
-}
-
-public struct BuildingsResponse: Codable, Sendable {
-    public var buildings: [BuildingInfo]
 }
 
 public struct Health: Codable, Sendable {

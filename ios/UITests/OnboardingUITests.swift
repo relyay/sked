@@ -36,14 +36,11 @@ final class OnboardingUITests: XCTestCase {
         name.tap()
         name.typeText("Иванов Иван Иванович")
 
-        let building = app.buttons["onboarding.building"]
-        XCTAssertTrue(building.waitForExistence(timeout: 10), "buildings must load from the server")
-        building.tap()
-        app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'корпус 1'")).firstMatch.tap()
-
         let group = app.buttons["onboarding.group"]
         XCTAssertTrue(group.waitForExistence(timeout: 10), "groups must load from the server")
         group.tap()
+        app.searchFields.firstMatch.tap()
+        app.searchFields.firstMatch.typeText("225а")
         app.buttons["ИСП-225а"].tap()
 
         app.segmentedControls["onboarding.subgroup"].buttons["2"].tap()

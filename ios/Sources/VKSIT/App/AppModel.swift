@@ -36,7 +36,7 @@ final class AppModel {
         self.cache = cache
         profile = defaults.data(forKey: Keys.profile).flatMap { try? JSONDecoder().decode(Profile.self, from: $0) }
         server = defaults.data(forKey: Keys.server).flatMap { try? JSONDecoder().decode(ServerAddress.self, from: $0) } ?? .default
-        if let profile, let (cached, fetchedAt) = cache.load(building: profile.building, group: profile.group) {
+        if let profile, let (cached, fetchedAt) = cache.load(group: profile.group) {
             scheduleState = .loaded(cached)
             dataFetchedAt = fetchedAt
         }
@@ -55,14 +55,14 @@ final class AppModel {
     }
 
     func save(profile: Profile) {
-        let groupChanged = profile.group != self.profile?.group || profile.building != self.profile?.building
+        let groupChanged = profile.group != self.profile?.group
         self.profile = profile
         defaults.set(try? JSONEncoder().encode(profile), forKey: Keys.profile)
         if groupChanged {
             scheduleState = .idle
             dataFetchedAt = nil
             staleReason = nil
-            if let (cached, fetchedAt) = cache.load(building: profile.building, group: profile.group) {
+            if let (cached, fetchedAt) = cache.load(group: profile.group) {
                 scheduleState = .loaded(cached)
                 dataFetchedAt = fetchedAt
             }
@@ -94,11 +94,11 @@ final class AppModel {
         if schedule == nil { scheduleState = .loading }
 
         do {
-            let (response, data) = try await client.schedule(building: profile.building, group: profile.group)
+            let (response, data) = try await client.schedule(group: profile.group)
             // The profile may have changed while the request was in flight.
             guard profile == self.profile else { return }
             let now = Date.now
-            cache.save(data, building: profile.building, group: profile.group, at: now)
+            cache.save(data, group: profile.group, at: now)
             scheduleState = .loaded(response)
             dataFetchedAt = now
             staleReason = nil

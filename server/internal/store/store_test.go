@@ -32,7 +32,7 @@ func TestUpdateKeepsRecentHistory(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	snap, _ := reopened.View(1)
+	snap := reopened.Views()[0]
 	var got []string
 	for _, d := range snap.Days {
 		got = append(got, d.Date)

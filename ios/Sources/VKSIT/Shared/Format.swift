@@ -51,12 +51,10 @@ enum Format {
         L("building.short \(number)")
     }
 
-    static func sourceName(_ source: String) -> String {
-        switch source {
-        case "npo": L("source.npo")
-        case "spo": L("source.spo")
-        default: source.uppercased()
-        }
+    /// "корпус 1" or "корпуса 1, 2" when a day spans both.
+    static func buildings(_ numbers: [Int]) -> String {
+        guard numbers.count > 1 else { return building(numbers.first ?? 0) }
+        return L("building.many \(numbers.map(String.init).joined(separator: ", "))")
     }
 
     private static func dayDate(_ day: Day) -> Date {
