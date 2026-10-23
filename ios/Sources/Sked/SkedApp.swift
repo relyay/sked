@@ -1,5 +1,4 @@
 import SwiftUI
-import SkedCore
 
 @main
 struct SkedApp: App {
@@ -10,13 +9,7 @@ struct SkedApp: App {
             UserDefaults.standard.removeObject(forKey: "profile")
             ScheduleCache().removeAll()
         }
-        let model = AppModel()
-        let env = ProcessInfo.processInfo.environment
-        if let host = env["SKED_SERVER_HOST"], let port = env["SKED_SERVER_PORT"],
-           case .success(let address) = ServerAddress.validate(host: host, port: port) {
-            model.save(server: address)
-        }
-        _model = State(initialValue: model)
+        _model = State(initialValue: AppModel())
     }
 
     var body: some Scene {

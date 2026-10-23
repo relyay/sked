@@ -2,7 +2,7 @@ import Foundation
 import Observation
 import SkedCore
 
-/// App-wide state: the local profile, server address and the schedule.
+/// App-wide state: the local profile and the schedule.
 @MainActor
 @Observable
 final class AppModel {
@@ -15,7 +15,6 @@ final class AppModel {
     }
 
     private(set) var profile: Profile?
-    private(set) var server: ServerAddress
     private(set) var scheduleState: ScheduleState = .idle
     /// When the shown schedule was downloaded.
     private(set) var dataFetchedAt: Date?
@@ -28,21 +27,25 @@ final class AppModel {
 
     private enum Keys {
         static let profile = "profile"
-        static let server = "server"
+        /// Left over from builds with a configurable server address.
+        static let legacyServer = "server"
     }
 
-    init(defaults: UserDefaults = .standard, cache: ScheduleCache = ScheduleCache()) {
+    private let baseURL: URL
+
+    init(defaults: UserDefaults = .standard, cache: ScheduleCache = ScheduleCache(), baseURL: URL = Server.baseURL()) {
         self.defaults = defaults
         self.cache = cache
+        self.baseURL = baseURL
+        defaults.removeObject(forKey: Keys.legacyServer)
         profile = defaults.data(forKey: Keys.profile).flatMap { try? JSONDecoder().decode(Profile.self, from: $0) }
-        server = defaults.data(forKey: Keys.server).flatMap { try? JSONDecoder().decode(ServerAddress.self, from: $0) } ?? .default
         if let profile, let (cached, fetchedAt) = cache.load(group: profile.group) {
             scheduleState = .loaded(cached)
             dataFetchedAt = fetchedAt
         }
     }
 
-    var client: APIClient { APIClient(address: server) }
+    var client: APIClient { APIClient(baseURL: baseURL) }
 
     var schedule: ScheduleResponse? {
         if case .loaded(let response) = scheduleState { return response }
@@ -79,12 +82,6 @@ final class AppModel {
         staleReason = nil
     }
 
-    /// Applies a new server address to all following requests immediately.
-    func save(server: ServerAddress) {
-        guard server != self.server else { return }
-        self.server = server
-        defaults.set(try? JSONEncoder().encode(server), forKey: Keys.server)
-    }
 
     /// Downloads the schedule; on failure keeps showing the cached snapshot.
     func refresh() async {

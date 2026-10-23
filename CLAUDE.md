@@ -28,7 +28,7 @@ go run ./cmd/parsepdf testdata/spo.pdf         # PDF → JSON on stdout, parser 
 go run ./cmd/skedd -addr 127.0.0.1:1984 -data /tmp/sked-data
 ```
 
-Server listens on `0.0.0.0:1984` by default; the iOS client defaults to `http://192.168.1.246:1984`. Env vars: `SKED_ADDR`, `SKED_DATA`, `SKED_NPO_URL`, `SKED_SPO_URL`, `SKED_DEBUG`. There is no admin/manual-refresh endpoint by design (it would let anyone make the server hammer rasp.vksit.ru); the 2-minute ticker is the only refresh. `skedd -healthcheck` probes `/health` and is the container health check (the distroless image has no shell or curl).
+Server listens on `0.0.0.0:1984` by default; the iOS client talks only to `https://lunars.ru` (hard-coded `Server.production` in `SkedCore`; no user-facing server setting, no ATS exceptions), so production must sit behind a TLS reverse proxy. Env vars: `SKED_ADDR`, `SKED_DATA`, `SKED_NPO_URL`, `SKED_SPO_URL`, `SKED_DEBUG`. There is no admin/manual-refresh endpoint by design (it would let anyone make the server hammer rasp.vksit.ru); the 2-minute ticker is the only refresh. `skedd -healthcheck` probes `/health` and is the container health check (the distroless image has no shell or curl).
 
 ## Server architecture
 
@@ -56,4 +56,4 @@ Manual overrides: `<data>/overrides/<npo|spo>.json` (`{"days":[{date, group, les
 - Liquid Glass via iOS 26 APIs (`glassEffect`, `GlassEffectContainer`, `.buttonStyle(.glass/.glassProminent)`, `tabBarMinimizeBehavior`); deployment target is iOS 26, iPhone only (`Info.plist`).
 - Format dates only through `Format` (`Format.locale` is derived from `Bundle.module.preferredLocalizations`, not `Locale.current`, so dates always match the UI language); the root view also sets `.environment(\.locale, Format.locale)`.
 - The main bundle needs `AppResources/<lang>.lproj` (listed under `resources` in `xtool.yml`); without them iOS runs the app as English-only and `Locale.current`, dates and system controls ignore the Russian device language.
-- `UITests/` is XCUITest for a Mac/Xcode run; it is not part of the SwiftPM package. Accessibility identifiers it relies on: `onboarding.*`, `retry`, `home.currentLesson`. The app honours `-uitest-reset` and `SKED_SERVER_HOST`/`SKED_SERVER_PORT`.
+- `UITests/` is XCUITest for a Mac/Xcode run; it is not part of the SwiftPM package. Accessibility identifiers it relies on: `onboarding.*`, `retry`, `home.currentLesson`. The app honours `-uitest-reset` and the `SKED_SERVER_URL` launch environment (test-only override of the server URL).

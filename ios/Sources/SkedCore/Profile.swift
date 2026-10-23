@@ -47,49 +47,16 @@ public struct ProfileDraft: Equatable, Sendable {
     }
 }
 
-/// Base address of the schedule server, editable in the profile.
-public struct ServerAddress: Codable, Equatable, Sendable {
-    public static let `default` = ServerAddress(host: "192.168.1.246", port: 1984)
+/// Where the schedule server lives. Fixed for users; UI tests point the app
+/// at a local server through the `SKED_SERVER_URL` launch environment.
+public enum Server {
+    public static let production = URL(string: "https://lunars.ru")!
 
-    public var host: String
-    public var port: Int
-
-    public init(host: String, port: Int) {
-        self.host = host
-        self.port = port
-    }
-
-    public enum Problem: Error, Equatable, Sendable {
-        case emptyHost, invalidHost, invalidPort
-    }
-
-    public static func validate(host: String, port: String) -> Result<ServerAddress, Problem> {
-        let host = host.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !host.isEmpty else { return .failure(.emptyHost) }
-        guard let port = Int(port.trimmingCharacters(in: .whitespaces)), (1...65535).contains(port) else {
-            return .failure(.invalidPort)
+    public static func baseURL(environment: [String: String] = ProcessInfo.processInfo.environment) -> URL {
+        guard let raw = environment["SKED_SERVER_URL"], let url = URL(string: raw),
+              let scheme = url.scheme, ["http", "https"].contains(scheme), url.host() != nil else {
+            return production
         }
-        let address = ServerAddress(host: host, port: port)
-        guard address.baseURL != nil else { return .failure(.invalidHost) }
-        return .success(address)
-    }
-
-    /// `http://host:port`; a host typed with an explicit scheme keeps it.
-    public var baseURL: URL? {
-        var host = host.trimmingCharacters(in: .whitespacesAndNewlines)
-        var scheme = "http"
-        if let range = host.range(of: "://") {
-            scheme = String(host[..<range.lowerBound]).lowercased()
-            host = String(host[range.upperBound...])
-        }
-        while host.hasSuffix("/") { host.removeLast() }
-        guard ["http", "https"].contains(scheme), !host.isEmpty, !host.contains(where: { $0.isWhitespace || $0 == "/" }) else {
-            return nil
-        }
-        var components = URLComponents()
-        components.scheme = scheme
-        components.host = host
-        components.port = port
-        return components.url
+        return url
     }
 }

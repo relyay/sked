@@ -238,12 +238,10 @@ private let days = [monday, saturday, friday]
         #expect(d.validate(availableGroups: groups) == .success(Profile(fullName: "Иванов Иван", group: "ИСП-225а", course: 2, subgroup: .second)))
     }
 
-    @Test func serverAddress() {
-        #expect(ServerAddress.default.baseURL?.absoluteString == "http://192.168.1.246:1984")
-        #expect(ServerAddress.validate(host: "", port: "1984") == .failure(.emptyHost))
-        #expect(ServerAddress.validate(host: "host", port: "0") == .failure(.invalidPort))
-        #expect(ServerAddress.validate(host: "host", port: "65536") == .failure(.invalidPort))
-        #expect(ServerAddress.validate(host: "my host", port: "80") == .failure(.invalidHost))
-        #expect((try? ServerAddress.validate(host: "https://rasp.example.org/", port: "443").get())?.baseURL?.absoluteString == "https://rasp.example.org:443")
+    @Test func serverURL() {
+        #expect(Server.baseURL(environment: [:]).absoluteString == "https://lunars.ru")
+        #expect(Server.baseURL(environment: ["SKED_SERVER_URL": "http://127.0.0.1:1984"]).absoluteString == "http://127.0.0.1:1984")
+        #expect(Server.baseURL(environment: ["SKED_SERVER_URL": "not a url"]) == Server.production)
+        #expect(Server.baseURL(environment: ["SKED_SERVER_URL": "ftp://example.org"]) == Server.production)
     }
 }

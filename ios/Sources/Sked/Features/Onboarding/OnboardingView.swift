@@ -29,7 +29,6 @@ struct OnboardingView: View {
     @Environment(AppModel.self) private var model
     @State private var draft = ProfileDraft()
     @State private var groupList = GroupList()
-    @State private var showsServerSettings = false
     @State private var attemptedSave = false
     @FocusState private var nameFocused: Bool
 
@@ -65,14 +64,6 @@ struct OnboardingView: View {
                     Text(L("subgroup.footer"))
                 }
 
-                Section {
-                    Button {
-                        showsServerSettings = true
-                    } label: {
-                        LabeledContent(L("profile.server"), value: "\(model.server.host):\(model.server.port)")
-                    }
-                    .accessibilityIdentifier("onboarding.server")
-                }
             }
             .scrollContentBackground(.hidden)
             .background(ScreenBackground())
@@ -89,19 +80,7 @@ struct OnboardingView: View {
                 .padding()
                 .accessibilityIdentifier("onboarding.save")
             }
-            .sheet(isPresented: $showsServerSettings) {
-                NavigationStack {
-                    Form { ServerSection() }
-                        .navigationTitle(L("profile.server"))
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button(L("action.done")) { showsServerSettings = false }
-                            }
-                        }
-                }
-                .presentationDetents([.medium, .large])
-            }
-            .task(id: model.server) {
+            .task {
                 await groupList.load(client: model.client)
             }
         }

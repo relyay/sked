@@ -17,7 +17,6 @@ struct ProfileView: View {
                         }
                     }
                 }
-                ServerSection()
                 dataSection
                 Section(L("profile.about")) {
                     LabeledContent(L("profile.version"), value: appVersion)
@@ -124,116 +123,6 @@ func subgroupName(_ subgroup: Subgroup) -> String {
     switch subgroup {
     case .unspecified: L("subgroup.unspecified")
     case .first, .second: L("subgroup.badge \(subgroup.rawValue)")
-    }
-}
-
-/// Address/port with validation, applied as soon as it is valid, plus a
-/// connection check against `/health`.
-struct ServerSection: View {
-    @Environment(AppModel.self) private var model
-    @State private var host = ""
-    @State private var port = ""
-    @State private var check: CheckState = .idle
-
-    enum CheckState {
-        case idle, checking
-        case ok(Health)
-        case failed(APIError)
-    }
-
-    var body: some View {
-        Section {
-            TextField(L("server.host"), text: $host)
-                .keyboardType(.URL)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .accessibilityIdentifier("server.host")
-            TextField(L("server.port"), text: $port)
-                .keyboardType(.numberPad)
-                .accessibilityIdentifier("server.port")
-            if let problem {
-                Text(problem)
-                    .font(.footnote)
-                    .foregroundStyle(.red)
-            }
-            Button(L("server.check")) {
-                Task { await runCheck() }
-            }
-            .disabled(problem != nil)
-            checkResult
-            Button(L("server.resetDefault")) {
-                host = ServerAddress.default.host
-                port = String(ServerAddress.default.port)
-            }
-        } header: {
-            Text(L("profile.server"))
-        } footer: {
-            Text(L("server.footer"))
-        }
-        .onAppear {
-            host = model.server.host
-            port = String(model.server.port)
-        }
-        .onChange(of: host) { apply() }
-        .onChange(of: port) { apply() }
-    }
-
-    private var problem: String? {
-        switch ServerAddress.validate(host: host, port: port) {
-        case .success: nil
-        case .failure(.emptyHost): L("server.emptyHost")
-        case .failure(.invalidHost): L("server.invalidHost")
-        case .failure(.invalidPort): L("server.invalidPort")
-        }
-    }
-
-    private func apply() {
-        check = .idle
-        if case .success(let address) = ServerAddress.validate(host: host, port: port) {
-            model.save(server: address)
-        }
-    }
-
-    private func runCheck() async {
-        check = .checking
-        do {
-            check = .ok(try await model.client.health())
-        } catch {
-            check = .failed(error as? APIError ?? .badResponse)
-        }
-    }
-
-    @ViewBuilder
-    private var checkResult: some View {
-        switch check {
-        case .idle:
-            EmptyView()
-        case .checking:
-            ProgressView()
-        case .ok(let health):
-            VStack(alignment: .leading, spacing: 4) {
-                Label(health.status == "ok" ? L("server.ok") : L("server.degraded"), systemImage: "circle.fill")
-                    .foregroundStyle(health.status == "ok" ? .green : .orange)
-                if let lastParse = health.lastParse {
-                    Text(L("server.lastParse \(Format.dateTime(lastParse))"))
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-                Text(L("server.version \(health.version)"))
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-            .accessibilityElement(children: .combine)
-        case .failed(let error):
-            VStack(alignment: .leading, spacing: 4) {
-                Label(error.errorDescription ?? "", systemImage: "circle.fill")
-                    .foregroundStyle(.red)
-                Text(error.recoverySuggestion ?? "")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-            .accessibilityElement(children: .combine)
-        }
     }
 }
 

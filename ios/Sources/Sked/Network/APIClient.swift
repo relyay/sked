@@ -54,13 +54,9 @@ enum APIError: LocalizedError, Equatable {
 /// Talks to the skedd server. Conditional requests (ETag → 304) are handled
 /// by URLCache because the server sends `Cache-Control: no-cache`.
 struct APIClient: Sendable {
-    let address: ServerAddress
+    let baseURL: URL
     var session: URLSession = .sked
     var maxAttempts = 3
-
-    func health() async throws -> Health {
-        try await get("/health")
-    }
 
     /// All groups of both buildings.
     func groups() async throws -> [GroupInfo] {
@@ -79,7 +75,7 @@ struct APIClient: Sendable {
     }
 
     private func getWithData<T: Decodable>(_ path: String, query: [String: String]) async throws -> (T, Data) {
-        guard let base = address.baseURL, var components = URLComponents(url: base.appending(path: path), resolvingAgainstBaseURL: false) else {
+        guard var components = URLComponents(url: baseURL.appending(path: path), resolvingAgainstBaseURL: false) else {
             throw APIError.invalidAddress
         }
         if !query.isEmpty {
@@ -110,7 +106,7 @@ struct APIClient: Sendable {
         do {
             (data, response) = try await session.data(from: url)
         } catch let error as URLError {
-            throw map(error, host: url.host() ?? address.host)
+            throw map(error, host: url.host() ?? baseURL.host() ?? "")
         }
         guard let http = response as? HTTPURLResponse else { throw APIError.badResponse }
         switch http.statusCode {

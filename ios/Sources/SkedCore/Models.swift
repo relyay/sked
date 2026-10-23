@@ -149,21 +149,6 @@ public struct GroupsResponse: Codable, Sendable {
     public var groups: [GroupInfo]
 }
 
-public struct Health: Codable, Sendable {
-    public struct Source: Codable, Sendable {
-        public var source: String
-        public var building: Int?
-        public var lastSuccess: Date?
-        public var lastError: String?
-    }
-
-    /// "ok" | "degraded".
-    public var status: String
-    public var version: String
-    public var lastParse: Date?
-    public var sources: [Source]
-}
-
 public struct APIErrorBody: Codable, Sendable {
     public var error: String
 }

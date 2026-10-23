@@ -23,15 +23,5 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<!-- The server address is user-configurable and plain HTTP on the LAN. -->
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
-	</dict>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Приложение загружает расписание с сервера колледжа в локальной сети.</string>
 </dict>
 </plist>

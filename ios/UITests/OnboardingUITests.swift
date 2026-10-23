@@ -13,8 +13,7 @@ final class OnboardingUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-uitest-reset", "-AppleLanguages", "(ru)", "-AppleLocale", "ru_RU"]
         app.launchEnvironment = [
-            "SKED_SERVER_HOST": ProcessInfo.processInfo.environment["SKED_SERVER_HOST"] ?? "127.0.0.1",
-            "SKED_SERVER_PORT": ProcessInfo.processInfo.environment["SKED_SERVER_PORT"] ?? "1984",
+            "SKED_SERVER_URL": ProcessInfo.processInfo.environment["SKED_SERVER_URL"] ?? "http://127.0.0.1:1984",
         ]
         app.launch()
     }
@@ -56,8 +55,7 @@ final class OnboardingUITests: XCTestCase {
 
     func testUnreachableServerShowsRetry() {
         app.terminate()
-        app.launchEnvironment["SKED_SERVER_HOST"] = "127.0.0.1"
-        app.launchEnvironment["SKED_SERVER_PORT"] = "9"
+        app.launchEnvironment["SKED_SERVER_URL"] = "http://127.0.0.1:9"
         app.launch()
         XCTAssertTrue(app.buttons["retry"].waitForExistence(timeout: 30))
     }

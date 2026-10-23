@@ -5,7 +5,6 @@
 
 /* Actions */
 "action.retry" = "Retry";
-"action.done" = "Done";
 
 /* Errors */
 "error.invalidAddress" = "Invalid server address";
@@ -16,7 +15,7 @@
 "error.server %lld" = "The server returned an error (%lld)";
 "error.serverMessage %lld %@" = "Server error (%lld): %@";
 "error.badResponse" = "The server sent an unexpected response";
-"error.recovery.checkServer" = "Check the address and port in Profile → Server and that your phone is on the same network.";
+"error.recovery.checkServer" = "Check your internet connection. If it works, the server is temporarily unavailable — try again later.";
 "error.recovery.offline" = "Turn on Wi‑Fi or mobile data and try again.";
 "error.recovery.retryLater" = "Try again in a minute.";
 "stale.title %@" = "Showing data from %@";
@@ -83,23 +82,9 @@
 "profile.reset" = "Reset profile";
 "profile.resetConfirm" = "Reset profile?";
 "profile.resetMessage" = "Your name, group and saved schedule will be removed from this phone.";
-"profile.server" = "Server";
 "profile.dataUpdated" = "Data updated";
 "profile.serverParsed" = "Server read the PDF";
 "profile.never" = "not yet";
 "profile.refreshNow" = "Refresh now";
 "profile.version" = "App version";
 
-/* Server */
-"server.host" = "Address";
-"server.port" = "Port";
-"server.check" = "Check connection";
-"server.ok" = "Server is up";
-"server.degraded" = "Server is up, but the schedule source is unavailable";
-"server.lastParse %@" = "Last schedule parse: %@";
-"server.version %@" = "Server version: %@";
-"server.emptyHost" = "Enter the server address";
-"server.invalidHost" = "The address must not contain spaces or a path";
-"server.invalidPort" = "Port must be a number from 1 to 65535";
-"server.resetDefault" = "Reset address";
-"server.footer" = "The new address is used for all requests immediately.";
