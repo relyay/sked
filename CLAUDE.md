@@ -4,6 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Schedule app for VKSIT college students: a Go server (`server/`) parses the college's schedule PDFs and serves JSON; an iOS 26 SwiftUI client (`ios/`, built on Linux with xtool) consumes it. The client never touches the PDFs or rasp.vksit.ru. Full design, data model and API contract: `docs/ARCHITECTURE.md` — keep it in sync when the JSON shape or endpoints change.
 
+## iOS commands (run in `ios/`)
+
+```sh
+VKSIT_CORE_ONLY=1 swift test                       # VKSITCore tests on Linux (Swift Testing)
+VKSIT_CORE_ONLY=1 swift test --filter NextSchoolDayTests
+xtool dev build                                    # cross-compile the app → xtool/VKSIT.app
+xtool dev                                          # build, install and launch on a connected iPhone
+```
+
+`VKSIT_CORE_ONLY` makes `Package.swift` drop the SwiftUI target; plain `swift test` fails on Linux because it builds every target. The manifest is evaluated on the Linux host even during xtool cross-compilation, so `#if os(...)` in the manifest cannot distinguish the two.
+
 ## Server commands (run in `server/`)
 
 ```sh
@@ -33,3 +44,12 @@ Facts about the source PDFs that drive the parser design (verified on `testdata/
 Manual overrides: `<data>/overrides/<npo|spo>.json` (`{"days":[{date, group, lessons, notes}]}`) replace a group's day wholesale, win over the parser, and are reread on every tick.
 
 `/schedule`, `/groups`, `/buildings` responses carry a content-hash `ETag` and answer `If-None-Match` with 304; keep new cacheable endpoints on `writeCached`.
+
+## iOS architecture
+
+- `VKSITCore` holds every rule worth testing (subgroup filtering, next lesson, next school day, Moscow "today", validation, JSON decoding). Keep it free of SwiftUI so it stays testable on Linux; `VKSIT` is views, `AppModel`, networking and the cache.
+- SwiftData's `@Model` macro is unavailable with xtool on Linux (the SDK's macro server lacks `SwiftDataMacros`), so the offline cache is JSON files (`Storage/ScheduleCache.swift`). `@Observable` works.
+- Strings live in `Bundle.module`, not the main bundle: always localize via `L("key \(arg)")` (`Shared/Localization.swift`) and add the key to both `Resources/ru.lproj` and `en.lproj`. Interpolated `Int` → `%lld`, `String` → `%@` in the key; plurals go in `.stringsdict`.
+- Liquid Glass via iOS 26 APIs (`glassEffect`, `GlassEffectContainer`, `.buttonStyle(.glass/.glassProminent)`, `tabBarMinimizeBehavior`); deployment target is iOS 26, iPhone only (`Info.plist`).
+- Lessons with `timeSource` set must render with "≈" (`Format.timeRange`).
+- `UITests/` is XCUITest for a Mac/Xcode run; it is not part of the SwiftPM package. Accessibility identifiers it relies on: `onboarding.*`, `retry`, `home.currentLesson`. The app honours `-uitest-reset` and `VKSIT_SERVER_HOST`/`VKSIT_SERVER_PORT`.

@@ -1,0 +1,67 @@
+import XCTest
+
+/// UI test of the first-run flow. XCUITest needs Xcode on a Mac: generate a
+/// project with `xtool dev generate-xcode-project`, add a UI Testing target
+/// containing this file, and run it against a vksitd instance:
+///
+///     VKSIT_ADMIN_SECRET=x go run ./cmd/vksitd -addr 127.0.0.1:1984
+final class OnboardingUITests: XCTestCase {
+    private var app: XCUIApplication!
+
+    override func setUp() {
+        continueAfterFailure = false
+        app = XCUIApplication()
+        app.launchArguments = ["-uitest-reset", "-AppleLanguages", "(ru)", "-AppleLocale", "ru_RU"]
+        app.launchEnvironment = [
+            "VKSIT_SERVER_HOST": ProcessInfo.processInfo.environment["VKSIT_SERVER_HOST"] ?? "127.0.0.1",
+            "VKSIT_SERVER_PORT": ProcessInfo.processInfo.environment["VKSIT_SERVER_PORT"] ?? "1984",
+        ]
+        app.launch()
+    }
+
+    func testSaveIsBlockedUntilGroupChosen() {
+        let save = app.buttons["onboarding.save"]
+        XCTAssertTrue(save.waitForExistence(timeout: 5))
+        XCTAssertFalse(save.isEnabled)
+
+        let name = app.textFields["onboarding.name"]
+        name.tap()
+        name.typeText("Иванов Иван Иванович")
+        XCTAssertFalse(save.isEnabled, "group is still missing")
+    }
+
+    func testCompletingOnboardingOpensHome() {
+        let name = app.textFields["onboarding.name"]
+        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        name.tap()
+        name.typeText("Иванов Иван Иванович")
+
+        let building = app.buttons["onboarding.building"]
+        XCTAssertTrue(building.waitForExistence(timeout: 10), "buildings must load from the server")
+        building.tap()
+        app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'корпус 1'")).firstMatch.tap()
+
+        let group = app.buttons["onboarding.group"]
+        XCTAssertTrue(group.waitForExistence(timeout: 10), "groups must load from the server")
+        group.tap()
+        app.buttons["ИСП-225а"].tap()
+
+        app.segmentedControls["onboarding.subgroup"].buttons["2"].tap()
+
+        let save = app.buttons["onboarding.save"]
+        XCTAssertTrue(save.isEnabled)
+        save.tap()
+
+        XCTAssertTrue(app.tabBars.buttons["Главная"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.otherElements["home.currentLesson"].waitForExistence(timeout: 10)
+            || app.staticTexts["home.currentLesson"].exists)
+    }
+
+    func testUnreachableServerShowsRetry() {
+        app.terminate()
+        app.launchEnvironment["VKSIT_SERVER_HOST"] = "127.0.0.1"
+        app.launchEnvironment["VKSIT_SERVER_PORT"] = "9"
+        app.launch()
+        XCTAssertTrue(app.buttons["retry"].waitForExistence(timeout: 30))
+    }
+}

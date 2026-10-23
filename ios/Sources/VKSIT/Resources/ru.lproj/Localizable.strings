@@ -1,0 +1,105 @@
+/* Tabs */
+"tab.home" = "Главная";
+"tab.schedule" = "Расписание";
+"tab.profile" = "Профиль";
+
+/* Actions */
+"action.retry" = "Повторить";
+"action.save" = "Сохранить";
+"action.done" = "Готово";
+
+/* Errors */
+"error.invalidAddress" = "Неверный адрес сервера";
+"error.cannotConnect %@" = "Не удалось подключиться к серверу %@";
+"error.timedOut" = "Сервер слишком долго не отвечает";
+"error.offline" = "Нет подключения к интернету";
+"error.notLoadedYet" = "Сервер ещё не загрузил расписание";
+"error.server %lld" = "Сервер ответил ошибкой (%lld)";
+"error.serverMessage %lld %@" = "Ошибка сервера (%lld): %@";
+"error.badResponse" = "Сервер прислал непонятный ответ";
+"error.recovery.checkServer" = "Проверьте адрес и порт в Профиле → Сервер и что телефон в той же сети.";
+"error.recovery.offline" = "Включите Wi‑Fi или мобильные данные и попробуйте снова.";
+"error.recovery.retryLater" = "Попробуйте ещё раз через минуту.";
+"stale.title %@" = "Показаны данные от %@";
+
+/* Common */
+"building.short %lld" = "корпус %lld";
+"course.label %lld" = "%lld курс";
+"subgroup.badge %lld" = "%lld подгруппа";
+"subgroup.unspecified" = "Не указана";
+"subgroup.footer" = "Пары другой подгруппы останутся в расписании, но будут приглушены.";
+"source.npo" = "НПО";
+"source.spo" = "СПО";
+"day.today" = "сегодня";
+"day.tomorrow" = "завтра";
+"countdown.in %@" = "начнётся через %@";
+"lesson.pairNumber %@" = "%@ пара";
+"lesson.pairShort" = "пара";
+"lesson.remote" = "дистант";
+"lesson.room %@" = "каб. %@";
+"a11y.approximateTime %@" = "примерно %@, время в расписании не указано";
+"a11y.loading" = "Загрузка расписания";
+
+/* Onboarding */
+"onboarding.title" = "Знакомство";
+"onboarding.namePlaceholder" = "Фамилия Имя Отчество";
+"onboarding.nameFooter" = "ФИО хранится только на этом телефоне и никуда не отправляется.";
+"onboarding.nameRequired" = "Введите ФИО";
+"onboarding.choose" = "Выберите";
+"onboarding.allCourses" = "Все курсы";
+"onboarding.save" = "Сохранить и начать";
+
+/* Home */
+"home.greeting %@" = "Привет, %@";
+"home.nextLesson" = "Следующая пара";
+"home.ongoing" = "сейчас идёт";
+"home.finished" = "На сегодня пар больше нет — отдыхай 🎉";
+"home.noLessonsToday" = "Сегодня пар нет";
+"home.buildingRoom %lld %@" = "корпус %lld, каб. %@";
+"home.nextDay" = "Следующий учебный день";
+"home.tomorrowFree" = "Завтра пар нет";
+"home.tomorrowWeekday %@" = "Завтра (%@)";
+"home.firstAt %@" = "первая в %@";
+"home.noNextDay" = "Следующих дней в расписании пока нет";
+"home.startsAt %@" = "Занятия начинаются с %@";
+
+/* Schedule */
+"schedule.mode" = "Режим";
+"schedule.day" = "День";
+"schedule.week" = "Неделя";
+"schedule.next" = "Следующая";
+"schedule.empty" = "Пар нет";
+"schedule.noDays" = "Расписание закончилось";
+"schedule.noDaysHint" = "Колледж ещё не опубликовал следующие дни.";
+
+/* Profile */
+"profile.user" = "Пользователь";
+"profile.fullName" = "ФИО";
+"profile.study" = "Учёба";
+"profile.building" = "Корпус";
+"profile.course" = "Курс";
+"profile.group" = "Группа";
+"profile.subgroup" = "Подгруппа";
+"profile.reset" = "Сбросить профиль";
+"profile.resetConfirm" = "Сбросить профиль?";
+"profile.resetMessage" = "ФИО, группа и сохранённое расписание будут удалены с телефона.";
+"profile.server" = "Сервер";
+"profile.dataUpdated" = "Данные обновлены";
+"profile.serverParsed" = "Сервер прочитал PDF";
+"profile.never" = "ещё нет";
+"profile.refreshNow" = "Обновить сейчас";
+"profile.version" = "Версия приложения";
+
+/* Server */
+"server.host" = "Адрес";
+"server.port" = "Порт";
+"server.check" = "Проверить соединение";
+"server.ok" = "Сервер работает";
+"server.degraded" = "Сервер работает, но источник расписания недоступен";
+"server.lastParse %@" = "Последний разбор расписания: %@";
+"server.version %@" = "Версия сервера: %@";
+"server.emptyHost" = "Введите адрес сервера";
+"server.invalidHost" = "Адрес не должен содержать пробелов и пути";
+"server.invalidPort" = "Порт — число от 1 до 65535";
+"server.resetDefault" = "Вернуть адрес по умолчанию";
+"server.footer" = "Новый адрес сразу используется для всех запросов.";

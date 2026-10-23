@@ -1,0 +1,105 @@
+/* Tabs */
+"tab.home" = "Home";
+"tab.schedule" = "Schedule";
+"tab.profile" = "Profile";
+
+/* Actions */
+"action.retry" = "Retry";
+"action.save" = "Save";
+"action.done" = "Done";
+
+/* Errors */
+"error.invalidAddress" = "Invalid server address";
+"error.cannotConnect %@" = "Can't connect to server %@";
+"error.timedOut" = "The server is taking too long to respond";
+"error.offline" = "No internet connection";
+"error.notLoadedYet" = "The server hasn't loaded the schedule yet";
+"error.server %lld" = "The server returned an error (%lld)";
+"error.serverMessage %lld %@" = "Server error (%lld): %@";
+"error.badResponse" = "The server sent an unexpected response";
+"error.recovery.checkServer" = "Check the address and port in Profile → Server and that your phone is on the same network.";
+"error.recovery.offline" = "Turn on Wi‑Fi or mobile data and try again.";
+"error.recovery.retryLater" = "Try again in a minute.";
+"stale.title %@" = "Showing data from %@";
+
+/* Common */
+"building.short %lld" = "building %lld";
+"course.label %lld" = "Year %lld";
+"subgroup.badge %lld" = "Subgroup %lld";
+"subgroup.unspecified" = "Not set";
+"subgroup.footer" = "The other subgroup's classes stay in the schedule but are dimmed.";
+"source.npo" = "NPO";
+"source.spo" = "SPO";
+"day.today" = "today";
+"day.tomorrow" = "tomorrow";
+"countdown.in %@" = "starts in %@";
+"lesson.pairNumber %@" = "Class %@";
+"lesson.pairShort" = "class";
+"lesson.remote" = "remote";
+"lesson.room %@" = "room %@";
+"a11y.approximateTime %@" = "approximately %@, time not listed in the schedule";
+"a11y.loading" = "Loading schedule";
+
+/* Onboarding */
+"onboarding.title" = "Welcome";
+"onboarding.namePlaceholder" = "Full name";
+"onboarding.nameFooter" = "Your name stays on this phone and is never sent anywhere.";
+"onboarding.nameRequired" = "Enter your name";
+"onboarding.choose" = "Choose";
+"onboarding.allCourses" = "All years";
+"onboarding.save" = "Save and start";
+
+/* Home */
+"home.greeting %@" = "Hi, %@";
+"home.nextLesson" = "Next class";
+"home.ongoing" = "in progress";
+"home.finished" = "No more classes today — take a rest 🎉";
+"home.noLessonsToday" = "No classes today";
+"home.buildingRoom %lld %@" = "building %lld, room %@";
+"home.nextDay" = "Next school day";
+"home.tomorrowFree" = "No classes tomorrow";
+"home.tomorrowWeekday %@" = "Tomorrow (%@)";
+"home.firstAt %@" = "first at %@";
+"home.noNextDay" = "No upcoming days in the schedule yet";
+"home.startsAt %@" = "Classes start at %@";
+
+/* Schedule */
+"schedule.mode" = "Mode";
+"schedule.day" = "Day";
+"schedule.week" = "Week";
+"schedule.next" = "Next";
+"schedule.empty" = "No classes";
+"schedule.noDays" = "Schedule has ended";
+"schedule.noDaysHint" = "The college hasn't published the next days yet.";
+
+/* Profile */
+"profile.user" = "User";
+"profile.fullName" = "Full name";
+"profile.study" = "Studies";
+"profile.building" = "Building";
+"profile.course" = "Year";
+"profile.group" = "Group";
+"profile.subgroup" = "Subgroup";
+"profile.reset" = "Reset profile";
+"profile.resetConfirm" = "Reset profile?";
+"profile.resetMessage" = "Your name, group and saved schedule will be removed from this phone.";
+"profile.server" = "Server";
+"profile.dataUpdated" = "Data updated";
+"profile.serverParsed" = "Server read the PDF";
+"profile.never" = "not yet";
+"profile.refreshNow" = "Refresh now";
+"profile.version" = "App version";
+
+/* Server */
+"server.host" = "Address";
+"server.port" = "Port";
+"server.check" = "Check connection";
+"server.ok" = "Server is up";
+"server.degraded" = "Server is up, but the schedule source is unavailable";
+"server.lastParse %@" = "Last schedule parse: %@";
+"server.version %@" = "Server version: %@";
+"server.emptyHost" = "Enter the server address";
+"server.invalidHost" = "The address must not contain spaces or a path";
+"server.invalidPort" = "Port must be a number from 1 to 65535";
+"server.resetDefault" = "Restore default address";
+"server.footer" = "The new address is used for all requests immediately.";
