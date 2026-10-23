@@ -28,6 +28,39 @@ struct ScreenBackground: View {
     }
 }
 
+/// Icon on the left; title, message and Retry in one column so the button
+/// lines up with the text, not with the icon.
+struct ErrorNotice: View {
+    var title: String?
+    let message: String
+    var retry: () async -> Void
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Image(systemName: "wifi.exclamationmark")
+                .foregroundStyle(.orange)
+            VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 2) {
+                    if let title {
+                        Text(title)
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    Text(message)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                Button(L("action.retry")) {
+                    Task { await retry() }
+                }
+                .buttonStyle(.glass)
+                .font(.footnote)
+                .accessibilityIdentifier("retry")
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+}
+
 /// "Showing data from …" when the network failed and the cache is shown.
 struct StaleDataBanner: View {
     let fetchedAt: Date?
@@ -36,28 +69,11 @@ struct StaleDataBanner: View {
 
     var body: some View {
         GlassCard(tint: .orange) {
-            // The button sits in the text column so it lines up with the
-            // text, not with the icon.
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
-                Image(systemName: "wifi.exclamationmark")
-                    .foregroundStyle(.orange)
-                VStack(alignment: .leading, spacing: 8) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        if let fetchedAt {
-                            Text(L("stale.title \(Format.dateTime(fetchedAt))"))
-                                .font(.subheadline.weight(.semibold))
-                        }
-                        Text(reason.errorDescription ?? "")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                    Button(L("action.retry")) {
-                        Task { await retry() }
-                    }
-                    .buttonStyle(.glass)
-                    .font(.footnote)
-                }
-            }
+            ErrorNotice(
+                title: fetchedAt.map { L("stale.title \(Format.dateTime($0))") },
+                message: reason.errorDescription ?? "",
+                retry: retry
+            )
         }
         .accessibilityElement(children: .combine)
     }

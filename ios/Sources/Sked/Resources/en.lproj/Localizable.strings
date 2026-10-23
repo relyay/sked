@@ -55,7 +55,6 @@
 "home.nextDay" = "Next school day";
 "home.tomorrowFree" = "No classes tomorrow";
 "home.tomorrowWeekday %@" = "Tomorrow (%@)";
-"home.firstInPersonAt %@" = "in person at %@";
 "home.firstAt %@" = "first at %@";
 "home.noNextDay" = "No upcoming days in the schedule yet";
 "lunch.range %@ %@" = "Lunch %@–%@";

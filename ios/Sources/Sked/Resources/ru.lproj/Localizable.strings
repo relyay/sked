@@ -55,7 +55,6 @@
 "home.nextDay" = "Следующий учебный день";
 "home.tomorrowFree" = "Завтра пар нет";
 "home.tomorrowWeekday %@" = "Завтра (%@)";
-"home.firstInPersonAt %@" = "очная в %@";
 "home.firstAt %@" = "первая в %@";
 "home.noNextDay" = "Следующих дней в расписании пока нет";
 "lunch.range %@ %@" = "Обед %@–%@";

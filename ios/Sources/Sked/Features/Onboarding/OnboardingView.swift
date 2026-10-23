@@ -110,18 +110,13 @@ struct GroupRow: View {
         case .loading:
             ProgressView()
         case .failed(let error):
-            VStack(alignment: .leading, spacing: 6) {
-                Text(error.errorDescription ?? "")
-                    .font(.subheadline.weight(.semibold))
-                Text(error.recoverySuggestion ?? "")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                Button(L("action.retry")) {
-                    Task { await list.load(client: model.client) }
-                }
-                .buttonStyle(.glass)
-                .accessibilityIdentifier("retry")
+            ErrorNotice(
+                title: error.errorDescription,
+                message: error.recoverySuggestion ?? ""
+            ) {
+                await list.load(client: model.client)
             }
+            .padding(.vertical, 4)
         case .loaded:
             NavigationLink {
                 GroupPickerView(groups: list.groups, selection: $selection)

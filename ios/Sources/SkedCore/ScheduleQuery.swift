@@ -105,15 +105,11 @@ public struct ScheduleQuery: Sendable {
         return set.isEmpty ? [fallback] : set.sorted()
     }
 
-    /// When the user has to be at college: the first in-person pair if the day
-    /// has one (remote pairs on mixed days carry no printed time), otherwise
-    /// the first pair.
-    public static func firstStart(of lessons: [Lesson]) -> (lesson: Lesson, inPerson: Bool)? {
-        let timed = lessons.filter { !$0.start.isEmpty }.sorted { ($0.start, $0.pair) < ($1.start, $1.pair) }
-        if timed.contains(where: \.isRemote), let inPerson = timed.first(where: { !$0.isRemote }) {
-            return (inPerson, true)
-        }
-        return timed.first.map { ($0, false) }
+    /// When the user has to be at college: the first in-person class. Remote
+    /// classes do not count (on remote Saturdays their times are not even in
+    /// the PDF), so an all-remote day has no start time.
+    public static func firstInPersonStart(of lessons: [Lesson]) -> Lesson? {
+        lessons.filter { !$0.isRemote && !$0.start.isEmpty }.min { ($0.start, $0.pair) < ($1.start, $1.pair) }
     }
 
     /// Lunch breaks for the user's subgroup, without duplicates (the PDF often

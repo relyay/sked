@@ -159,8 +159,8 @@ private struct NextDayCard: View {
         let title = next.isTomorrow ? L("home.tomorrowWeekday \(weekday)") : Format.shortDay(next.day)
         let buildings = ScheduleQuery.buildings(of: next.lessons, fallback: next.day.building)
         var parts = [title, Format.lessonCount(next.lessons.count), Format.buildings(buildings)]
-        if let first = ScheduleQuery.firstStart(of: next.lessons) {
-            parts.append(first.inPerson ? L("home.firstInPersonAt \(first.lesson.start)") : L("home.firstAt \(first.lesson.start)"))
+        if let first = ScheduleQuery.firstInPersonStart(of: next.lessons) {
+            parts.append(L("home.firstAt \(first.start)"))
         }
         return parts.joined(separator: " · ")
     }
