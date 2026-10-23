@@ -104,18 +104,14 @@ private struct DayScheduleView: View {
                     .foregroundStyle(.secondary)
             }
 
-            let lessons = query.allLessons(on: day)
+            let lessons = query.lessons(on: day)
             if lessons.isEmpty {
                 ContentUnavailableView(L("schedule.empty"), systemImage: "cup.and.saucer")
             } else {
                 GlassEffectContainer(spacing: 10) {
                     VStack(spacing: 10) {
                         ForEach(lessons) { lesson in
-                            LessonRow(
-                                lesson: lesson,
-                                isDimmed: !query.isVisible(lesson),
-                                isHighlighted: query.isMine(lesson) && lesson.subgroup != nil
-                            )
+                            LessonRow(lesson: lesson)
                         }
                     }
                 }
@@ -187,14 +183,14 @@ private struct WeekScheduleView: View {
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
-                    let lessons = query.allLessons(on: day)
+                    let lessons = query.lessons(on: day)
                     if lessons.isEmpty {
                         Label(L("schedule.empty"), systemImage: "cup.and.saucer")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     } else {
                         ForEach(lessons) { lesson in
-                            CompactLessonRow(lesson: lesson, isDimmed: !query.isVisible(lesson))
+                            CompactLessonRow(lesson: lesson)
                         }
                     }
                 }

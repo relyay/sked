@@ -68,10 +68,14 @@ private let days = [monday, saturday, friday]
         #expect(q.current(at: moscow("2026-10-23", "09:00")) == .noLessonsToday)
     }
 
+    @Test func otherSubgroupIsHidden() {
+        let q = ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .first)
+        #expect(q.lessons(on: friday).map(\.pair) == [1, 3])
+    }
+
     @Test func unspecifiedSubgroupSeesEverything() {
         let q = ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .unspecified)
         #expect(q.lessons(on: friday).count == 4)
-        #expect(!q.isMine(friday.groups[0].lessons[0]))
     }
 
     @Test func todayUsesMoscowNotDeviceZone() {

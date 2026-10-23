@@ -27,7 +27,7 @@
 "course.label %lld" = "Course %lld";
 "subgroup.badge %lld" = "Subgroup %lld";
 "subgroup.unspecified" = "Not set";
-"subgroup.footer" = "If your group is split in half (left/right column in the schedule). The other subgroup's classes are dimmed.";
+"subgroup.footer" = "If your group is split in half (left/right column in the schedule). The other subgroup's classes are hidden.";
 "day.today" = "today";
 "day.tomorrow" = "tomorrow";
 "countdown.in %@" = "starts in %@";

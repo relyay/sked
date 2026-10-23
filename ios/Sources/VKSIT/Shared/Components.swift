@@ -95,9 +95,6 @@ struct SubgroupBadge: View {
 /// One lesson in the day list.
 struct LessonRow: View {
     let lesson: Lesson
-    /// Dimmed when it belongs to the other subgroup.
-    var isDimmed = false
-    var isHighlighted = false
 
     var body: some View {
         HStack(alignment: .center, spacing: 14) {
@@ -125,8 +122,7 @@ struct LessonRow: View {
             Spacer(minLength: 0)
         }
         .padding(14)
-        .glassEffect(isHighlighted ? .regular.tint(Color.accentColor.opacity(0.25)) : .regular, in: .rect(cornerRadius: 20))
-        .opacity(isDimmed ? 0.5 : 1)
+        .glassEffect(.regular, in: .rect(cornerRadius: 20))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Format.accessibilityLabel(lesson))
     }
@@ -153,7 +149,6 @@ struct PairNumber: View {
 /// centred against the subject and place lines.
 struct CompactLessonRow: View {
     let lesson: Lesson
-    var isDimmed = false
     @ScaledMetric(relativeTo: .subheadline) private var columnWidth = 48
 
     var body: some View {
@@ -180,7 +175,6 @@ struct CompactLessonRow: View {
             }
         }
         .padding(.vertical, 4)
-        .opacity(isDimmed ? 0.5 : 1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Format.accessibilityLabel(lesson))
     }

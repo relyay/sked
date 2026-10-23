@@ -85,12 +85,7 @@ public struct ScheduleQuery: Sendable {
     /// Lessons the user attends: whole-group ones plus their subgroup's. With
     /// no subgroup chosen, everything is shown.
     public func lessons(on day: Day) -> [Lesson] {
-        allLessons(on: day).filter(isVisible)
-    }
-
-    /// Every lesson of the group, including the other subgroup's.
-    public func allLessons(on day: Day) -> [Lesson] {
-        (groupDay(on: day)?.lessons ?? []).sorted {
+        (groupDay(on: day)?.lessons ?? []).filter(isVisible).sorted {
             ($0.pair, $0.subgroup ?? 0) < ($1.pair, $1.subgroup ?? 0)
         }
     }
@@ -99,10 +94,6 @@ public struct ScheduleQuery: Sendable {
         subgroup == .unspecified || lesson.subgroup == nil || lesson.subgroup == subgroup.rawValue
     }
 
-    /// Whether the lesson belongs to the user (for highlighting).
-    public func isMine(_ lesson: Lesson) -> Bool {
-        subgroup != .unspecified && isVisible(lesson)
-    }
 
     /// Buildings the user goes to on a day, from the lessons themselves.
     public func buildings(on day: Day) -> [Int] {

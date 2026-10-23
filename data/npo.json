@@ -1,0 +1,2157 @@
+{
+  "source": "npo",
+  "building": 2,
+  "parsedAt": "2026-10-23T13:07:50.743835188+03:00",
+  "sourceModified": "2026-10-23T08:52:17Z",
+  "sourceSha256": "872ac7cdf2c965358faeae80b61ef0138266553fedb55388c1afe81a0598ebfe",
+  "parserVersion": 2,
+  "days": [
+    {
+      "date": "2026-10-23",
+      "weekday": "пятница",
+      "building": 2,
+      "groups": [
+        {
+          "group": "ИРП-126",
+          "lessons": [
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Обществознание",
+              "teacher": "Смирнова Н.Ю.",
+              "room": "1/2",
+              "isRemote": false
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "ОБиЗР",
+              "teacher": "Казаков М.Л.",
+              "room": "15/2",
+              "isRemote": false
+            },
+            {
+              "pair": 6,
+              "building": 2,
+              "start": "17:50",
+              "end": "18:50",
+              "subject": "ОБиЗР",
+              "teacher": "Казаков М.Л.",
+              "room": "15/2",
+              "isRemote": false
+            }
+          ]
+        },
+        {
+          "group": "ИСП-324ис",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "ТВиМС",
+              "teacher": "Кисова Л.И.",
+              "room": "13/2",
+              "isRemote": false
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "ТВиМС",
+              "teacher": "Кисова Л.И.",
+              "room": "13/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Физ. культура",
+              "teacher": "Назарова О.И.",
+              "room": "СЗ/2",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Физ. культура",
+              "teacher": "Назарова О.И.",
+              "room": "СЗ/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 12:10 до 12:50",
+              "time": "12:10",
+              "endTime": "12:50",
+              "pair": 5
+            }
+          ]
+        },
+        {
+          "group": "РУПО-126б",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Математика",
+              "teacher": "Мурина Е.В.",
+              "room": "14/2",
+              "isRemote": false
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Информатика",
+              "teacher": "Каберова А.А.",
+              "room": "20/2",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Физика",
+              "teacher": "Ордина Е.А.",
+              "room": "3/2",
+              "isRemote": false,
+              "subgroup": 2
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Физика",
+              "teacher": "Ордина Е.А.",
+              "room": "3/2",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Информатика",
+              "teacher": "Каберова А.А.",
+              "room": "20/2",
+              "isRemote": false,
+              "subgroup": 2
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Математика",
+              "teacher": "Мурина Е.В.",
+              "room": "14/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 12:10 до 12:50",
+              "time": "12:10",
+              "endTime": "12:50",
+              "pair": 5
+            }
+          ]
+        },
+        {
+          "group": "РУПО-126ис",
+          "lessons": [
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Математика",
+              "teacher": "Мурина Е.В.",
+              "room": "14/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Математика",
+              "teacher": "Мурина Е.В.",
+              "room": "14/2",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Введение в специальность",
+              "teacher": "Волкова В.В.",
+              "room": "11 цех",
+              "isRemote": false
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "Инд. проект",
+              "teacher": "Волкова В.В.",
+              "room": "11 цех",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 12:10 до 12:50",
+              "time": "12:10",
+              "endTime": "12:50",
+              "pair": 6
+            }
+          ]
+        },
+        {
+          "group": "РУПО-126ит",
+          "lessons": [
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Химия",
+              "teacher": "Юдичева Н.А.",
+              "room": "5/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Обществознание",
+              "teacher": "Бобылев А.Ю.",
+              "room": "16/2",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "История",
+              "teacher": "Бобылев А.Ю.",
+              "room": "16/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 11:25 до 11:50",
+              "time": "11:25",
+              "endTime": "11:50",
+              "pair": 5
+            }
+          ]
+        },
+        {
+          "group": "ИСП-225р",
+          "lessons": [
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Физ. культура",
+              "teacher": "Назарова О.И.",
+              "room": "СЗ/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Числ. методы",
+              "teacher": "Батракова С.Н.",
+              "room": "13/2",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Числ. методы",
+              "teacher": "Батракова С.Н.",
+              "room": "13/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 11:25 до 11:50",
+              "time": "11:25",
+              "endTime": "11:50",
+              "pair": 5
+            }
+          ]
+        },
+        {
+          "group": "МТО-126",
+          "lessons": [
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Обществознание",
+              "teacher": "Смирнова Н.Ю.",
+              "room": "1/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "История",
+              "teacher": "Смирнова Н.Ю.",
+              "room": "1/2",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Математика",
+              "teacher": "Авдуевская Н.С.",
+              "room": "2/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 12:10 до 12:50",
+              "time": "12:10",
+              "endTime": "12:50",
+              "pair": 5
+            }
+          ]
+        },
+        {
+          "group": "ИСП-324а",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "ТРПО",
+              "teacher": "Кетов А.И.",
+              "room": "12 цех",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "ТРПО",
+              "teacher": "Кетов А.И.",
+              "room": "12 цех",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "ТРПО",
+              "teacher": "Кетов А.И.",
+              "room": "12 цех",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "ТРПО",
+              "teacher": "Кетов А.И.",
+              "room": "12 цех",
+              "isRemote": false,
+              "subgroup": 2
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "ТРПО",
+              "teacher": "Кетов А.И.",
+              "room": "12 цех",
+              "isRemote": false,
+              "subgroup": 2
+            },
+            {
+              "pair": 6,
+              "building": 2,
+              "start": "17:50",
+              "end": "18:50",
+              "subject": "ТРПО",
+              "teacher": "Кетов А.И.",
+              "room": "12 цех",
+              "isRemote": false,
+              "subgroup": 2
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 11:25 до 11:50",
+              "time": "11:25",
+              "endTime": "11:50",
+              "pair": 4,
+              "subgroup": 1
+            }
+          ]
+        },
+        {
+          "group": "ИСП-324ир",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Упр. проектами 10",
+              "teacher": "Трофимова А.И.",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Упр. проектами 10",
+              "teacher": "Трофимова А.И.",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Упр. проектами 10",
+              "teacher": "Трофимова А.И.",
+              "isRemote": false,
+              "subgroup": 2
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Упр. проектами 10",
+              "teacher": "Трофимова А.И.",
+              "isRemote": false,
+              "subgroup": 2
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 11:25 до 11:50",
+              "time": "11:25",
+              "endTime": "11:50",
+              "pair": 3,
+              "subgroup": 1
+            }
+          ]
+        },
+        {
+          "group": "РУПО-126р",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Химия",
+              "teacher": "Юдичева Н.А.",
+              "room": "5/2",
+              "isRemote": false
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Математика",
+              "teacher": "Смирнова Е.Л.",
+              "room": "7/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Математика",
+              "teacher": "Смирнова Е.Л.",
+              "room": "7/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 11:25 до 11:50",
+              "time": "11:25",
+              "endTime": "11:50",
+              "pair": 4
+            }
+          ]
+        },
+        {
+          "group": "СИС-126",
+          "lessons": [
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Информатика",
+              "teacher": "Дусанюк А.В.",
+              "room": "23/2",
+              "isRemote": false,
+              "subgroup": 2
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Информатика",
+              "teacher": "Дусанюк А.В.",
+              "room": "23/2",
+              "isRemote": false,
+              "subgroup": 2
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "ОБиЗР",
+              "teacher": "Казаков М.Л.",
+              "room": "15/2",
+              "isRemote": false
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "Физика",
+              "teacher": "Кузнецова Я.В.",
+              "room": "4/2",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 6,
+              "building": 2,
+              "start": "17:50",
+              "end": "18:50",
+              "subject": "Физика",
+              "teacher": "Кузнецова Я.В.",
+              "room": "4/2",
+              "isRemote": false,
+              "subgroup": 1
+            }
+          ]
+        },
+        {
+          "group": "ИИС-126",
+          "lessons": [
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Математика",
+              "teacher": "Авдуевская Н.С.",
+              "room": "2/2",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Информатика",
+              "teacher": "Дусанюк А.В.",
+              "room": "23/2",
+              "isRemote": false
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "Математика",
+              "teacher": "Авдуевская Н.С.",
+              "room": "2/2",
+              "isRemote": false
+            }
+          ]
+        },
+        {
+          "group": "ИКС-126",
+          "lessons": [
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Русский язык",
+              "teacher": "Глибкина Е.В.",
+              "room": "7/2",
+              "isRemote": false
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "Литература",
+              "teacher": "Глибкина Е.В.",
+              "room": "7/2",
+              "isRemote": false
+            }
+          ]
+        },
+        {
+          "group": "ТЭС-126",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Инд. проект",
+              "teacher": "Дусанюк А.В.",
+              "room": "23/2",
+              "isRemote": false
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Математика",
+              "teacher": "Батракова С.Н.",
+              "room": "16/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Биология",
+              "teacher": "Юдичева Н.А.",
+              "room": "5/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 12:10 до 12:50",
+              "time": "12:10",
+              "endTime": "12:50",
+              "pair": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-10-24",
+      "weekday": "суббота",
+      "building": 2,
+      "groups": [
+        {
+          "group": "ИСП-324р",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Физ. культура",
+              "teacher": "Назарова О.И.",
+              "room": "СЗ/2",
+              "isRemote": false,
+              "timeSource": "startsAt"
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Физ. культура",
+              "teacher": "Назарова О.И.",
+              "room": "СЗ/2",
+              "isRemote": false,
+              "timeSource": "startsAt"
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "ДЦГ",
+              "teacher": "Ивантеева З.С.",
+              "isRemote": true,
+              "subgroup": 1,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "ОБВП",
+              "teacher": "Кузнецова А.И.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "ДЦГ",
+              "teacher": "Ивантеева З.С.",
+              "isRemote": true,
+              "subgroup": 2,
+              "timeSource": "bells"
+            }
+          ],
+          "notes": [
+            {
+              "kind": "startsAt",
+              "text": "Занятия начинаются с 9:00",
+              "time": "09:00",
+              "pair": 6
+            }
+          ]
+        },
+        {
+          "group": "ИИС-126",
+          "lessons": [
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Информатика",
+              "teacher": "Дусанюк А.В.",
+              "isRemote": true,
+              "subgroup": 1,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Обществознание",
+              "teacher": "Смирнова Н.Ю.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "Обществознание",
+              "teacher": "Смирнова Н.Ю.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 6,
+              "building": 2,
+              "start": "17:50",
+              "end": "18:50",
+              "subject": "Информатика",
+              "teacher": "Дусанюк А.В.",
+              "isRemote": true,
+              "subgroup": 2,
+              "timeSource": "bells"
+            }
+          ]
+        },
+        {
+          "group": "МТО-126",
+          "lessons": [
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Математика",
+              "teacher": "Авдуевская Н.С.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Биология",
+              "teacher": "Юдичева Н.А.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Физика",
+              "teacher": "Кузнецова Я.В.",
+              "isRemote": true,
+              "timeSource": "bells"
+            }
+          ]
+        },
+        {
+          "group": "ОИБ-126",
+          "lessons": [
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Математика",
+              "teacher": "Батракова С.Н.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Ино.язык",
+              "teacher": "Кудряшова О.А.",
+              "isRemote": true,
+              "subgroup": 1,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Информатика",
+              "teacher": "Каберова А.А.",
+              "isRemote": true,
+              "subgroup": 2,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "Информатика",
+              "teacher": "Каберова А.А.",
+              "isRemote": true,
+              "subgroup": 1,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "Ино.язык",
+              "teacher": "Кудряшова О.А.",
+              "isRemote": true,
+              "subgroup": 2,
+              "timeSource": "bells"
+            }
+          ]
+        },
+        {
+          "group": "ИКС-126",
+          "lessons": [
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Биология",
+              "teacher": "Юдичева Н.А.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Физика",
+              "teacher": "Кузнецова Я.В.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Русский язык",
+              "teacher": "Глибкина Е.В.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "Физика",
+              "teacher": "Кузнецова Я.В.",
+              "isRemote": true,
+              "timeSource": "bells"
+            }
+          ]
+        },
+        {
+          "group": "РУПО-126ит",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "История",
+              "teacher": "Бобылев А.Ю.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Литература",
+              "teacher": "Пахолкова С.А.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Информатика",
+              "teacher": "Пролыгина Е.А.",
+              "isRemote": true,
+              "subgroup": 1,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Ино.язык",
+              "teacher": "Субботина А.В.",
+              "isRemote": true,
+              "subgroup": 2,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Ино.язык",
+              "teacher": "Субботина А.В.",
+              "isRemote": true,
+              "subgroup": 1,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Информатика",
+              "teacher": "Пролыгина Е.А.",
+              "isRemote": true,
+              "subgroup": 2,
+              "timeSource": "bells"
+            }
+          ]
+        },
+        {
+          "group": "РУПО-126р",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Информатика",
+              "teacher": "Дусанюк А.В.",
+              "isRemote": true,
+              "subgroup": 1,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Информатика",
+              "teacher": "Дусанюк А.В.",
+              "isRemote": true,
+              "subgroup": 2,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Русский язык",
+              "teacher": "Глибкина Е.В.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Биология",
+              "teacher": "Юдичева Н.А.",
+              "isRemote": true,
+              "timeSource": "bells"
+            }
+          ]
+        },
+        {
+          "group": "ЭСС-126",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Информатика",
+              "teacher": "Пролыгина Е.А.",
+              "isRemote": true,
+              "subgroup": 1,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Физика",
+              "teacher": "Потерюхина С.В.",
+              "isRemote": true,
+              "subgroup": 2,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Физика",
+              "teacher": "Потерюхина С.В.",
+              "isRemote": true,
+              "subgroup": 1,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Информатика",
+              "teacher": "Пролыгина Е.А.",
+              "isRemote": true,
+              "subgroup": 2,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Математика",
+              "teacher": "Авдуевская Н.С.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Математика",
+              "teacher": "Авдуевская Н.С.",
+              "isRemote": true,
+              "timeSource": "bells"
+            }
+          ]
+        },
+        {
+          "group": "ИРП-126",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Литература",
+              "teacher": "Пахолкова С.А.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Обществознание",
+              "teacher": "Смирнова Н.Ю.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Физика",
+              "teacher": "Ордина Е.А.",
+              "isRemote": true,
+              "timeSource": "bells"
+            }
+          ]
+        },
+        {
+          "group": "ИСП-324а",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "ТВиМС",
+              "teacher": "Кисова Л.И.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "ТВиМС",
+              "teacher": "Кисова Л.И.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "ТВиМС",
+              "teacher": "Кисова Л.И.",
+              "isRemote": true,
+              "timeSource": "bells"
+            }
+          ]
+        },
+        {
+          "group": "РУПО-126ис",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Математика",
+              "teacher": "Мурина Е.В.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Математика",
+              "teacher": "Мурина Е.В.",
+              "isRemote": true,
+              "timeSource": "bells"
+            }
+          ]
+        },
+        {
+          "group": "ТЭС-126",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Математика",
+              "teacher": "Батракова С.Н.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Литература",
+              "teacher": "Глибкина Е.В.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "История",
+              "teacher": "Бобылев А.Ю.",
+              "isRemote": true,
+              "timeSource": "bells"
+            }
+          ]
+        },
+        {
+          "group": "ИСП-225ис",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "ПОПД",
+              "teacher": "Киселева Т.В.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "ПОПД",
+              "teacher": "Киселева Т.В.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "11:50",
+              "end": "13:20",
+              "subject": "Физ. культура",
+              "teacher": "Назарова О.И.",
+              "room": "СЗ/2",
+              "isRemote": false,
+              "timeSource": "startsAt"
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "13:30",
+              "end": "15:00",
+              "subject": "Физ. культура",
+              "teacher": "Назарова О.И.",
+              "room": "СЗ/2",
+              "isRemote": false,
+              "timeSource": "startsAt"
+            }
+          ],
+          "notes": [
+            {
+              "kind": "startsAt",
+              "text": "Занятия начинаются с 11:50",
+              "time": "11:50",
+              "pair": 5
+            }
+          ]
+        },
+        {
+          "group": "РУПО-126б",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Ино. Язык",
+              "teacher": "Межакова Е.В.",
+              "isRemote": true,
+              "subgroup": 1,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Ино. Язык",
+              "teacher": "Межакова Е.В.",
+              "isRemote": true,
+              "subgroup": 1,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Математика",
+              "teacher": "Мурина Е.В.",
+              "isRemote": true,
+              "timeSource": "bells"
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Физика",
+              "teacher": "Ордина Е.А.",
+              "isRemote": true,
+              "timeSource": "bells"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-10-26",
+      "weekday": "понедельник",
+      "building": 2,
+      "groups": [
+        {
+          "group": "ТЭС-126",
+          "lessons": [
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "История",
+              "teacher": "Бобылев А.Ю.",
+              "room": "16/2",
+              "isRemote": false
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "ОБиЗР",
+              "teacher": "Казаков М.Л.",
+              "room": "15/2",
+              "isRemote": false
+            }
+          ]
+        },
+        {
+          "group": "ИИС-126",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Обществознание",
+              "teacher": "Смирнова Н.Ю.",
+              "room": "1/2",
+              "isRemote": false
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Литература",
+              "teacher": "Пахолкова С.А.",
+              "room": "7/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Математика",
+              "teacher": "Авдуевская Н.С.",
+              "room": "2/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 11:25 до 11:50",
+              "time": "11:25",
+              "endTime": "11:50",
+              "pair": 4
+            }
+          ]
+        },
+        {
+          "group": "МТО-126",
+          "lessons": [
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Обществознание",
+              "teacher": "Смирнова Н.Ю.",
+              "room": "1/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "История",
+              "teacher": "Смирнова Н.Ю.",
+              "room": "1/2",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Математика",
+              "teacher": "Авдуевская Н.С.",
+              "room": "2/2",
+              "isRemote": false
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "Физика",
+              "teacher": "Кузнецова Я.В.",
+              "room": "3/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 12:10 до 12:50",
+              "time": "12:10",
+              "endTime": "12:50",
+              "pair": 6
+            }
+          ]
+        },
+        {
+          "group": "ОИБ-126",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Математика",
+              "teacher": "Батракова С.Н.",
+              "room": "16/2",
+              "isRemote": false
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "История",
+              "teacher": "Бобылев А.Ю.",
+              "room": "15/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "История",
+              "teacher": "Бобылев А.Ю.",
+              "room": "20/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 11:25 до 11:50",
+              "time": "11:25",
+              "endTime": "11:50",
+              "pair": 4
+            }
+          ]
+        },
+        {
+          "group": "ИСП-324ис",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Упр. проектами 10",
+              "teacher": "Трофимова А.И.",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Физ. культура",
+              "teacher": "Назарова О.И.",
+              "room": "СЗ/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Физ. культура",
+              "teacher": "Назарова О.И.",
+              "room": "СЗ/2",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Упр. проектами 10",
+              "teacher": "Трофимова А.И.",
+              "isRemote": false,
+              "subgroup": 2
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 11:25 до 11:50",
+              "time": "11:25",
+              "endTime": "11:50",
+              "pair": 4,
+              "subgroup": 1
+            },
+            {
+              "kind": "lunch",
+              "text": "Обед с 12:10 до 12:50",
+              "time": "12:10",
+              "endTime": "12:50",
+              "pair": 5,
+              "subgroup": 2
+            }
+          ]
+        },
+        {
+          "group": "ИКС-225",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "ММРТПЗ",
+              "teacher": "Мурина Е.В.",
+              "room": "14/2",
+              "isRemote": false
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "ММРТПЗ",
+              "teacher": "Мурина Е.В.",
+              "room": "14/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "ММРТПЗ",
+              "teacher": "Мурина Е.В.",
+              "room": "14/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 11:25 до 11:50",
+              "time": "11:25",
+              "endTime": "11:50",
+              "pair": 4
+            }
+          ]
+        },
+        {
+          "group": "РУПО-126р",
+          "lessons": [
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Биология",
+              "teacher": "Юдичева Н.А.",
+              "room": "5/2",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Физ. культура",
+              "teacher": "Назарова О.И.",
+              "room": "СЗ/2",
+              "isRemote": false
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "История",
+              "teacher": "Бобылев А.Ю.",
+              "room": "16/2",
+              "isRemote": false
+            }
+          ]
+        },
+        {
+          "group": "СИС-126",
+          "lessons": [
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Информатика",
+              "teacher": "Дусанюк А.В.",
+              "room": "23/2",
+              "isRemote": false
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "Математика",
+              "teacher": "Авдуевская Н.С.",
+              "room": "2/2",
+              "isRemote": false
+            },
+            {
+              "pair": 6,
+              "building": 2,
+              "start": "17:50",
+              "end": "18:50",
+              "subject": "Физика",
+              "teacher": "Кузнецова Я.В.",
+              "room": "3/2",
+              "isRemote": false
+            }
+          ]
+        },
+        {
+          "group": "ИРП-126",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Информатика",
+              "teacher": "Пролыгина Е.А.",
+              "room": "20/2",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Физика",
+              "teacher": "Ордина Е.А.",
+              "room": "3/2",
+              "isRemote": false,
+              "subgroup": 2
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Физика",
+              "teacher": "Ордина Е.А.",
+              "room": "3/2",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Информатика",
+              "teacher": "Пролыгина Е.А.",
+              "room": "20/2",
+              "isRemote": false,
+              "subgroup": 2
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "ОБиЗР",
+              "teacher": "Казаков М.Л.",
+              "room": "15/2",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Литература",
+              "teacher": "Пахолкова С.А.",
+              "room": "7/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 12:10 до 12:50",
+              "time": "12:10",
+              "endTime": "12:50",
+              "pair": 5
+            }
+          ]
+        },
+        {
+          "group": "РУПО-126б",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Химия",
+              "teacher": "Юдичева Н.А.",
+              "room": "5/2",
+              "isRemote": false
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Биология",
+              "teacher": "Юдичева Н.А.",
+              "room": "5/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Физика",
+              "teacher": "Ордина Е.А.",
+              "room": "3/2",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "Математика",
+              "teacher": "Мурина Е.В.",
+              "room": "14/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 11:25 до 11:50",
+              "time": "11:25",
+              "endTime": "11:50",
+              "pair": 5
+            }
+          ]
+        },
+        {
+          "group": "ИСП-225ир",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "ООИ",
+              "teacher": "Волкова В.В.",
+              "room": "11 цех",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "ООИ",
+              "teacher": "Волкова В.В.",
+              "room": "11 цех",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "ООИ",
+              "teacher": "Волкова В.В.",
+              "room": "11 цех",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "ООИ",
+              "teacher": "Волкова В.В.",
+              "room": "11 цех",
+              "isRemote": false,
+              "subgroup": 2
+            },
+            {
+              "pair": 5,
+              "building": 2,
+              "start": "16:10",
+              "end": "17:40",
+              "subject": "ООИ",
+              "teacher": "Волкова В.В.",
+              "room": "11 цех",
+              "isRemote": false,
+              "subgroup": 2
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 12:10 до 12:50",
+              "time": "12:10",
+              "endTime": "12:50",
+              "pair": 4,
+              "subgroup": 1
+            }
+          ]
+        },
+        {
+          "group": "РУПО-126ис",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Информатика",
+              "teacher": "Дусанюк А.В.",
+              "room": "23/2",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Ино.язык",
+              "teacher": "Субботина А.В.",
+              "room": "22/2",
+              "isRemote": false,
+              "subgroup": 2
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Информатика",
+              "teacher": "Дусанюк А.В.",
+              "room": "23/2",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Ино.язык",
+              "teacher": "Субботина А.В.",
+              "room": "22/2",
+              "isRemote": false,
+              "subgroup": 2
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Ино.язык",
+              "teacher": "Субботина А.В.",
+              "room": "22/2",
+              "isRemote": false,
+              "subgroup": 1
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Информатика",
+              "teacher": "Дусанюк А.В.",
+              "room": "23/2",
+              "isRemote": false,
+              "subgroup": 2
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 12:10 до 12:50",
+              "time": "12:10",
+              "endTime": "12:50",
+              "pair": 4
+            }
+          ]
+        },
+        {
+          "group": "РУПО-126ит",
+          "lessons": [
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Введение в специальность",
+              "teacher": "Кетов А.И.",
+              "room": "12 цех",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Литература",
+              "teacher": "Пахолкова С.А.",
+              "room": "7/2",
+              "isRemote": false
+            },
+            {
+              "pair": 4,
+              "building": 2,
+              "start": "14:30",
+              "end": "16:00",
+              "subject": "ОБиЗР",
+              "teacher": "Казаков М.Л.",
+              "room": "15/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 12:10 до 12:50",
+              "time": "12:10",
+              "endTime": "12:50",
+              "pair": 5
+            }
+          ]
+        },
+        {
+          "group": "ИСП-225р",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "Физ. культура",
+              "teacher": "Назарова О.И.",
+              "room": "СЗ/2",
+              "isRemote": false
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "Числ. методы",
+              "teacher": "Батракова С.Н.",
+              "room": "16/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "Числ. методы",
+              "teacher": "Батракова С.Н.",
+              "room": "16/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 11:25 до 11:50",
+              "time": "11:25",
+              "endTime": "11:50",
+              "pair": 4
+            }
+          ]
+        },
+        {
+          "group": "ИСП-324а",
+          "lessons": [
+            {
+              "pair": 1,
+              "building": 2,
+              "start": "09:00",
+              "end": "10:30",
+              "subject": "ТВиМС",
+              "teacher": "Кисова Л.И.",
+              "room": "13/2",
+              "isRemote": false
+            },
+            {
+              "pair": 2,
+              "building": 2,
+              "start": "10:40",
+              "end": "12:40",
+              "subject": "ТВиМС",
+              "teacher": "Кисова Л.И.",
+              "room": "13/2",
+              "isRemote": false
+            },
+            {
+              "pair": 3,
+              "building": 2,
+              "start": "12:50",
+              "end": "14:20",
+              "subject": "ТВиМС",
+              "teacher": "Кисова Л.И.",
+              "room": "13/2",
+              "isRemote": false
+            }
+          ],
+          "notes": [
+            {
+              "kind": "lunch",
+              "text": "Обед с 12:10 до 12:50",
+              "time": "12:10",
+              "endTime": "12:50",
+              "pair": 4
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    "page 2: no bell times for 12 pairs, start/end left empty"
+  ]
+}
