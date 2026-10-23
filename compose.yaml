@@ -10,12 +10,9 @@ services:
       - "1984"
     volumes:
       - sked-data:/data
-    healthcheck:
-      test: ["CMD", "/skedd", "-healthcheck"]
-      interval: 30s
-      timeout: 5s
-      start_period: 10s
-      retries: 3
+    # No compose healthcheck: podman-compose 1.0.x wraps it in /bin/sh -c and
+    # the distroless image has no shell. Docker still uses the Dockerfile's
+    # HEALTHCHECK (skedd -healthcheck).
 
   caddy:
     image: docker.io/library/caddy:2

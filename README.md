@@ -47,8 +47,12 @@ curl https://<домен>/health
 
 ```sh
 podman compose logs -f sked
-git pull && podman compose up -d --build   # обновление
+git pull && podman compose down && podman compose up -d --build   # обновление
 ```
+
+`down` перед `up` обязателен для podman-compose 1.0.x: он не пересоздаёт
+существующие контейнеры, а запускает старые. Тома (данные и сертификаты)
+`down` не трогает.
 
 Снимки расписания лежат в томе `sked-data`, сертификаты — в `caddy-data`
 (этот том не удаляй, иначе сертификат придётся получать заново). Ручные
