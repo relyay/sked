@@ -165,24 +165,29 @@ func TestNoUnrecognisedCells(t *testing.T) {
 }
 
 func TestMissingTimesAreDerived(t *testing.T) {
+	// Saturday 24.10 has no bell times. Pairs last an hour on Saturdays, with
+	// the weekday first start and breaks.
 	spo := parseFile(t, "spo.pdf")
-	l := lesson(t, groupDay(t, spo, "2026-10-24", "ЭСС-225"), 1, 0)
-	if l.Start != "08:30" || l.End != "10:00" || l.TimeSource != schedule.TimeFromBells {
-		t.Errorf("remote saturday lesson = %+v", l)
+	sat := groupDay(t, spo, "2026-10-24", "ЭСС-225")
+	for pair, want := range map[int][2]string{1: {"08:30", "09:30"}, 2: {"09:40", "10:40"}, 3: {"11:10", "12:10"}, 4: {"12:20", "13:20"}} {
+		l := lesson(t, sat, pair, 0)
+		if l.Start != want[0] || l.End != want[1] || l.TimeSource != schedule.TimeFromBells {
+			t.Errorf("spo saturday pair %d = %s–%s (%s), want %s–%s", pair, l.Start, l.End, l.TimeSource, want[0], want[1])
+		}
 	}
 
 	// In-person PE after remote pairs, with "Занятия начинаются с 11:50"
-	// ("classes start at 11:50"):
-	// the bell grid (pair 3 = 12:50) is shifted to start at 11:50.
+	// ("classes start at 11:50"): the Saturday grid (pair 3 = 11:20) is
+	// shifted to start at 11:50.
 	npo := parseFile(t, "npo.pdf")
 	g := groupDay(t, npo, "2026-10-24", "ИСП-225ис")
-	if l := lesson(t, g, 1, 0); l.Start != "09:00" || l.TimeSource != schedule.TimeFromBells {
+	if l := lesson(t, g, 1, 0); l.Start != "09:00" || l.End != "10:00" || l.TimeSource != schedule.TimeFromBells {
 		t.Errorf("remote pair 1 = %+v", l)
 	}
-	if l := lesson(t, g, 3, 0); l.Start != "11:50" || l.End != "13:20" || l.TimeSource != schedule.TimeFromStartsAt {
+	if l := lesson(t, g, 3, 0); l.Start != "11:50" || l.End != "12:50" || l.TimeSource != schedule.TimeFromStartsAt {
 		t.Errorf("in-person pair 3 = %+v", l)
 	}
-	if l := lesson(t, g, 4, 0); l.Start != "13:30" || l.TimeSource != schedule.TimeFromStartsAt {
+	if l := lesson(t, g, 4, 0); l.Start != "13:00" || l.End != "14:00" || l.TimeSource != schedule.TimeFromStartsAt {
 		t.Errorf("in-person pair 4 = %+v", l)
 	}
 

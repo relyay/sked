@@ -3,28 +3,61 @@ package parser
 import (
 	"fmt"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/relya/sked/server/internal/schedule"
 )
 
 type bell struct{ start, end string }
 
+// saturdayLength is how long a pair lasts on Saturdays (college rule; the
+// PDFs do not print Saturday bell times).
+const saturdayLength = 60
+
 // fillMissingTimes derives times for pages without bell times (remote
-// Saturdays): the most common time of each pair on other pages of the same
-// PDF, shifted for in-person pairs when the group has a "classes start at"
-// note. Derived times are marked with TimeSource.
+// Saturdays) from the most common time of each pair on other pages of the
+// same PDF. On Saturdays pairs last an hour, keeping the weekday first start
+// and breaks. In-person pairs are shifted when the group has a "classes start
+// at" note. Derived times are marked with TimeSource.
 func fillMissingTimes(days []schedule.Day) {
 	bells := commonBells(days)
 	if len(bells) == 0 {
 		return
 	}
+	saturday := saturdayBells(bells)
 	for di := range days {
+		dayBells := bells
+		if date, err := time.Parse(time.DateOnly, days[di].Date); err == nil && date.Weekday() == time.Saturday {
+			dayBells = saturday
+		}
 		for gi := range days[di].Groups {
-			fillGroup(&days[di].Groups[gi], bells)
+			fillGroup(&days[di].Groups[gi], dayBells)
 		}
 	}
+}
+
+// saturdayBells keeps the weekday start of the first pair and the weekday
+// breaks between pairs, but makes every pair saturdayLength minutes long.
+func saturdayBells(weekday map[int]bell) map[int]bell {
+	pairs := make([]int, 0, len(weekday))
+	for p := range weekday {
+		pairs = append(pairs, p)
+	}
+	slices.Sort(pairs)
+	out := map[int]bell{}
+	start := minutes(weekday[pairs[0]].start)
+	for i, p := range pairs {
+		if i > 0 {
+			prev := pairs[i-1]
+			breakLen := minutes(weekday[p].start) - minutes(weekday[prev].end)
+			start = minutes(out[prev].end) + max(0, breakLen)
+		}
+		out[p] = bell{clockOf(start), clockOf(start + saturdayLength)}
+	}
+	return out
 }
 
 func commonBells(days []schedule.Day) map[int]bell {
@@ -104,7 +137,10 @@ func minutes(clock string) int {
 }
 
 func shift(clock string, offset int) string {
-	t := minutes(clock) + offset
+	return clockOf(minutes(clock) + offset)
+}
+
+func clockOf(t int) string {
 	return fmt.Sprintf("%02d:%02d", t/60, t%60)
 }
 
