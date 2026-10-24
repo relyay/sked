@@ -28,7 +28,7 @@ hex_bg = "%02X%02X%02X" % BG
 (root / "ios/AppResources").mkdir(parents=True, exist_ok=True)
 im.resize((1024, 1024), Image.LANCZOS).save(root / "ios/AppResources/AppIcon.png", optimize=True)
 
-# Desktop (hicolor 512x512, installed by `just desktop-install`).
+# Desktop (hicolor 512x512, installed by `just linux-install`).
 (root / "desktop/data").mkdir(parents=True, exist_ok=True)
 im.resize((512, 512), Image.LANCZOS).save(root / "desktop/data/ru.sked.app.png", optimize=True)
 

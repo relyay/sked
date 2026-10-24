@@ -1,5 +1,5 @@
-//! Russian (default) and English strings, mirroring the mobile clients'
-//! resources. English is used only when the system language is English.
+//! Russian and English strings, mirroring the mobile clients' resources.
+//! Russian when the system language is Russian, English otherwise.
 
 use std::sync::OnceLock;
 
@@ -13,13 +13,17 @@ pub enum Lang {
 
 pub fn lang() -> Lang {
     static LANG: OnceLock<Lang> = OnceLock::new();
-    *LANG.get_or_init(|| {
-        let first = glib::language_names().into_iter().find(|l| l.as_str() != "C" && l.as_str() != "POSIX");
-        match first {
-            Some(l) if l.starts_with("en") => Lang::En,
-            _ => Lang::Ru,
-        }
-    })
+    *LANG.get_or_init(|| lang_for(&glib::language_names().iter().map(|l| l.as_str()).collect::<Vec<_>>()))
+}
+
+/// Russian when the user's first language is Russian; otherwise English, like
+/// other GNOME apps (the C/POSIX locales, e.g. `C.UTF-8`, mean untranslated
+/// English).
+fn lang_for(names: &[&str]) -> Lang {
+    match names.first() {
+        Some(name) if name.starts_with("ru") => Lang::Ru,
+        _ => Lang::En,
+    }
 }
 
 /// A localized string; `{0}`, `{1}` are replaced by `args`.
@@ -128,5 +132,19 @@ pub fn t(key: &str) -> &'static str {
     match lang() {
         Lang::Ru => ru,
         Lang::En => en,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn picks_language_from_system() {
+        assert!(lang_for(&["ru_RU.UTF-8", "ru_RU", "ru", "C"]) == Lang::Ru);
+        assert!(lang_for(&["en_US.UTF-8", "en_US", "en", "C"]) == Lang::En);
+        // LANG=C.UTF-8: untranslated, i.e. English.
+        assert!(lang_for(&["C.UTF-8", "C"]) == Lang::En);
+        assert!(lang_for(&["de_DE.UTF-8", "de", "C"]) == Lang::En);
     }
 }

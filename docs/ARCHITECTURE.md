@@ -144,9 +144,9 @@ Status codes: `400` — invalid `building`/`date`; `404` — unknown building; `
 ## Desktop client: decisions
 
 - GTK4 + libadwaita in Rust, following the GNOME HIG: view switcher in the header (bottom bar on narrow windows), boxed lists and preferences groups, `adw::Banner` for "Showing data from …", `adw::StatusPage` for errors, `adw::Dialog` for "Edit profile", `adw::AlertDialog` to confirm the reset, `adw::Avatar` with initials on the profile card.
-- Same rules and strings as the mobile clients; Russian unless the system language is English.
+- Same rules and strings as the mobile clients; Russian when the system language is Russian, English otherwise (including the `C`/`C.UTF-8` locale).
 - `https://rasp.relya.ru` by default, `SKED_SERVER_URL` for development. The cached ETag is sent with `If-None-Match`; a 304 keeps the cached copy.
-- `just desktop` → `dist/sked`; `just desktop-install` → `~/.local/bin/sked`, menu entry and icon.
+- `just linux` → `dist/sked`; `just linux-install` → `~/.local/bin/sked`, menu entry and icon. `just all` builds iOS, Android and Linux.
 
 ## Acceptance checklist
 

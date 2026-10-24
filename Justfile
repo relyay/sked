@@ -8,6 +8,9 @@ android_home := env("ANDROID_HOME", env("HOME") / "Android/Sdk")
 default:
     @just --list
 
+# Build every client: iOS, Android and Linux.
+all: ios android linux
+
 # Build the iOS app as a release .ipa: dist/Sked.ipa.
 ios:
     cd ios && xtool dev build --configuration release --ipa
@@ -20,14 +23,14 @@ android:
     cp android/app/build/outputs/apk/release/app-release.apk {{dist}}/Sked.apk
     @echo "→ {{dist}}/Sked.apk"
 
-# Build the GTK4/libadwaita desktop app: dist/sked (release, runs the core tests first).
-desktop:
+# Build the GTK4/libadwaita Linux app: dist/sked (release, runs the core tests first).
+linux:
     cd desktop && cargo test --quiet && cargo build --release --quiet
     cp desktop/target/release/sked {{dist}}/sked
     @echo "→ {{dist}}/sked"
 
-# Install the desktop app for the current user (binary, menu entry, icon).
-desktop-install: desktop
+# Install the Linux app for the current user (binary, menu entry, icon).
+linux-install: linux
     install -Dm755 {{dist}}/sked ~/.local/bin/sked
     install -Dm644 desktop/data/ru.sked.app.desktop ~/.local/share/applications/ru.sked.app.desktop
     install -Dm644 desktop/data/ru.sked.app.png ~/.local/share/icons/hicolor/512x512/apps/ru.sked.app.png
