@@ -2,9 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Deploy: `git clone`, set the domain on the first line of `Caddyfile`, `podman compose up -d` (compose builds `server/Dockerfile` itself; no just target for the server). Stack: `sked` (only `expose`d) + `sked-caddy` (TLS via Let's Encrypt, proxies to `sked:1984`). Data lives in the `sked-data` named volume, not a bind mount, because rootless podman can't map host UIDs; `/data` is chowned to 65532 in the image so a fresh volume is writable. Deployment steps and host prerequisites are in `docs/ARCHITECTURE.md` (Deployment). Keep `compose.yaml` compatible with podman-compose 1.0.x (Ubuntu's): no compose `healthcheck` (it is wrapped in `/bin/sh -c`, absent in distroless), and updates need `down` before `up` because it won't recreate existing containers. `just ios` → `dist/Sked.ipa` (release, unsigned; `xtool install` signs). `just android` → runs the Android unit tests and builds `dist/Sked.apk` (release, signed with the debug key).
+Deploy: `git clone`, set the domain on the first line of `Caddyfile`, `podman compose up -d` (compose builds `server/Dockerfile` itself; no just target for the server). Stack: `sked` (only `expose`d) + `sked-caddy` (TLS via Let's Encrypt, proxies to `sked:1984`). Data lives in the `sked-data` named volume, not a bind mount, because rootless podman can't map host UIDs; `/data` is chowned to 65532 in the image so a fresh volume is writable. Deployment steps and host prerequisites are in `docs/ARCHITECTURE.md` (Deployment). Keep `compose.yaml` compatible with podman-compose 1.0.x (Ubuntu's): no compose `healthcheck` (it is wrapped in `/bin/sh -c`, absent in distroless), and updates need `down` before `up` because it won't recreate existing containers. `just ios` → `dist/Sked.ipa` (release, unsigned; `xtool install` signs). `just android` → runs the Android unit tests and builds `dist/Sked.apk` (release, signed with the debug key). `just desktop` → runs the Rust core tests and builds `dist/sked`; `just desktop-install` installs it with its menu entry and icon under `~/.local`.
 
-**Sked** — schedule app for students of the VKSIT college: a Go server (`server/`) parses the college's schedule PDFs and serves JSON; an iOS 26 SwiftUI client (`ios/`, built on Linux with xtool) and an Android Jetpack Compose client (`android/`) consume it. The two clients mirror each other: same screens, rules, strings and tests — change both together. The client never touches the PDFs or rasp.vksit.ru. Full design, data model and API contract: `docs/ARCHITECTURE.md` — keep it in sync when the JSON shape or endpoints change.
+**Sked** — schedule app for students of the VKSIT college: a Go server (`server/`) parses the college's schedule PDFs and serves JSON; an iOS 26 SwiftUI client (`ios/`, built on Linux with xtool), an Android Jetpack Compose client (`android/`) and a GTK4/libadwaita desktop client in Rust (`desktop/`) consume it. The clients mirror each other: same screens, rules, strings and tests — change all of them together. The client never touches the PDFs or rasp.vksit.ru. Full design, data model and API contract: `docs/ARCHITECTURE.md` — keep it in sync when the JSON shape or endpoints change.
 
 App icon: `icon.png` at the repo root is the source; `python3 tools/make_icons.py icon.png . [preview.png]` (needs Pillow) regenerates `ios/AppResources/AppIcon.png` (`iconPath` in `xtool.yml`), the Android adaptive-icon foreground PNGs and the background color in `values/colors.xml` (sampled from the corners); the optional preview shows the Android icon under a circular mask.
 
@@ -83,3 +83,18 @@ Manual overrides: `<data>/overrides/<npo|spo>.json` (`{"days":[{date, group, les
 - iOS sub-screens (Edit profile, group picker) use the same `ScreenBackground` as the screen they are pushed from.
 - No decorative icons in content: only lunch breaks and «Занятия начинаются с» ("classes start at") notes carry icons. Navigation chrome (tab icons, back arrows, chevrons, the selected-group checkmark) stays.
 - Home shows only the current/next class card (plus the stale-data banner). Resetting the profile lives in the "Edit profile" screen behind the profile card.
+
+## Desktop commands (run in `desktop/`)
+
+```sh
+cargo test                                         # core tests (mirror the iOS/Android suites)
+cargo run                                          # run against https://rasp.relya.ru
+SKED_SERVER_URL=http://127.0.0.1:1984 cargo run    # run against a local skedd
+```
+
+## Desktop architecture
+
+- Rust, gtk4-rs + libadwaita (`v1_7` for `ToggleGroup`), `ureq` for HTTP, `serde_json`, `jiff` for Europe/Moscow. `src/core` is the Rust twin of `SkedCore` / `ru.sked.app.core` with the same tests; keep rules identical.
+- Layout per the GNOME HIG: `ViewSwitcher` in the header on wide windows, `ViewSwitcherBar` at the bottom under 550sp (`Breakpoint`); stale data is an `adw::Banner`; Edit profile is an `adw::Dialog` with its own `NavigationView` (group picker pushed inside).
+- `state::AppState` holds profile and schedule; pages subscribe and rebuild themselves on change (the minute tick re-renders Home/Schedule, keeping scroll). Network calls run on `gio::spawn_blocking`; the client sends the cached ETag and treats 304 as "unchanged".
+- Profile in `$XDG_CONFIG_HOME/sked/profile.json`, offline cache in `$XDG_CACHE_HOME/sked/`. Strings are in `src/i18n.rs` (Russian default, English when the system language is English); dates go through `src/format.rs`.

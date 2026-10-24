@@ -4,7 +4,7 @@
 
 ```
 ┌──────────────────────┐   HTTP/JSON (ETag, 304)   ┌──────────────────────────┐   conditional GET   ┌────────────────────┐
-│ iOS / Android client │ ────────────────────────▶ │ skedd (Go)               │ ──────────────────▶ │ rasp.vksit.ru      │
+│ iOS/Android/desktop  │ ────────────────────────▶ │ skedd (Go)               │ ──────────────────▶ │ rasp.vksit.ru      │
 │  • profile (local)   │                           │  updater: 2-min tick     │   ETag / IMS /      │  npo.pdf, spo.pdf  │
 │  • snapshot cache    │ ◀──────────────────────── │  pdfx → parser → store   │   body sha256       └────────────────────┘
 │  • "next class"      │                           │  api: /health /schedule… │
@@ -75,6 +75,12 @@ android/             Gradle project (AGP 9, Compose, Material 3)
     data/            ApiClient (HttpURLConnection, retries, HttpResponseCache), Json (org.json), Storage
     ui/              AppViewModel, SkedApp (onboarding ↔ NavigationBar), Format, theme, components, screens
   app/src/test/      JUnit tests mirroring ios/Tests/SkedCoreTests
+desktop/             Rust, gtk4-rs + libadwaita
+  src/core/          Rust twin of SkedCore (models, ScheduleQuery, Moscow time) + tests
+  src/api.rs         ureq client: retries, ETag/304, human errors
+  src/state.rs       AppState (profile, schedule, stale banner), subscribers
+  src/ui/            window (ViewSwitcher + Breakpoint), home, schedule, profile, onboarding
+  data/              .desktop entry and 512px icon
 Caddyfile, compose.yaml  deployment (see below)
 ```
 
@@ -134,6 +140,13 @@ Status codes: `400` — invalid `building`/`date`; `404` — unknown building; `
 - Russian is the default resource language, English is `values-en`; Android 13+ offers per-app language.
 - `BuildConfig.SERVER_URL` is `https://rasp.relya.ru`. Debug builds can point at a local server (`-PskedServerUrl=http://10.0.2.2:1984` from the emulator); cleartext HTTP is allowed only in debug and only for `10.0.2.2`/`localhost`.
 - `just android` runs the unit tests and writes `dist/Sked.apk` (release with R8, signed with the debug key so it installs; use your own key to publish).
+
+## Desktop client: decisions
+
+- GTK4 + libadwaita in Rust, following the GNOME HIG: view switcher in the header (bottom bar on narrow windows), boxed lists and preferences groups, `adw::Banner` for "Showing data from …", `adw::StatusPage` for errors, `adw::Dialog` for "Edit profile", `adw::AlertDialog` to confirm the reset, `adw::Avatar` with initials on the profile card.
+- Same rules and strings as the mobile clients; Russian unless the system language is English.
+- `https://rasp.relya.ru` by default, `SKED_SERVER_URL` for development. The cached ETag is sent with `If-None-Match`; a 304 keeps the cached copy.
+- `just desktop` → `dist/sked`; `just desktop-install` → `~/.local/bin/sked`, menu entry and icon.
 
 ## Acceptance checklist
 

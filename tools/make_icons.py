@@ -1,10 +1,10 @@
-"""Generate the iOS and Android app icons from icon.png.
+"""Generate the iOS, Android and desktop app icons from icon.png.
 
 Usage (needs Pillow): python3 tools/make_icons.py icon.png . [preview.png]
 
 The source is a square white glyph (any shading) on a flat background, with
-no alpha. iOS gets it as is (1024x1024, no alpha). Android gets an adaptive
-icon: the background color (sampled from the corners and written to
+no alpha. iOS gets it as is (1024x1024, no alpha), the desktop app at
+512x512. Android gets an adaptive icon: the background color (sampled from the corners and written to
 values/colors.xml) plus the glyph on a transparent foreground layer, so
 launchers can mask it and Android 13+ can theme it. The optional third
 argument writes a preview under a circular launcher mask.
@@ -27,6 +27,10 @@ hex_bg = "%02X%02X%02X" % BG
 
 (root / "ios/AppResources").mkdir(parents=True, exist_ok=True)
 im.resize((1024, 1024), Image.LANCZOS).save(root / "ios/AppResources/AppIcon.png", optimize=True)
+
+# Desktop (hicolor 512x512, installed by `just desktop-install`).
+(root / "desktop/data").mkdir(parents=True, exist_ok=True)
+im.resize((512, 512), Image.LANCZOS).save(root / "desktop/data/ru.sked.app.png", optimize=True)
 
 # Every glyph pixel is white blended over BG: p = a*255 + (1-a)*bg, so the
 # alpha can be recovered exactly. Channels where the background is already

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Sked
+Comment=VKSIT class schedule
+Comment[ru]=Расписание колледжа ВКСИТ
+Exec=sked
+Icon=ru.sked.app
+Terminal=false
+Categories=Education;GTK;GNOME;
+Keywords=schedule;timetable;college;расписание;
+StartupNotify=true
