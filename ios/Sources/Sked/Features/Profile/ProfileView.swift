@@ -158,6 +158,9 @@ private struct ProfileEditor: View {
                 }
             }
         }
+        // Same backdrop as the profile it is pushed from, so it doesn't flash.
+        .scrollContentBackground(.hidden)
+        .background(ScreenBackground())
         .navigationTitle(L("profile.edit"))
         .confirmationDialog(L("profile.resetConfirm"), isPresented: $confirmsReset, titleVisibility: .visible) {
             Button(L("profile.reset"), role: .destructive) { model.resetProfile() }
@@ -204,6 +207,8 @@ private struct GroupEditor: View {
                 GroupPickerView(groups: list.groups, selection: $selection)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(ScreenBackground())
         .navigationTitle(L("profile.group"))
         .task { await list.load(client: model.client) }
         .onAppear { selection = profile.group }

@@ -59,9 +59,19 @@ class ScheduleQuery(days: List<Day>, val group: String, val subgroup: Subgroup) 
     /** Buildings the user goes to on a day, from the lessons themselves. */
     fun buildings(day: Day): List<Int> = buildings(lessons(day), day.building)
 
-    /** "Classes start at …" («Занятия начинаются с …») for the user's subgroup. */
-    fun startsAt(day: Day): String? =
-        groupDay(day)?.notes?.firstOrNull { it.kind == Note.Kind.STARTS_AT && noteIsVisible(it) }?.time
+    /**
+     * "Classes start at …" («Занятия начинаются с …») for the user's subgroup,
+     * only when it says something the lessons don't: hidden when the first
+     * in-person class already starts at that time (the server aligns derived
+     * Saturday times with it) or when there is no in-person class that day.
+     */
+    fun startsAt(day: Day): String? {
+        val time = groupDay(day)?.notes?.firstOrNull { it.kind == Note.Kind.STARTS_AT && noteIsVisible(it) }?.time
+            ?: return null
+        val firstInPerson = lessons(day).filter { !it.isRemote && it.start.isNotEmpty() }.minOfOrNull { it.start }
+            ?: return null
+        return time.takeIf { it != firstInPerson }
+    }
 
     /**
      * Lunch breaks for the user's subgroup, without duplicates (the PDF often

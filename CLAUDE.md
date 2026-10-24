@@ -79,5 +79,7 @@ Manual overrides: `<data>/overrides/<npo|spo>.json` (`{"days":[{date, group, les
 
 ## UI conventions (both clients)
 
+- «Занятия начинаются с …» ("classes start at") is shown only when it adds information: `ScheduleQuery.startsAt` hides it when the first in-person class already starts at that time or when a day has no in-person class.
+- iOS sub-screens (Edit profile, group picker) use the same `ScreenBackground` as the screen they are pushed from.
 - No decorative icons in content: only lunch breaks and «Занятия начинаются с» ("classes start at") notes carry icons. Navigation chrome (tab icons, back arrows, chevrons, the selected-group checkmark) stays.
 - Home shows only the current/next class card (plus the stale-data banner). Resetting the profile lives in the "Edit profile" screen behind the profile card.

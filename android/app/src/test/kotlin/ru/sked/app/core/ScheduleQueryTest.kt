@@ -25,7 +25,10 @@ private val friday = Day("2026-10-23", building = 1, groups = listOf(
 private val saturday = Day("2026-10-24", building = 1, groups = listOf(
     GroupDay(
         "ИСП-225а",
-        listOf(Lesson(pair = 5, start = "15:40", end = "17:10", subject = "ОСиС", isRemote = true, subgroup = 2, timeSource = "bells")),
+        listOf(
+            Lesson(pair = 3, start = "12:10", end = "13:10", subject = "ПОПД", room = "24/1", subgroup = 2),
+            Lesson(pair = 5, start = "15:40", end = "17:10", subject = "ОСиС", isRemote = true, subgroup = 2, timeSource = "bells"),
+        ),
         listOf(Note(Note.Kind.STARTS_AT, "Занятия начинаются с 11:10", time = "11:10", subgroup = 2)),
     ),
 ))
@@ -41,8 +44,23 @@ private fun query(subgroup: Subgroup, group: String = "ИСП-225а") = Schedule
 
 class NextLessonTest {
     @Test fun startsAtFollowsSubgroup() {
+        // Subgroup 2's first in-person class is at 12:10, later than the note.
         assertEquals("11:10", query(Subgroup.SECOND).startsAt(saturday))
         assertNull(query(Subgroup.FIRST).startsAt(saturday))
+    }
+
+    @Test fun startsAtHiddenWhenRedundant() {
+        val note = Note(Note.Kind.STARTS_AT, "Занятия начинаются с 11:50", time = "11:50")
+        val day = Day("2026-10-24", building = 2, groups = listOf(GroupDay("ИСП-225ис", listOf(
+            Lesson(pair = 1, start = "09:00", subject = "ПОПД", isRemote = true),
+            Lesson(pair = 3, start = "11:50", subject = "Физ. культура", room = "СЗ/2", timeSource = "startsAt"),
+        ), listOf(note))))
+        val remoteOnly = Day("2026-10-31", building = 2, groups = listOf(GroupDay("ИСП-225ис", listOf(
+            Lesson(pair = 1, start = "09:00", subject = "ПОПД", isRemote = true),
+        ), listOf(note))))
+        val q = ScheduleQuery(listOf(day, remoteOnly), "ИСП-225ис", Subgroup.UNSPECIFIED)
+        assertNull(q.startsAt(day))
+        assertNull(q.startsAt(remoteOnly))
     }
 
     @Test fun ongoingLesson() {

@@ -161,7 +161,7 @@ Status codes: `400` — invalid `building`/`date`; `404` — unknown building; `
 - [ ] Date chips start today and run to the end of the PDF; header "Friday, October 23 · today · building 2".
 - [ ] On today, a "Next · Class N · in …" hint.
 - [ ] The other subgroup's classes are hidden, the user's subgroup is not highlighted, lessons have no subgroup badge; remote classes read "remote · teacher" without a room; times have no "≈".
-- [ ] Under the day header (and in each day's header in the week view) "Classes start at …" and lunch breaks from the PDF are shown for the user's subgroup.
+- [ ] Under the day header (and in each day's header in the week view) lunch breaks from the PDF are shown for the user's subgroup, and "Classes start at …" only when the first in-person class starts at a different time.
 - [ ] In the day view the subject comes first, then the time; in the week view the class number is in a circle, followed by the subject, the "start – end" time and the room.
 - [ ] An empty day shows "No classes".
 - [ ] No decorative icons anywhere (including the connection error); only lunch and "classes start at" lines have icons.

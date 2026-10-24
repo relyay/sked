@@ -16,6 +16,7 @@ private let friday = Day(date: "2026-10-23", building: 1, groups: [
 ])
 private let saturday = Day(date: "2026-10-24", building: 1, groups: [
     GroupDay(group: "ИСП-225а", lessons: [
+        Lesson(pair: 3, start: "12:10", end: "13:10", subject: "ПОПД", room: "24/1", subgroup: 2),
         Lesson(pair: 5, start: "15:40", end: "17:10", subject: "ОСиС", isRemote: true, subgroup: 2, timeSource: "bells"),
     ], notes: [Note(kind: .startsAt, text: "Занятия начинаются с 11:10", time: "11:10", subgroup: 2)]),
 ])
@@ -29,8 +30,25 @@ private let days = [monday, saturday, friday]
 
 @Suite struct NextLessonTests {
     @Test func startsAtFollowsSubgroup() {
+        // Subgroup 2's first in-person class is at 12:10, later than the note.
         #expect(ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .second).startsAt(on: saturday) == "11:10")
         #expect(ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .first).startsAt(on: saturday) == nil)
+    }
+
+    @Test func startsAtHiddenWhenRedundant() {
+        let day = Day(date: "2026-10-24", building: 2, groups: [
+            GroupDay(group: "ИСП-225ис", lessons: [
+                Lesson(pair: 1, start: "09:00", subject: "ПОПД", isRemote: true),
+                Lesson(pair: 3, start: "11:50", subject: "Физ. культура", room: "СЗ/2", timeSource: "startsAt"),
+            ], notes: [Note(kind: .startsAt, text: "Занятия начинаются с 11:50", time: "11:50")]),
+        ])
+        let remoteOnly = Day(date: "2026-10-31", building: 2, groups: [
+            GroupDay(group: "ИСП-225ис", lessons: [Lesson(pair: 1, start: "09:00", subject: "ПОПД", isRemote: true)],
+                     notes: [Note(kind: .startsAt, text: "Занятия начинаются с 11:50", time: "11:50")]),
+        ])
+        let q = ScheduleQuery(days: [day, remoteOnly], group: "ИСП-225ис", subgroup: .unspecified)
+        #expect(q.startsAt(on: day) == nil)
+        #expect(q.startsAt(on: remoteOnly) == nil)
     }
 
     @Test func ongoingLesson() {

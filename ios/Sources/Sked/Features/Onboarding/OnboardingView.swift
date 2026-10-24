@@ -174,6 +174,8 @@ struct GroupPickerView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(ScreenBackground())
         .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: L("group.search"))
         .navigationTitle(L("profile.group"))
     }

@@ -108,11 +108,21 @@ public struct ScheduleQuery: Sendable {
             .sorted { ($0.time ?? "") < ($1.time ?? "") }
     }
 
-    /// "Classes start at …" («Занятия начинаются с …») for the user's subgroup.
+    /// "Classes start at …" («Занятия начинаются с …») for the user's
+    /// subgroup, only when it says something the lessons don't: hidden when
+    /// the first in-person class already starts at that time (the server
+    /// aligns derived Saturday times with it) or when there is no in-person
+    /// class that day.
     public func startsAt(on day: Day) -> String? {
-        groupDay(on: day)?.notes?.first { note in
+        let note = groupDay(on: day)?.notes?.first { note in
             note.kind == .startsAt && (subgroup == .unspecified || note.subgroup == nil || note.subgroup == subgroup.rawValue)
-        }?.time
+        }
+        guard let time = note?.time,
+              let firstInPerson = lessons(on: day).filter({ !$0.isRemote && !$0.start.isEmpty }).map(\.start).min(),
+              firstInPerson != time else {
+            return nil
+        }
+        return time
     }
 
     public func day(for date: Date) -> Day? {
