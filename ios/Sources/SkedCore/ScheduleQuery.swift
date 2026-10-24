@@ -52,15 +52,6 @@ public enum CurrentLessonState: Equatable, Sendable {
     case noLessonsToday
 }
 
-/// The "next school day" card.
-public struct NextSchoolDay: Equatable, Sendable {
-    public var day: Day
-    public var lessons: [Lesson]
-    public var isTomorrow: Bool
-    /// Tomorrow exists in the calendar but has no lessons for the user.
-    public var tomorrowIsFree: Bool
-}
-
 /// Answers schedule questions for one group and subgroup.
 public struct ScheduleQuery: Sendable {
     public var days: [Day]
@@ -94,7 +85,6 @@ public struct ScheduleQuery: Sendable {
         subgroup == .unspecified || lesson.subgroup == nil || lesson.subgroup == subgroup.rawValue
     }
 
-
     /// Buildings the user goes to on a day, from the lessons themselves.
     public func buildings(on day: Day) -> [Int] {
         Self.buildings(of: lessons(on: day), fallback: day.building)
@@ -103,13 +93,6 @@ public struct ScheduleQuery: Sendable {
     public static func buildings(of lessons: [Lesson], fallback: Int) -> [Int] {
         let set = Set(lessons.map { $0.building(or: fallback) })
         return set.isEmpty ? [fallback] : set.sorted()
-    }
-
-    /// When the user has to be at college: the first in-person class. Remote
-    /// classes do not count (on remote Saturdays their times are not even in
-    /// the PDF), so an all-remote day has no start time.
-    public static func firstInPersonStart(of lessons: [Lesson]) -> Lesson? {
-        lessons.filter { !$0.isRemote && !$0.start.isEmpty }.min { ($0.start, $0.pair) < ($1.start, $1.pair) }
     }
 
     /// Lunch breaks for the user's subgroup, without duplicates (the PDF often
@@ -169,30 +152,5 @@ public struct ScheduleQuery: Sendable {
         return lessons(on: today).compactMap { scheduled($0, on: today) }
             .filter { $0.start > now }
             .min { $0.start < $1.start }
-    }
-
-    /// The first day after today with lessons for the user.
-    public func nextSchoolDay(after now: Date) -> NextSchoolDay? {
-        let today = CollegeClock.dayString(now, calendar: calendar)
-        let tomorrowDate = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))!
-        let tomorrow = CollegeClock.dayString(tomorrowDate, calendar: calendar)
-        let tomorrowHasLessons = days.first { $0.date == tomorrow }.map { !lessons(on: $0).isEmpty } ?? false
-
-        for day in days where day.date > today {
-            let lessons = lessons(on: day)
-            if !lessons.isEmpty {
-                return NextSchoolDay(day: day, lessons: lessons, isTomorrow: day.date == tomorrow, tomorrowIsFree: !tomorrowHasLessons)
-            }
-        }
-        return nil
-    }
-
-    /// The day the "classes start at" banner should describe: today if it
-    /// still has lessons ahead, otherwise the next school day.
-    public func nearestDay(at now: Date) -> Day? {
-        switch current(at: now) {
-        case .ongoing(let l), .upcoming(let l): l.day
-        case .finishedForToday, .noLessonsToday: nextSchoolDay(after: now)?.day
-        }
     }
 }

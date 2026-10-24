@@ -44,21 +44,15 @@ import ru.sked.app.ui.lunchLabel
 import ru.sked.app.ui.place
 import ru.sked.app.ui.timeRange
 
-/**
- * Icon on the left; title, message and Retry in one column so the button
- * lines up with the text, not with the icon.
- */
+/** Title, message and Retry in one start-aligned column. */
 @Composable
 fun ErrorNotice(title: String?, message: String, onRetry: () -> Unit, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        Icon(painterResource(R.drawable.ic_wifi_off), contentDescription = null, tint = MaterialTheme.colorScheme.error)
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                title?.let { Text(it, style = MaterialTheme.typography.titleSmall) }
-                Text(message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            FilledTonalButton(onClick = onRetry) { Text(stringResource(R.string.action_retry)) }
+    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            title?.let { Text(it, style = MaterialTheme.typography.titleSmall) }
+            Text(message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
+        FilledTonalButton(onClick = onRetry) { Text(stringResource(R.string.action_retry)) }
     }
 }
 
@@ -81,13 +75,6 @@ fun ErrorState(error: ApiError, onRetry: () -> Unit, modifier: Modifier = Modifi
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Icon(
-            painterResource(R.drawable.ic_wifi_off),
-            contentDescription = null,
-            modifier = Modifier.size(48.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Spacer(Modifier.height(16.dp))
         Text(errorTitle(error), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
         Spacer(Modifier.height(8.dp))
         Text(
@@ -101,17 +88,16 @@ fun ErrorState(error: ApiError, onRetry: () -> Unit, modifier: Modifier = Modifi
     }
 }
 
-/** Icon and text for empty states such as "Пар нет". */
+/** Text for empty states such as "Пар нет". */
 @Composable
-fun EmptyState(text: String, @DrawableRes icon: Int, modifier: Modifier = Modifier) {
-    Column(
-        modifier.fillMaxWidth().padding(vertical = 48.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Icon(painterResource(icon), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(text, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
+fun EmptyState(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text,
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center,
+        modifier = modifier.fillMaxWidth().padding(vertical = 48.dp),
+    )
 }
 
 /** The pair number in a tonal circle, centred against the row. */

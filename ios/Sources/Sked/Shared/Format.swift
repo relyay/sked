@@ -104,10 +104,6 @@ enum Format {
         default: return nil
         }
     }
-
-    static func lessonCount(_ count: Int) -> String {
-        L("lessons.count \(count)")
-    }
 }
 
 extension String {

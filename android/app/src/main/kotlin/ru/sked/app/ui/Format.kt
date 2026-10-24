@@ -5,7 +5,6 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.delay
 import ru.sked.app.R
@@ -78,9 +77,6 @@ fun lunchLabel(note: Note): String {
     val time = note.time ?: return note.text
     return note.endTime?.let { stringResource(R.string.lunch_range, time, it) } ?: stringResource(R.string.lunch_from, time)
 }
-
-@Composable
-fun lessonCount(count: Int): String = pluralStringResource(R.plurals.lessons_count, count, count)
 
 @Composable
 fun subgroupName(subgroup: Subgroup): String =

@@ -47,7 +47,12 @@ struct ScheduleView: View {
     private func content(query: ScheduleQuery, now: Date) -> some View {
         let days = query.upcomingDays(from: now)
         if days.isEmpty {
-            ContentUnavailableView(L("schedule.noDays"), systemImage: "calendar.badge.exclamationmark", description: Text(L("schedule.noDaysHint")))
+            ContentUnavailableView {
+                Text(L("schedule.noDays"))
+                    .font(.title3.weight(.semibold))
+            } description: {
+                Text(L("schedule.noDaysHint"))
+            }
         } else {
             ScrollView {
                 VStack(spacing: 16) {
@@ -88,10 +93,9 @@ private struct DayScheduleView: View {
 
             if day.date == CollegeClock.dayString(now), let next = query.nextLessonToday(after: now) {
                 GlassCard(tint: .accentColor) {
-                    Label(
+                    Text(
                         [L("schedule.next"), L("lesson.pairNumber \(next.lesson.pairLabel)"), Format.countdown(from: now, to: next.start)]
-                            .joined(separator: " · "),
-                        systemImage: "clock"
+                            .joined(separator: " · ")
                     )
                     .font(.subheadline.weight(.semibold))
                 }
@@ -102,7 +106,10 @@ private struct DayScheduleView: View {
 
             let lessons = query.lessons(on: day)
             if lessons.isEmpty {
-                ContentUnavailableView(L("schedule.empty"), systemImage: "cup.and.saucer")
+                ContentUnavailableView {
+                    Text(L("schedule.empty"))
+                        .font(.title3.weight(.semibold))
+                }
             } else {
                 GlassEffectContainer(spacing: 10) {
                     VStack(spacing: 10) {
@@ -177,7 +184,7 @@ private struct WeekScheduleView: View {
                     DayNotes(startsAt: query.startsAt(on: day), lunches: query.lunches(on: day), font: .footnote)
                     let lessons = query.lessons(on: day)
                     if lessons.isEmpty {
-                        Label(L("schedule.empty"), systemImage: "cup.and.saucer")
+                        Text(L("schedule.empty"))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     } else {

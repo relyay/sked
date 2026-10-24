@@ -55,11 +55,6 @@
     <string name="home_finished">No more classes today — take a rest 🎉</string>
     <string name="home_no_lessons_today">No classes today</string>
     <string name="home_building_room">building %1$d, room %2$s</string>
-    <string name="home_next_day">Next school day</string>
-    <string name="home_tomorrow_free">No classes tomorrow</string>
-    <string name="home_tomorrow_weekday">Tomorrow (%1$s)</string>
-    <string name="home_first_at">first at %1$s</string>
-    <string name="home_no_next_day">No upcoming days in the schedule yet</string>
     <string name="home_starts_at">Classes start at %1$s</string>
 
     <string name="schedule_day">Day</string>
@@ -72,7 +67,7 @@
     <string name="profile_full_name">Full name</string>
     <string name="profile_group">Group</string>
     <string name="profile_subgroup">Subgroup</string>
-    <string name="profile_edit">Student profile</string>
+    <string name="profile_edit">Edit profile</string>
     <string name="profile_edit_hint">Edit name, group and subgroup</string>
     <string name="profile_data">Data</string>
     <string name="profile_data_updated">Data updated</string>
@@ -85,8 +80,4 @@
     <string name="profile_reset_confirm">Reset profile?</string>
     <string name="profile_reset_message">Your name, group and saved schedule will be removed from this phone.</string>
 
-    <plurals name="lessons_count">
-        <item quantity="one">%1$d class</item>
-        <item quantity="other">%1$d classes</item>
-    </plurals>
 </resources>

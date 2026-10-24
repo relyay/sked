@@ -3,7 +3,6 @@ package ru.sked.app.ui.schedule
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,7 +14,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
@@ -26,13 +24,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -183,17 +180,15 @@ private fun DaySchedule(
                         Modifier.fillMaxWidth().padding(horizontal = 16.dp).semantics(mergeDescendants = true) {},
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
                     ) {
-                        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            Icon(painterResource(R.drawable.ic_schedule), contentDescription = null)
-                            Text(
-                                listOf(
-                                    stringResource(R.string.schedule_next),
-                                    stringResource(R.string.lesson_pair_number, next.lesson.pairLabel),
-                                    countdown(now, next.start),
-                                ).joinToString(" · "),
-                                style = MaterialTheme.typography.titleSmall,
-                            )
-                        }
+                        Text(
+                            listOf(
+                                stringResource(R.string.schedule_next),
+                                stringResource(R.string.lesson_pair_number, next.lesson.pairLabel),
+                                countdown(now, next.start),
+                            ).joinToString(" · "),
+                            style = MaterialTheme.typography.titleSmall,
+                            modifier = Modifier.padding(16.dp),
+                        )
                     }
                 }
             }
@@ -204,7 +199,7 @@ private fun DaySchedule(
             }
         }
         if (lessons.isEmpty()) {
-            item { EmptyState(stringResource(R.string.schedule_empty), R.drawable.ic_coffee) }
+            item { EmptyState(stringResource(R.string.schedule_empty)) }
         } else {
             items(lessons, key = { it.id }) { lesson ->
                 LessonCard(lesson, Modifier.padding(horizontal = 16.dp))
@@ -226,10 +221,7 @@ private fun WeekSchedule(query: ScheduleQuery, days: List<Day>, now: Instant, st
                     Text(header, style = MaterialTheme.typography.titleMedium, modifier = Modifier.semantics { heading() })
                     DayNotes(query.startsAt(day), query.lunches(day), compact = true)
                     if (lessons.isEmpty()) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Icon(painterResource(R.drawable.ic_coffee), contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text(stringResource(R.string.schedule_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
+                        Text(stringResource(R.string.schedule_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     } else {
                         lessons.forEach { CompactLessonRow(it) }
                     }

@@ -43,7 +43,8 @@ Facts about the source PDFs that drive the parser design (verified on `testdata/
 - Excel lets text overflow into empty neighbouring cells, so text alone can't distinguish a whole-group lesson (merged cell) from a subgroup-1-only lesson. `pdfx` is a custom content-stream interpreter (on top of `ledongthuc/pdf` for object/ToUnicode decoding only) that yields text runs with their **origin point** plus ruling-line segments; `parser` rebuilds the grid (pair rows × subgroup columns) and union-finds cells across missing borders — horizontally (merged subgroups/groups) and vertically (multi-pair cells → `Lesson.PairTo`).
 - Content-stream order is not visual order (pair numbers appear 6→1); always sort by coordinates.
 - Cell text is classified by shape in `parser/cell.go` (room, «Д» = remote, teacher «Фамилия И.О.» (surname + initials), lunch («Обед») / «Занятия начинаются с» ("classes start at") notes, rest = subject). Annotations split across runs are re-joined there.
-- Some pages (remote Saturdays) have no bell times. `parser/times.go` fills them from the most common times of the same PDF (`timeSource: "bells"`) and, for in-person pairs with a «Занятия начинаются с» ("classes start at") note, shifts them to that start (`timeSource: "startsAt"`). The client shows them like any other time (no "≈", per product decision); the home screen's "first at" is the first in-person class (`ScheduleQuery.firstInPersonStart`) and is omitted when a day is all remote. Never invent data beyond this.
+- Some pages (remote Saturdays) have no bell times. `parser/times.go` fills them from the most common times of the same PDF (`timeSource: "bells"`) and, for in-person pairs with a «Занятия начинаются с» ("classes start at") note, shifts them to that start (`timeSource: "startsAt"`). The client shows them like any other time (no "≈", per product decision). Never invent data beyond this.
+- A teacher cell may end with «с 8:30» ("from 8:30"); it becomes `Lesson.note`, but is dropped when it equals the lesson's start (`dropRedundantStartNotes`), e.g. a whole-day exam.
 - Anything unrecognised goes into `Result.Warnings` (logged, persisted in the snapshot, counted in `/health`). `TestNoUnrecognisedCells` fails on any warning other than missing bell times — when a new PDF breaks it, add the new real PDF to `testdata/` and extend the classifier.
 
 Manual overrides: `<data>/overrides/<npo|spo>.json` (`{"days":[{date, group, lessons, notes}]}`) replace a group's day wholesale, win over the parser, and are reread on every tick.
@@ -75,3 +76,8 @@ Manual overrides: `<data>/overrides/<npo|spo>.json` (`{"days":[{date, group, les
 - `BuildConfig.SERVER_URL` is `https://rasp.relya.ru`; only debug builds may override it (`-PskedServerUrl`), and only debug's `network_security_config` allows cleartext, for `10.0.2.2`/`localhost`.
 - UI is Material 3 only: `NavigationBar` tabs, `TopAppBar`s, cards, `SegmentedButton`, `FilterChip`, `PullToRefreshBox`, dynamic color. Sub-screens (profile editor, group picker) are state-driven with `BackHandler`, no navigation library.
 - Russian strings are the default `values/`, English is `values-en/` (per-app language via `locales_config`); format dates with the helpers in `ui/Format.kt`, which use the resources' locale.
+
+## UI conventions (both clients)
+
+- No decorative icons in content: only lunch breaks and «Занятия начинаются с» ("classes start at") notes carry icons. Navigation chrome (tab icons, back arrows, chevrons, the selected-group checkmark) stays.
+- Home shows only the current/next class card (plus the stale-data banner). Resetting the profile lives in the "Edit profile" screen behind the profile card.

@@ -43,6 +43,7 @@
 "onboarding.nameFooter" = "Your name stays on this phone and is never sent anywhere.";
 "onboarding.nameRequired" = "Enter your name";
 "onboarding.choose" = "Choose";
+"group.notFound" = "Nothing found";
 "onboarding.save" = "Save and start";
 
 /* Home */
@@ -52,11 +53,6 @@
 "home.finished" = "No more classes today — take a rest 🎉";
 "home.noLessonsToday" = "No classes today";
 "home.buildingRoom %lld %@" = "building %lld, room %@";
-"home.nextDay" = "Next school day";
-"home.tomorrowFree" = "No classes tomorrow";
-"home.tomorrowWeekday %@" = "Tomorrow (%@)";
-"home.firstAt %@" = "first at %@";
-"home.noNextDay" = "No upcoming days in the schedule yet";
 "lunch.range %@ %@" = "Lunch %@–%@";
 "lunch.from %@" = "Lunch from %@";
 "home.startsAt %@" = "Classes start at %@";
@@ -74,7 +70,7 @@
 "profile.data" = "Data";
 "profile.about" = "About";
 "profile.editNameHint" = "Edit name, group and subgroup";
-"profile.edit" = "Student profile";
+"profile.edit" = "Edit profile";
 "profile.fullName" = "Full name";
 "profile.group" = "Group";
 "profile.subgroup" = "Subgroup";

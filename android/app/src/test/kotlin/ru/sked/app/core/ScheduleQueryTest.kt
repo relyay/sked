@@ -40,6 +40,11 @@ private val days = listOf(monday, saturday, friday)
 private fun query(subgroup: Subgroup, group: String = "ИСП-225а") = ScheduleQuery(days, group, subgroup)
 
 class NextLessonTest {
+    @Test fun startsAtFollowsSubgroup() {
+        assertEquals("11:10", query(Subgroup.SECOND).startsAt(saturday))
+        assertNull(query(Subgroup.FIRST).startsAt(saturday))
+    }
+
     @Test fun ongoingLesson() {
         val state = query(Subgroup.FIRST).current(moscow("2026-10-23", "09:00"))
         assertEquals(1, (state as CurrentLessonState.Ongoing).lesson.lesson.pair)
@@ -85,39 +90,6 @@ class NextLessonTest {
     }
 }
 
-class NextSchoolDayTest {
-    @Test fun tomorrowWithLessons() {
-        val next = query(Subgroup.SECOND).nextSchoolDay(moscow("2026-10-23", "18:00"))!!
-        assertEquals("2026-10-24", next.day.date)
-        assertTrue(next.isTomorrow)
-        assertFalse(next.tomorrowIsFree)
-    }
-
-    @Test fun tomorrowFreeForSubgroupSkipsToNextDay() {
-        // Saturday only has a subgroup-2 lesson; subgroup 1 is free.
-        val next = query(Subgroup.FIRST).nextSchoolDay(moscow("2026-10-23", "18:00"))!!
-        assertEquals("2026-10-26", next.day.date)
-        assertFalse(next.isTomorrow)
-        assertTrue(next.tomorrowIsFree)
-        assertEquals(2, next.lessons.size)
-    }
-
-    @Test fun sundayLooksToMonday() {
-        val next = query(Subgroup.FIRST).nextSchoolDay(moscow("2026-10-25", "12:00"))!!
-        assertEquals("2026-10-26", next.day.date)
-        assertTrue(next.isTomorrow)
-    }
-
-    @Test fun noFutureDays() {
-        assertNull(query(Subgroup.FIRST).nextSchoolDay(moscow("2026-10-26", "08:00")))
-    }
-
-    @Test fun startsAtFollowsSubgroup() {
-        assertEquals("11:10", query(Subgroup.SECOND).startsAt(saturday))
-        assertNull(query(Subgroup.FIRST).startsAt(saturday))
-    }
-}
-
 class LunchTest {
     private val day = Day("2026-10-23", building = 1, groups = listOf(
         GroupDay("ДО-324", emptyList(), listOf(
@@ -134,34 +106,6 @@ class LunchTest {
 
     @Test fun deduplicatesAcrossSubgroups() {
         assertEquals(listOf("10:55", "11:40"), ScheduleQuery(listOf(day), "ДО-324", Subgroup.UNSPECIFIED).lunches(day).map { it.time })
-    }
-}
-
-class FirstStartTest {
-    @Test fun mixedDayUsesFirstInPersonClass() {
-        // Saturday of ИСП-225ис: remote pairs 1–2, PE in person from 11:50.
-        val lessons = listOf(
-            Lesson(pair = 1, start = "09:00", subject = "ПОПД", isRemote = true, timeSource = "bells"),
-            Lesson(pair = 2, start = "10:40", subject = "ПОПД", isRemote = true, timeSource = "bells"),
-            Lesson(pair = 3, start = "11:50", subject = "Физ. культура", room = "СЗ/2", timeSource = "startsAt"),
-        )
-        assertEquals("11:50", ScheduleQuery.firstInPersonStart(lessons)?.start)
-    }
-
-    @Test fun allRemoteHasNoStart() {
-        val lessons = listOf(
-            Lesson(pair = 2, start = "10:10", subject = "ОСиС", isRemote = true),
-            Lesson(pair = 1, start = "08:30", subject = "ОСиС", isRemote = true),
-        )
-        assertNull(ScheduleQuery.firstInPersonStart(lessons))
-    }
-
-    @Test fun regularDayUsesFirstClass() {
-        val lessons = listOf(
-            Lesson(pair = 3, start = "12:10", subject = "История", room = "16/1"),
-            Lesson(pair = 2, start = "10:10", subject = "ПОПД", room = "24/1"),
-        )
-        assertEquals(2, ScheduleQuery.firstInPersonStart(lessons)?.pair)
     }
 }
 

@@ -28,6 +28,11 @@ private let monday = Day(date: "2026-10-26", building: 1, groups: [
 private let days = [monday, saturday, friday]
 
 @Suite struct NextLessonTests {
+    @Test func startsAtFollowsSubgroup() {
+        #expect(ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .second).startsAt(on: saturday) == "11:10")
+        #expect(ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .first).startsAt(on: saturday) == nil)
+    }
+
     @Test func ongoingLesson() {
         let q = ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .first)
         guard case .ongoing(let l) = q.current(at: moscow("2026-10-23", "09:00")) else {
@@ -91,49 +96,6 @@ private let days = [monday, saturday, friday]
     }
 }
 
-@Suite struct NextSchoolDayTests {
-    @Test func tomorrowWithLessons() {
-        let q = ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .second)
-        let next = q.nextSchoolDay(after: moscow("2026-10-23", "18:00"))
-        #expect(next?.day.date == "2026-10-24")
-        #expect(next?.isTomorrow == true)
-        #expect(next?.tomorrowIsFree == false)
-    }
-
-    @Test func tomorrowFreeForSubgroupSkipsToNextDay() {
-        // Saturday only has a subgroup-2 lesson; subgroup 1 is free.
-        let q = ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .first)
-        let next = q.nextSchoolDay(after: moscow("2026-10-23", "18:00"))
-        #expect(next?.day.date == "2026-10-26")
-        #expect(next?.isTomorrow == false)
-        #expect(next?.tomorrowIsFree == true)
-        #expect(next?.lessons.count == 2)
-    }
-
-    @Test func sundayLooksToMonday() {
-        let q = ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .first)
-        let next = q.nextSchoolDay(after: moscow("2026-10-25", "12:00"))
-        #expect(next?.day.date == "2026-10-26")
-        #expect(next?.isTomorrow == true)
-    }
-
-    @Test func noFutureDays() {
-        let q = ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .first)
-        #expect(q.nextSchoolDay(after: moscow("2026-10-26", "08:00")) == nil)
-    }
-
-    @Test func startsAtFollowsSubgroup() {
-        #expect(ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .second).startsAt(on: saturday) == "11:10")
-        #expect(ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .first).startsAt(on: saturday) == nil)
-    }
-
-    @Test func nearestDayAfterLessonsIsNextSchoolDay() {
-        let q = ScheduleQuery(days: days, group: "ИСП-225а", subgroup: .second)
-        #expect(q.nearestDay(at: moscow("2026-10-23", "16:00"))?.date == "2026-10-24")
-        #expect(q.nearestDay(at: moscow("2026-10-23", "09:00"))?.date == "2026-10-23")
-    }
-}
-
 @Suite struct LunchTests {
     let day = Day(date: "2026-10-23", building: 1, groups: [
         GroupDay(group: "ДО-324", lessons: [], notes: [
@@ -152,34 +114,6 @@ private let days = [monday, saturday, friday]
     @Test func deduplicatesAcrossSubgroups() {
         let q = ScheduleQuery(days: [day], group: "ДО-324", subgroup: .unspecified)
         #expect(q.lunches(on: day).map(\.time) == ["10:55", "11:40"])
-    }
-}
-
-@Suite struct FirstStartTests {
-    @Test func mixedDayUsesFirstInPersonClass() {
-        // Saturday of ИСП-225ис: remote pairs 1–2, PE in person from 11:50.
-        let lessons = [
-            Lesson(pair: 1, start: "09:00", subject: "ПОПД", isRemote: true, timeSource: "bells"),
-            Lesson(pair: 2, start: "10:40", subject: "ПОПД", isRemote: true, timeSource: "bells"),
-            Lesson(pair: 3, start: "11:50", subject: "Физ. культура", room: "СЗ/2", timeSource: "startsAt"),
-        ]
-        #expect(ScheduleQuery.firstInPersonStart(of: lessons)?.start == "11:50")
-    }
-
-    @Test func allRemoteHasNoStart() {
-        let lessons = [
-            Lesson(pair: 2, start: "10:10", subject: "ОСиС", isRemote: true),
-            Lesson(pair: 1, start: "08:30", subject: "ОСиС", isRemote: true),
-        ]
-        #expect(ScheduleQuery.firstInPersonStart(of: lessons) == nil)
-    }
-
-    @Test func regularDayUsesFirstClass() {
-        let lessons = [
-            Lesson(pair: 3, start: "12:10", subject: "История", room: "16/1"),
-            Lesson(pair: 2, start: "10:10", subject: "ПОПД", room: "24/1"),
-        ]
-        #expect(ScheduleQuery.firstInPersonStart(of: lessons)?.pair == 2)
     }
 }
 

@@ -119,6 +119,8 @@ func TestParseRemoteAndNotes(t *testing.T) {
 	}
 }
 
+// The exam cell says "с 8:30" ("from 8:30") after the teacher; it equals the
+// start of pair 1, so it must not be repeated as a note.
 func TestParseMergedAcrossPairs(t *testing.T) {
 	res := parseFile(t, "spo.pdf")
 	g := groupDay(t, res, "2026-10-26", "ЭСС-225")
@@ -127,7 +129,7 @@ func TestParseMergedAcrossPairs(t *testing.T) {
 	}
 	l := g.Lessons[0]
 	if l.Subject != `Экзамен "Электротехника"` || l.Teacher != "Андрианов Н.В." || l.Room != "114/1" ||
-		l.Pair != 1 || l.PairTo != 6 || l.Start != "08:30" || l.End != "18:50" || l.Note != "с 8:30" {
+		l.Pair != 1 || l.PairTo != 6 || l.Start != "08:30" || l.End != "18:50" || l.Note != "" {
 		t.Errorf("exam = %+v", l)
 	}
 }

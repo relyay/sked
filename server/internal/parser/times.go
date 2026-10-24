@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -105,4 +106,22 @@ func minutes(clock string) int {
 func shift(clock string, offset int) string {
 	t := minutes(clock) + offset
 	return fmt.Sprintf("%02d:%02d", t/60, t%60)
+}
+
+// startNoteRe matches a teacher-cell tail such as "с 8:30" ("from 8:30").
+var startNoteRe = regexp.MustCompile(`^с\s*(\d{1,2}:\d{2})$`)
+
+// dropRedundantStartNotes clears a "с 8:30" note when the lesson already
+// starts at that time, so clients don't show the start twice.
+func dropRedundantStartNotes(days []schedule.Day) {
+	for di := range days {
+		for gi := range days[di].Groups {
+			lessons := days[di].Groups[gi].Lessons
+			for li := range lessons {
+				if m := startNoteRe.FindStringSubmatch(lessons[li].Note); m != nil && clock(m[1]) == lessons[li].Start {
+					lessons[li].Note = ""
+				}
+			}
+		}
+	}
 }

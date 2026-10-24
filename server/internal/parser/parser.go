@@ -25,7 +25,7 @@ import (
 // Version identifies the parser's output shape. Bump it whenever parsing
 // changes what a snapshot contains: stored snapshots with another version
 // are re-parsed even if the PDF is unchanged.
-const Version = 2
+const Version = 3
 
 // Result is the parse outcome for one PDF.
 type Result struct {
@@ -62,6 +62,7 @@ func Parse(pages []pdfx.Page) Result {
 	}
 	slices.SortFunc(res.Days, func(a, b schedule.Day) int { return cmp.Compare(a.Date, b.Date) })
 	fillMissingTimes(res.Days)
+	dropRedundantStartNotes(res.Days)
 	return res
 }
 

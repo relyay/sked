@@ -58,11 +58,6 @@
     <string name="home_finished">На сегодня пар больше нет — отдыхай 🎉</string>
     <string name="home_no_lessons_today">Сегодня пар нет</string>
     <string name="home_building_room">корпус %1$d, каб. %2$s</string>
-    <string name="home_next_day">Следующий учебный день</string>
-    <string name="home_tomorrow_free">Завтра пар нет</string>
-    <string name="home_tomorrow_weekday">Завтра (%1$s)</string>
-    <string name="home_first_at">первая в %1$s</string>
-    <string name="home_no_next_day">Следующих дней в расписании пока нет</string>
     <string name="home_starts_at">Занятия начинаются с %1$s</string>
 
     <string name="schedule_day">День</string>
@@ -75,7 +70,7 @@
     <string name="profile_full_name">ФИО</string>
     <string name="profile_group">Группа</string>
     <string name="profile_subgroup">Подгруппа</string>
-    <string name="profile_edit">Профиль студента</string>
+    <string name="profile_edit">Изменить профиль</string>
     <string name="profile_edit_hint">Изменить ФИО, группу и подгруппу</string>
     <string name="profile_data">Данные</string>
     <string name="profile_data_updated">Данные обновлены</string>
@@ -88,10 +83,4 @@
     <string name="profile_reset_confirm">Сбросить профиль?</string>
     <string name="profile_reset_message">ФИО, группа и сохранённое расписание будут удалены с телефона.</string>
 
-    <plurals name="lessons_count">
-        <item quantity="one">%1$d пара</item>
-        <item quantity="few">%1$d пары</item>
-        <item quantity="many">%1$d пар</item>
-        <item quantity="other">%1$d пары</item>
-    </plurals>
 </resources>

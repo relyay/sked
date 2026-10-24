@@ -3,7 +3,6 @@ import SkedCore
 
 struct ProfileView: View {
     @Environment(AppModel.self) private var model
-    @State private var confirmsReset = false
 
     var body: some View {
         NavigationStack {
@@ -21,21 +20,10 @@ struct ProfileView: View {
                 Section(L("profile.about")) {
                     LabeledContent(L("profile.version"), value: appVersion)
                 }
-                if model.profile != nil {
-                    Section {
-                        Button(L("profile.reset"), role: .destructive) { confirmsReset = true }
-                            .frame(maxWidth: .infinity)
-                    }
-                }
             }
             .scrollContentBackground(.hidden)
             .background(ScreenBackground())
             .navigationTitle(L("tab.profile"))
-            .confirmationDialog(L("profile.resetConfirm"), isPresented: $confirmsReset, titleVisibility: .visible) {
-                Button(L("profile.reset"), role: .destructive) { model.resetProfile() }
-            } message: {
-                Text(L("profile.resetMessage"))
-            }
         }
     }
 
@@ -126,12 +114,13 @@ func subgroupName(_ subgroup: Subgroup) -> String {
     }
 }
 
-/// Everything about the student behind the profile card: name, group and
-/// subgroup.
+/// Everything about the student behind the profile card: name, group,
+/// subgroup, and resetting the profile.
 private struct ProfileEditor: View {
     @Environment(AppModel.self) private var model
     @State private var name = ""
     @State private var subgroup = Subgroup.unspecified
+    @State private var confirmsReset = false
 
     var body: some View {
         Form {
@@ -162,9 +151,19 @@ private struct ProfileEditor: View {
                 } footer: {
                     Text(L("subgroup.footer"))
                 }
+
+                Section {
+                    Button(L("profile.reset"), role: .destructive) { confirmsReset = true }
+                        .frame(maxWidth: .infinity)
+                }
             }
         }
         .navigationTitle(L("profile.edit"))
+        .confirmationDialog(L("profile.resetConfirm"), isPresented: $confirmsReset, titleVisibility: .visible) {
+            Button(L("profile.reset"), role: .destructive) { model.resetProfile() }
+        } message: {
+            Text(L("profile.resetMessage"))
+        }
         .onAppear {
             name = model.profile?.fullName ?? ""
             subgroup = model.profile?.subgroup ?? .unspecified

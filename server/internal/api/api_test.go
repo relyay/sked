@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -14,6 +15,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/relya/sked/server/internal/parser"
 	"github.com/relya/sked/server/internal/schedule"
 	"github.com/relya/sked/server/internal/source"
 	"github.com/relya/sked/server/internal/store"
@@ -217,7 +219,7 @@ func TestOldParserSnapshotIsReparsed(t *testing.T) {
 	}
 	var snap schedule.Snapshot
 	json.Unmarshal(raw, &snap)
-	snap.ParserVersion = 1
+	snap.ParserVersion = parser.Version - 1
 	for di := range snap.Days {
 		for gi := range snap.Days[di].Groups {
 			for li := range snap.Days[di].Groups[gi].Lessons {
@@ -230,7 +232,7 @@ func TestOldParserSnapshotIsReparsed(t *testing.T) {
 
 	e2 := newEnv(t, dir)
 	e2.updater.Refresh(context.Background())
-	if got, _ := os.ReadFile(path); !strings.Contains(string(got), `"parserVersion": 2`) {
+	if got, _ := os.ReadFile(path); !strings.Contains(string(got), fmt.Sprintf(`"parserVersion": %d`, parser.Version)) {
 		t.Error("old snapshot was not re-parsed")
 	}
 	var resp scheduleResponse

@@ -168,7 +168,10 @@ struct GroupPickerView: View {
         }
         .overlay {
             if filtered.isEmpty {
-                ContentUnavailableView.search(text: search)
+                ContentUnavailableView {
+                    Text(L("group.notFound"))
+                        .font(.title3.weight(.semibold))
+                }
             }
         }
         .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: L("group.search"))

@@ -43,6 +43,7 @@
 "onboarding.nameFooter" = "ФИО хранится только на этом телефоне и никуда не отправляется.";
 "onboarding.nameRequired" = "Введите ФИО";
 "onboarding.choose" = "Выберите";
+"group.notFound" = "Ничего не найдено";
 "onboarding.save" = "Сохранить и начать";
 
 /* Home */
@@ -52,11 +53,6 @@
 "home.finished" = "На сегодня пар больше нет — отдыхай 🎉";
 "home.noLessonsToday" = "Сегодня пар нет";
 "home.buildingRoom %lld %@" = "корпус %lld, каб. %@";
-"home.nextDay" = "Следующий учебный день";
-"home.tomorrowFree" = "Завтра пар нет";
-"home.tomorrowWeekday %@" = "Завтра (%@)";
-"home.firstAt %@" = "первая в %@";
-"home.noNextDay" = "Следующих дней в расписании пока нет";
 "lunch.range %@ %@" = "Обед %@–%@";
 "lunch.from %@" = "Обед с %@";
 "home.startsAt %@" = "Занятия начинаются с %@";
@@ -74,7 +70,7 @@
 "profile.data" = "Данные";
 "profile.about" = "О приложении";
 "profile.editNameHint" = "Изменить ФИО, группу и подгруппу";
-"profile.edit" = "Профиль студента";
+"profile.edit" = "Изменить профиль";
 "profile.fullName" = "ФИО";
 "profile.group" = "Группа";
 "profile.subgroup" = "Подгруппа";

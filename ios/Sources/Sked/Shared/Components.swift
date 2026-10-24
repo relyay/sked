@@ -28,36 +28,31 @@ struct ScreenBackground: View {
     }
 }
 
-/// Icon on the left; title, message and Retry in one column so the button
-/// lines up with the text, not with the icon.
+/// Title, message and Retry in one leading-aligned column.
 struct ErrorNotice: View {
     var title: String?
     let message: String
     var retry: () async -> Void
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 10) {
-            Image(systemName: "wifi.exclamationmark")
-                .foregroundStyle(.orange)
-            VStack(alignment: .leading, spacing: 8) {
-                VStack(alignment: .leading, spacing: 2) {
-                    if let title {
-                        Text(title)
-                            .font(.subheadline.weight(.semibold))
-                    }
-                    Text(message)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 2) {
+                if let title {
+                    Text(title)
+                        .font(.subheadline.weight(.semibold))
                 }
-                Button(L("action.retry")) {
-                    Task { await retry() }
-                }
-                .buttonStyle(.glass)
-                .font(.footnote)
-                .accessibilityIdentifier("retry")
+                Text(message)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            Button(L("action.retry")) {
+                Task { await retry() }
+            }
+            .buttonStyle(.glass)
+            .font(.footnote)
+            .accessibilityIdentifier("retry")
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -86,7 +81,8 @@ struct ErrorStateView: View {
 
     var body: some View {
         ContentUnavailableView {
-            Label(error.errorDescription ?? "", systemImage: "exclamationmark.icloud")
+            Text(error.errorDescription ?? "")
+                .font(.title3.weight(.semibold))
         } description: {
             Text(error.recoverySuggestion ?? "")
         } actions: {

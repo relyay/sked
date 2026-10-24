@@ -33,15 +33,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -81,7 +81,6 @@ fun ProfileScreen(model: AppViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProfileMain(model: AppViewModel, profile: Profile, onEdit: () -> Unit) {
-    var confirmsReset by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     Scaffold(topBar = { TopAppBar(title = { Text(stringResource(R.string.tab_profile)) }) }) { padding ->
@@ -116,25 +115,7 @@ private fun ProfileMain(model: AppViewModel, profile: Profile, onEdit: () -> Uni
                 supportingContent = { Text(appVersion()) },
             )
 
-            TextButton(
-                onClick = { confirmsReset = true },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
-            ) { Text(stringResource(R.string.profile_reset), color = MaterialTheme.colorScheme.error) }
         }
-    }
-
-    if (confirmsReset) {
-        AlertDialog(
-            onDismissRequest = { confirmsReset = false },
-            title = { Text(stringResource(R.string.profile_reset_confirm)) },
-            text = { Text(stringResource(R.string.profile_reset_message)) },
-            confirmButton = {
-                TextButton(onClick = { confirmsReset = false; model.resetProfile() }) {
-                    Text(stringResource(R.string.profile_reset), color = MaterialTheme.colorScheme.error)
-                }
-            },
-            dismissButton = { TextButton(onClick = { confirmsReset = false }) { Text(stringResource(R.string.action_cancel)) } },
-        )
     }
 }
 
@@ -182,11 +163,12 @@ private fun appVersion(): String {
     return "${info.versionName} (${info.longVersionCode})"
 }
 
-/** Name, group and subgroup behind the profile card. */
+/** Name, group, subgroup and resetting the profile, behind the profile card. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProfileEditor(model: AppViewModel, profile: Profile, onGroup: () -> Unit, onBack: () -> Unit) {
     var name by rememberSaveable { mutableStateOf(profile.fullName) }
+    var confirmsReset by remember { mutableStateOf(false) }
     val currentName by rememberUpdatedState(name)
 
     // An empty name is not saved; the previous one stays.
@@ -234,7 +216,24 @@ private fun ProfileEditor(model: AppViewModel, profile: Profile, onGroup: () -> 
             SubgroupSelector(profile.subgroup) { subgroup ->
                 model.profile?.let { if (it.subgroup != subgroup) model.save(it.copy(subgroup = subgroup)) }
             }
+            TextButton(onClick = { confirmsReset = true }, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.profile_reset), color = MaterialTheme.colorScheme.error)
+            }
         }
+    }
+
+    if (confirmsReset) {
+        AlertDialog(
+            onDismissRequest = { confirmsReset = false },
+            title = { Text(stringResource(R.string.profile_reset_confirm)) },
+            text = { Text(stringResource(R.string.profile_reset_message)) },
+            confirmButton = {
+                TextButton(onClick = { confirmsReset = false; model.resetProfile() }) {
+                    Text(stringResource(R.string.profile_reset), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = { TextButton(onClick = { confirmsReset = false }) { Text(stringResource(R.string.action_cancel)) } },
+        )
     }
 }
 

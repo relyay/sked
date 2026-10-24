@@ -41,15 +41,6 @@ sealed interface CurrentLessonState {
     data object NoLessonsToday : CurrentLessonState
 }
 
-/** The "next school day" card. */
-data class NextSchoolDay(
-    val day: Day,
-    val lessons: List<Lesson>,
-    val isTomorrow: Boolean,
-    /** Tomorrow exists in the calendar but has no lessons for the user. */
-    val tomorrowIsFree: Boolean,
-)
-
 /** Answers schedule questions for one group and subgroup. */
 class ScheduleQuery(days: List<Day>, val group: String, val subgroup: Subgroup) {
     val days: List<Day> = days.sortedBy { it.date }
@@ -117,22 +108,6 @@ class ScheduleQuery(days: List<Day>, val group: String, val subgroup: Subgroup) 
         return lessons(today).mapNotNull { scheduled(it, today) }.filter { it.start > now }.minByOrNull { it.start }
     }
 
-    /** The first day after today with lessons for the user. */
-    fun nextSchoolDay(now: Instant): NextSchoolDay? {
-        val todayDate = now.atZone(CollegeClock.zone).toLocalDate()
-        val today = todayDate.toString()
-        val tomorrow = todayDate.plusDays(1).toString()
-        val tomorrowHasLessons = days.firstOrNull { it.date == tomorrow }?.let { lessons(it).isNotEmpty() } ?: false
-        for (day in days) {
-            if (day.date <= today) continue
-            val lessons = lessons(day)
-            if (lessons.isNotEmpty()) {
-                return NextSchoolDay(day, lessons, isTomorrow = day.date == tomorrow, tomorrowIsFree = !tomorrowHasLessons)
-            }
-        }
-        return null
-    }
-
     companion object {
         /** A lesson without an end time lasts a standard pair. */
         val DEFAULT_LENGTH: Duration = Duration.ofMinutes(90)
@@ -141,14 +116,5 @@ class ScheduleQuery(days: List<Day>, val group: String, val subgroup: Subgroup) 
             val set = lessons.map { it.building(fallback) }.toSortedSet()
             return if (set.isEmpty()) listOf(fallback) else set.toList()
         }
-
-        /**
-         * When the user has to be at college: the first in-person class. Remote
-         * classes do not count (on remote Saturdays their times are not even in
-         * the PDF), so an all-remote day has no start time.
-         */
-        fun firstInPersonStart(lessons: List<Lesson>): Lesson? =
-            lessons.filter { !it.isRemote && it.start.isNotEmpty() }
-                .minWithOrNull(compareBy({ it.start }, { it.pair }))
     }
 }

@@ -52,7 +52,6 @@ private struct HomeCards: View {
                     StaleDataBanner(fetchedAt: model.dataFetchedAt, reason: reason) { await model.refresh() }
                 }
                 CurrentLessonCard(state: query.current(at: now), now: now)
-                NextDayCard(next: query.nextSchoolDay(after: now), now: now)
             }
         }
     }
@@ -69,9 +68,9 @@ private struct CurrentLessonCard: View {
         case .upcoming(let s):
             card(s, status: Format.countdown(from: now, to: s.start), tint: nil)
         case .finishedForToday:
-            message(L("home.finished"), systemImage: "party.popper")
+            message(L("home.finished"))
         case .noLessonsToday:
-            message(L("home.noLessonsToday"), systemImage: "sun.max")
+            message(L("home.noLessonsToday"))
         }
     }
 
@@ -92,7 +91,7 @@ private struct CurrentLessonCard: View {
             if let subgroup = s.lesson.subgroup {
                 SubgroupBadge(subgroup: subgroup)
             }
-            Label(status, systemImage: tint == nil ? "clock" : "dot.radiowaves.left.and.right")
+            Text(status)
                 .font(.headline)
                 .foregroundStyle(tint ?? .accentColor)
                 .contentTransition(.numericText())
@@ -115,54 +114,13 @@ private struct CurrentLessonCard: View {
         return parts.joined(separator: " · ")
     }
 
-    private func message(_ text: String, systemImage: String) -> some View {
+    private func message(_ text: String) -> some View {
         GlassCard {
-            Label(text, systemImage: systemImage)
+            Text(text)
                 .font(.title3.weight(.semibold))
         }
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("home.currentLesson")
-    }
-}
-
-private struct NextDayCard: View {
-    let next: NextSchoolDay?
-    let now: Date
-
-    var body: some View {
-        GlassCard {
-            Text(L("home.nextDay"))
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .textCase(.uppercase)
-            if let next {
-                if next.tomorrowIsFree && !next.isTomorrow {
-                    Text(L("home.tomorrowFree"))
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                Text(summary(next))
-                    .font(.title3.weight(.semibold))
-                    .fixedSize(horizontal: false, vertical: true)
-            } else {
-                Label(L("home.noNextDay"), systemImage: "calendar.badge.clock")
-                    .font(.title3.weight(.semibold))
-            }
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityIdentifier("home.nextDay")
-    }
-
-    /// "Tomorrow (Sat) · 4 classes · building 1 · first at 12:10".
-    private func summary(_ next: NextSchoolDay) -> String {
-        let weekday = Format.chip(next.day).weekday.lowercased()
-        let title = next.isTomorrow ? L("home.tomorrowWeekday \(weekday)") : Format.shortDay(next.day)
-        let buildings = ScheduleQuery.buildings(of: next.lessons, fallback: next.day.building)
-        var parts = [title, Format.lessonCount(next.lessons.count), Format.buildings(buildings)]
-        if let first = ScheduleQuery.firstInPersonStart(of: next.lessons) {
-            parts.append(L("home.firstAt \(first.start)"))
-        }
-        return parts.joined(separator: " · ")
     }
 }
 

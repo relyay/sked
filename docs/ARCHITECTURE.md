@@ -122,7 +122,7 @@ Status codes: `400` — invalid `building`/`date`; `404` — unknown building; `
 
 - **SwiftData is replaced by JSON files.** xtool builds on Linux lack the `SwiftDataMacros` plugin (`@Model`), so the offline snapshot is stored as JSON in Application Support. The profile lives in UserDefaults.
 - "Today" uses `Calendar.current` with an explicit `TimeZone(identifier: "Europe/Moscow")`.
-- Times with `timeSource` are shown like any other time. The Home "first at …" is the start of the first in-person class; on an all-remote day it is omitted.
+- Times with `timeSource` are shown like any other time.
 - The main bundle contains `AppResources/ru.lproj` and `en.lproj` (`resources` in `xtool.yml`). Without them iOS treats the app as English-only, and dates and system controls come out in English.
 - Data refreshes on launch, on return to the foreground, every 5 minutes, on pull-to-refresh and with the "Refresh now" button. On a network error the cache is shown with a "Showing data from …" banner. Without a cache, an error screen with "Retry" is shown.
 - The server address is hard-coded: `https://rasp.relya.ru` (`Server.production`). There is no server setting in the app and no ATS exceptions. Only UI tests override the address through the `SKED_SERVER_URL` environment variable. In production the server sits behind a TLS reverse proxy (Caddy → `skedd` on :1984).
@@ -154,7 +154,6 @@ Status codes: `400` — invalid `building`/`date`; `404` — unknown building; `
 **Home**
 - [ ] "Next class" card as "Class N · subject · time · building, room" with a "starts in …" countdown that updates every minute.
 - [ ] During a class it says "in progress"; after the last one, "No more classes today — take a rest 🎉".
-- [ ] Next school day card as "Tomorrow (Sat) · N classes · building · first at …", with the building taken from that day's classes; if tomorrow is free, a "No classes tomorrow" line.
 - [ ] Skeletons while loading; offline with a cache, a "Showing data from …" banner; without a cache, "Retry".
 
 **Schedule**
@@ -164,11 +163,12 @@ Status codes: `400` — invalid `building`/`date`; `404` — unknown building; `
 - [ ] The other subgroup's classes are hidden, the user's subgroup is not highlighted, lessons have no subgroup badge; remote classes read "remote · teacher" without a room; times have no "≈".
 - [ ] Under the day header (and in each day's header in the week view) "Classes start at …" and lunch breaks from the PDF are shown for the user's subgroup.
 - [ ] In the day view the subject comes first, then the time; in the week view the class number is in a circle, followed by the subject, the "start – end" time and the room.
-- [ ] An empty day shows "No classes" with an icon.
+- [ ] An empty day shows "No classes".
+- [ ] No decorative icons anywhere (including the connection error); only lunch and "classes start at" lines have icons.
 
 **Profile**
-- [ ] A user card at the top (initials, full name, group · course, subgroup as plain text); its chevron opens a screen with the name, group and subgroup.
-- [ ] Below, "Data" and "About" sections, and "Reset profile" with confirmation at the very bottom. No server setting.
+- [ ] A user card at the top (initials, full name, group · course, subgroup as plain text); its chevron opens "Edit profile" with the name, group, subgroup and "Reset profile" (with confirmation).
+- [ ] Below, "Data" and "About" sections. No server setting.
 - [ ] "Data updated: …", a "Refresh now" button and the app version are visible.
 
 **General**
