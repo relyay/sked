@@ -6,7 +6,7 @@ Deploy: `git clone`, set the domain on the first line of `Caddyfile`, `podman co
 
 **Sked** — schedule app for students of the VKSIT college: a Go server (`server/`) parses the college's schedule PDFs and serves JSON; an iOS 26 SwiftUI client (`ios/`, built on Linux with xtool) and an Android Jetpack Compose client (`android/`) consume it. The two clients mirror each other: same screens, rules, strings and tests — change both together. The client never touches the PDFs or rasp.vksit.ru. Full design, data model and API contract: `docs/ARCHITECTURE.md` — keep it in sync when the JSON shape or endpoints change.
 
-App icon: `icon.png` at the repo root is the source; `python3 tools/make_icons.py icon.png .` (needs Pillow) regenerates `ios/AppResources/AppIcon.png` (`iconPath` in `xtool.yml`) and the Android adaptive-icon foreground PNGs; the Android background color lives in `values/colors.xml`.
+App icon: `icon.png` at the repo root is the source; `python3 tools/make_icons.py icon.png . [preview.png]` (needs Pillow) regenerates `ios/AppResources/AppIcon.png` (`iconPath` in `xtool.yml`), the Android adaptive-icon foreground PNGs and the background color in `values/colors.xml` (sampled from the corners); the optional preview shows the Android icon under a circular mask.
 
 ## iOS commands (run in `ios/`)
 
