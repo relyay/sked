@@ -153,7 +153,7 @@ func TestParseNPO(t *testing.T) {
 }
 
 func TestNoUnrecognisedCells(t *testing.T) {
-	for _, name := range []string{"npo.pdf", "spo.pdf"} {
+	for _, name := range []string{"npo.pdf", "spo.pdf", "npo-2026-10-26.pdf", "spo-2026-10-26.pdf"} {
 		res := parseFile(t, name)
 		for _, w := range res.Warnings {
 			// Missing bell times on remote Saturdays are expected.
@@ -194,5 +194,41 @@ func TestMissingTimesAreDerived(t *testing.T) {
 	// Times present in the PDF are never marked.
 	if l := lesson(t, groupDay(t, spo, "2026-10-23", "ДО-324"), 1, 1); l.TimeSource != "" {
 		t.Errorf("pdf time marked as derived: %+v", l)
+	}
+}
+
+// Thursday 29.10 in building 2 is a shortened day: pairs 1–4 print 60-minute
+// times and the remote pairs 5–6 print none. They continue the day's own
+// grid, a lunch is printed under each block, and a room may be a bare number.
+func TestShortenedDay(t *testing.T) {
+	npo := parseFile(t, "npo-2026-10-26.pdf")
+	ru := groupDay(t, npo, "2026-10-29", "РУПО-126р")
+	for pair, want := range map[int][2]string{5: {"14:10", "15:10"}, 6: {"15:20", "16:20"}} {
+		if l := lesson(t, ru, pair, 0); l.Start != want[0] || l.End != want[1] || l.TimeSource != schedule.TimeFromBells {
+			t.Errorf("pair %d = %s–%s (%s), want %s–%s", pair, l.Start, l.End, l.TimeSource, want[0], want[1])
+		}
+	}
+
+	for _, group := range []string{"РУПО-126б", "СИС-126", "МТО-126"} {
+		var lunch []string
+		for _, n := range groupDay(t, npo, "2026-10-29", group).Notes {
+			if n.Kind == schedule.NoteLunch {
+				lunch = append(lunch, n.Time+"-"+n.EndTime)
+			}
+		}
+		if len(lunch) != 1 || lunch[0] != "11:10-11:50" {
+			t.Errorf("%s lunch = %v, want the block's 11:10-11:50", group, lunch)
+		}
+	}
+
+	if l := lesson(t, groupDay(t, npo, "2026-10-29", "СИС-126"), 2, 0); l.Subject != "Обществознание" || l.Room != "10" {
+		t.Errorf("bare room: %+v", l)
+	}
+
+	// Building 1 keeps its usual 90-minute pairs, so missing pairs keep the
+	// usual times even though pair 4 ends early that day.
+	spo := parseFile(t, "spo-2026-10-26.pdf")
+	if l := lesson(t, groupDay(t, spo, "2026-10-29", "ДО-324"), 5, 0); l.Start != "15:40" || l.End != "17:10" {
+		t.Errorf("spo pair 5 = %s–%s, want 15:40–17:10", l.Start, l.End)
 	}
 }

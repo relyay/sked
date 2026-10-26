@@ -25,7 +25,7 @@ import (
 // Version identifies the parser's output shape. Bump it whenever parsing
 // changes what a snapshot contains: stored snapshots with another version
 // are re-parsed even if the PDF is unchanged.
-const Version = 4
+const Version = 5
 
 // Result is the parse outcome for one PDF.
 type Result struct {
@@ -218,7 +218,38 @@ func (p *page) parseBlock(label pdfx.Run, bottom float64) []schedule.GroupDay {
 		out[i].Group = c.group
 	}
 	p.parseGrid(bands, cols, out)
+	p.parseFooter(bands, cols, bottom, out)
 	return out
+}
+
+// parseFooter handles text printed under a block's last pair row, outside any
+// cell, such as "Обед 11:10-11:50" (lunch) on shortened days: it applies to
+// every group of the block.
+func (p *page) parseFooter(bands []band, cols []column, bottom float64, out []schedule.GroupDay) {
+	if len(bands) == 0 {
+		return
+	}
+	last := bands[len(bands)-1].y1
+	var runs []pdfx.Run
+	for _, r := range p.Runs {
+		// Stay clear of the next block's "Группа:" row.
+		if r.Y > last+1 && r.Y < bottom-6 && r.X >= cols[0].x0-1 && r.X < cols[len(cols)-1].x1 {
+			runs = append(runs, r)
+		}
+	}
+	if len(runs) == 0 {
+		return
+	}
+	content := interpretCell(runs)
+	if content.subject != "" || content.teacher != "" || content.room != "" {
+		p.warn("unrecognised text under block %s…: %q", cols[0].group, content.subject+content.teacher+content.room)
+	}
+	for _, w := range content.warnings {
+		p.warn("under block %s…: %s", cols[0].group, w)
+	}
+	for i := range out {
+		out[i].Notes = append(out[i].Notes, content.notes...)
+	}
 }
 
 // bands finds the pair rows of a block: pair numbers sit in the leftmost

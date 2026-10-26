@@ -25,10 +25,12 @@ Only the server parses PDFs. The client never talks to rasp.vksit.ru.
 | Text overflows into empty neighbouring cells; a whole-group class is a merged cell | the grid is rebuilt **from the table's ruling lines**; text is assigned to a cell by its origin point (`Tm`) |
 | Cells are also merged vertically (an exam for the whole day) | `Lesson.pairTo` |
 | Remote = «Д» in the room («Ауд.») column | `isRemote: true`, empty `room` |
-| On Saturday 24.10 class times are **missing** | times come from the bell schedule of other days of the same PDF (`timeSource: "bells"`); on Saturdays every pair lasts one hour with the weekday first start and breaks (SPO 08:30–09:30, 09:40–10:40, 11:10–12:10, …); in-person classes are shifted by «Занятия начинаются с …» ("classes start at …"), `timeSource: "startsAt"` |
+| On Saturday 24.10 class times are **missing** | times come from the bell schedule of other days of the same PDF (`timeSource: "bells"`); on Saturdays every pair lasts one hour with the weekday first start and breaks (SPO 08:30–09:30, 09:40–10:40, 11:10–12:10, …); on a shortened weekday (printed pairs shorter than usual) the unprinted pairs continue that day's grid; in-person classes are shifted by «Занятия начинаются с …» ("classes start at …"), `timeSource: "startsAt"` |
 | «Занятия начинаются с 11:10», «Обед 10:55-11:20», «Обед с 11:25 до 11:50» (start time and lunch notes) belong to a group's cell and are often split into fragments | `notes[]` on `GroupDay` |
 | NPO has its own bell schedule (9:00-10:30, 10:40-12:40, …) | a class's time is always taken from its PDF row |
 | Group `ИСП-324а`: the first digit of the number is the course (year) | `course = 3` |
+| A lunch line can sit under a block, outside the cells («Обед 11:10-11:50» on 29.10) | it becomes a note for every group of the block |
+| Some rooms are bare numbers («10», «105») | accepted as rooms, not glued to the subject |
 
 ## Parser
 

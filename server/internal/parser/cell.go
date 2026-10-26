@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	roomRe     = regexp.MustCompile(`^(?:ауд\.?\s*)?(\d{1,3}[а-яa-z]?/\d|[А-ЯЁA-Z]{1,3}/\d|\d{1,3}\s*цех)$`)
+	roomRe     = regexp.MustCompile(`^(?:ауд\.?\s*)?(\d{1,3}[а-яa-z]?/\d|[А-ЯЁA-Z]{1,3}/\d|\d{1,3}\s*цех|\d{1,3})$`)
 	remoteRe   = regexp.MustCompile(`^(?i)(?:Д|\(Д\)|дистант)$`)
 	teacherRe  = regexp.MustCompile(`^([А-ЯЁ][а-яё]+(?:-[А-ЯЁ][а-яё]+)?\s+[А-ЯЁ]\.\s?[А-ЯЁ]\.?)[,.]?\s*(.*)$`)
 	lunchRe    = regexp.MustCompile(`^Обед\s*(?:с\s*)?(\d{1,2}:\d{2})\s*(?:-|–|до)?\s*(\d{1,2}:\d{2})?$`)

@@ -17,21 +17,31 @@ type bell struct{ start, end string }
 // PDFs do not print Saturday bell times).
 const saturdayLength = 60
 
-// fillMissingTimes derives times for pages without bell times (remote
-// Saturdays) from the most common time of each pair on other pages of the
-// same PDF. On Saturdays pairs last an hour, keeping the weekday first start
-// and breaks. In-person pairs are shifted when the group has a "classes start
-// at" note. Derived times are marked with TimeSource.
+// fillMissingTimes derives times for pairs the PDF prints none for, from the
+// most common time of each pair across the same PDF (the weekday grid):
+//   - a page with no times at all uses the weekday grid, or on Saturdays the
+//     weekday grid with 60-minute pairs (college rule);
+//   - a shortened day (its printed pairs are not the usual length, e.g. 60
+//     instead of 90 minutes) continues its own grid: same length, weekday
+//     breaks;
+//   - otherwise missing pairs get the weekday times.
+//
+// In-person pairs are shifted when the group has a "classes start at" note.
+// Derived times are marked with TimeSource.
 func fillMissingTimes(days []schedule.Day) {
 	bells := commonBells(days)
 	if len(bells) == 0 {
 		return
 	}
-	saturday := saturdayBells(bells)
+	usual := modeLength(bells)
 	for di := range days {
 		dayBells := bells
-		if date, err := time.Parse(time.DateOnly, days[di].Date); err == nil && date.Weekday() == time.Saturday {
-			dayBells = saturday
+		printed := printedBells(days[di])
+		switch {
+		case len(printed) == 0 && isSaturday(days[di].Date):
+			dayBells = shortenedGrid(bells, nil, saturdayLength)
+		case len(printed) > 0 && modeLength(printed) != usual:
+			dayBells = shortenedGrid(bells, printed, modeLength(printed))
 		}
 		for gi := range days[di].Groups {
 			fillGroup(&days[di].Groups[gi], dayBells)
@@ -39,23 +49,76 @@ func fillMissingTimes(days []schedule.Day) {
 	}
 }
 
-// saturdayBells keeps the weekday start of the first pair and the weekday
-// breaks between pairs, but makes every pair saturdayLength minutes long.
-func saturdayBells(weekday map[int]bell) map[int]bell {
-	pairs := make([]int, 0, len(weekday))
+func isSaturday(date string) bool {
+	d, err := time.Parse(time.DateOnly, date)
+	return err == nil && d.Weekday() == time.Saturday
+}
+
+// printedBells is the pair grid a page prints itself.
+func printedBells(day schedule.Day) map[int]bell {
+	out := map[int]bell{}
+	for _, g := range day.Groups {
+		for _, l := range g.Lessons {
+			if l.Start != "" && l.End != "" && l.PairTo == 0 && l.TimeSource == "" {
+				out[l.Pair] = bell{l.Start, l.End}
+			}
+		}
+	}
+	return out
+}
+
+// modeLength is the most common pair length in minutes (shortest on ties).
+func modeLength(bells map[int]bell) int {
+	counts := map[int]int{}
+	for _, b := range bells {
+		counts[minutes(b.end)-minutes(b.start)]++
+	}
+	best := 0
+	for length, n := range counts {
+		if n > counts[best] || n == counts[best] && length < best {
+			best = length
+		}
+	}
+	return best
+}
+
+// shortenedGrid keeps the printed pairs and lays the others out after them:
+// `length` minutes each, separated by the weekday breaks. A first pair with no
+// printed time starts at its weekday time.
+func shortenedGrid(weekday, printed map[int]bell, length int) map[int]bell {
+	set := map[int]bool{}
 	for p := range weekday {
+		set[p] = true
+	}
+	for p := range printed {
+		set[p] = true
+	}
+	pairs := make([]int, 0, len(set))
+	for p := range set {
 		pairs = append(pairs, p)
 	}
 	slices.Sort(pairs)
+
 	out := map[int]bell{}
-	start := minutes(weekday[pairs[0]].start)
 	for i, p := range pairs {
-		if i > 0 {
-			prev := pairs[i-1]
-			breakLen := minutes(weekday[p].start) - minutes(weekday[prev].end)
-			start = minutes(out[prev].end) + max(0, breakLen)
+		if b, ok := printed[p]; ok {
+			out[p] = b
+			continue
 		}
-		out[p] = bell{clockOf(start), clockOf(start + saturdayLength)}
+		var start int
+		if i == 0 {
+			start = minutes(weekday[p].start)
+		} else {
+			prev := pairs[i-1]
+			breakLen := 10
+			if w, ok := weekday[p]; ok {
+				if wp, ok := weekday[prev]; ok {
+					breakLen = max(0, minutes(w.start)-minutes(wp.end))
+				}
+			}
+			start = minutes(out[prev].end) + breakLen
+		}
+		out[p] = bell{clockOf(start), clockOf(start + length)}
 	}
 	return out
 }
